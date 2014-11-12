@@ -7,6 +7,9 @@
   <description>Java-based freesound.org client library</description>
   
   <properties>
+  	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    
   	<coveralls.io.plugin.version>3.0.1</coveralls.io.plugin.version>
   	<cobertura.plugin.version>2.6</cobertura.plugin.version>
   </properties>
