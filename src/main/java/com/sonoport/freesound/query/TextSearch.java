@@ -58,6 +58,10 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 	/** Collection of filters that should be applied as part of the query. */
 	private Set<SearchFilter> filters;
 
+	/** The fields to retrieve as part of the query. If values are specified here, only those fields will be returned.
+	 * If no values are specified, freesound will return a default set. */
+	private Set<String> fields;
+
 	/** Whether to group results by the pack to which they belong. */
 	private Boolean groupByPack;
 
@@ -125,6 +129,44 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 		return this;
 	}
 
+	/**
+	 * Specify a field to return in the results using the Fluent API approach. Users may specify this method multiple
+	 * times to define the collection of fields they want returning, and/or use {@link TextSearch#includeFields(Set)} to
+	 * define them as a batch.
+	 *
+	 * @param field The field to include in the results
+	 * @return The current query
+	 */
+	public TextSearch includeField(final String field) {
+		if (this.fields == null) {
+			this.fields = new HashSet<>();
+		}
+
+		if (field != null) {
+			this.fields.add(field);
+		}
+
+		return this;
+	}
+
+	/**
+	 * Specify the set of fields to return in the results. Defined using the Fluent API approach.
+	 *
+	 * @param fields The fields to return
+	 * @return The current query
+	 */
+	public TextSearch includeFields(final Set<String> fields) {
+		if (this.fields == null) {
+			this.fields = new HashSet<>();
+		}
+
+		if (fields != null) {
+			this.fields.addAll(fields);
+		}
+
+		return this;
+	}
+
 	@Override
 	public Map<String, Object> getRequestParameters() {
 		final Map<String, Object> params = new HashMap<>();
@@ -135,6 +177,17 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 
 		if (sortOrder != null) {
 			params.put(SORT_ORDER_PARAMETER, sortOrder.getParameterValue());
+		}
+
+		if ((fields != null) && !fields.isEmpty()) {
+			final StringBuilder fieldsString = new StringBuilder();
+			for (final String field : fields) {
+				fieldsString.append(field);
+				fieldsString.append(',');
+			}
+			fieldsString.deleteCharAt(fieldsString.lastIndexOf(","));
+
+			params.put("fields", fieldsString.toString());
 		}
 
 		if (groupByPack != null) {
