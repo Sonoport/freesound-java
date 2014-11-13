@@ -38,9 +38,19 @@ import com.sonoport.freesound.response.SoundResultsList;
  */
 public class TextSearch extends Query<SoundResultsList> {
 
+	/** The name of the query parameter to pass the search string over as. */
+	private static final String SEARCH_STRING_PARAMETER = "query";
+
+	/** The name of the query parameter to pass the sort order over as. */
+	private static final String SORT_ORDER_PARAMETER = "sort";
+
 	/** The string to use as the search criteria. This value is used to populate the 'query' parameter on the request,
 	 * so the full range of expressions permitted by the API can be specified. */
 	private String searchString;
+
+	/** The order in which to request results are sorted. The enum specified here contains the appropriate value to pass
+	 * in the HTTP call. */
+	private SortOrder sortOrder;
 
 	/**
 	 * No-arg constructor.
@@ -58,7 +68,7 @@ public class TextSearch extends Query<SoundResultsList> {
 	}
 
 	/**
-	 * Add the search string in using a fluent approach.
+	 * Add the search string using the Fluent API approach.
 	 *
 	 * @param searchString The search string to use in the query
 	 * @return The current query
@@ -68,12 +78,27 @@ public class TextSearch extends Query<SoundResultsList> {
 		return this;
 	}
 
+	/**
+	 * Add a sort order to the query, using the Fluent API approach.
+	 *
+	 * @param sortOrder The sort order to apply
+	 * @return The current query
+	 */
+	public TextSearch sortOrder(final SortOrder sortOrder) {
+		this.sortOrder = sortOrder;
+		return this;
+	}
+
 	@Override
 	public Map<String, Object> getQueryParameters() {
 		final Map<String, Object> params = new HashMap<>();
 
 		if (searchString != null) {
-			params.put("query", searchString);
+			params.put(SEARCH_STRING_PARAMETER, searchString);
+		}
+
+		if (sortOrder != null) {
+			params.put(SORT_ORDER_PARAMETER, sortOrder.getParameterValue());
 		}
 
 		return params;
@@ -124,6 +149,7 @@ public class TextSearch extends Query<SoundResultsList> {
 				tags.add(tag);
 			}
 		}
+		sound.setTags(tags);
 
 		return sound;
 	}
