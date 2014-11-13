@@ -53,8 +53,10 @@ public class FreesoundClient {
 	 * Execute a given query (synchronously) against the freesound API.
 	 *
 	 * @param query The query to execute
+	 *
+	 * @throws FreesoundClientException Any errors encountered when performing API call
 	 */
-	public void executeQuery(final Query<?> query) {
+	public void executeQuery(final Query<?> query) throws FreesoundClientException {
 		final String url = API_ENDPOINT + query.getPath();
 		final String token = String.format("Token %s", clientSecret);
 
@@ -63,7 +65,7 @@ public class FreesoundClient {
 					Unirest.get(url).fields(query.getQueryParameters()).header("Authorization", token).asJson();
 			query.setResponse(httpResponse);
 		} catch (final UnirestException e) {
-			e.printStackTrace();
+			throw new FreesoundClientException("Error when attempting to make API call", e);
 		}
 	}
 

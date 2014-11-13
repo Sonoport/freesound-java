@@ -17,6 +17,8 @@ package com.sonoport.freesound.query;
 
 import java.util.Map;
 
+import org.json.JSONObject;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 
@@ -30,6 +32,13 @@ public abstract class Query<R extends Object> {
 
 	/** The URI path to the query endpoint. */
 	private final String path;
+
+	/** The HTTP response code received after making the call. */
+	private int httpResponseCode;
+
+	/** The details of any errors received from the HTTP call. This should generally only be populated if
+	 * {@link Query#isErrorResponse()} returns true. */
+	private String errorDetails;
 
 	/** The results of the call, transformed into an appropriate DTO object. */
 	private R results;
@@ -52,7 +61,21 @@ public abstract class Query<R extends Object> {
 	 * @param freesoundResponse The response received from the HTTP call
 	 */
 	public final void setResponse(final HttpResponse<JsonNode> freesoundResponse) {
-		results = processResponse(freesoundResponse);
+		httpResponseCode = freesoundResponse.getCode();
+
+		if (isErrorResponse()) {
+			final JSONObject body = freesoundResponse.getBody().getObject();
+			errorDetails = body.getString("detail");
+		} else {
+			results = processResponse(freesoundResponse);
+		}
+	}
+
+	/**
+	 * @return Whether the HTTP call made resulted in an error response
+	 */
+	public boolean isErrorResponse() {
+		return httpResponseCode >= 400;
 	}
 
 	/**
@@ -82,6 +105,20 @@ public abstract class Query<R extends Object> {
 	 */
 	public void setResults(final R results) {
 		this.results = results;
+	}
+
+	/**
+	 * @return the httpResponseCode
+	 */
+	public int getHttpResponseCode() {
+		return httpResponseCode;
+	}
+
+	/**
+	 * @return the errorDetails
+	 */
+	public String getErrorDetails() {
+		return errorDetails;
 	}
 
 }
