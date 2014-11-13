@@ -17,8 +17,10 @@ package com.sonoport.freesound.query;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Map;
+import java.util.Set;
 
 import mockit.Deencapsulation;
 
@@ -37,6 +39,15 @@ public class TextSearchTest {
 
 	/** 'Group by Pack' value to use in tests. */
 	private static final boolean GROUP_BY_PACK = true;
+
+	/** Filed to filter on in tests. */
+	private static final String FILTER_FIELD = "name";
+
+	/** Value to filter on in tests. */
+	private static final String FILTER_VALUE = "mercedes";
+
+	/** {@link SearchFilter} object to use in tests. */
+	private static final SearchFilter FILTER = new SearchFilter(FILTER_FIELD, FILTER_VALUE);
 
 	/**
 	 * Test that the constructor taking the search string as a parameter correctly populates the member variable.
@@ -85,11 +96,27 @@ public class TextSearchTest {
 	}
 
 	/**
+	 * Test that adding filters using the Fluent API populates the collection correctly.
+	 */
+	@Test
+	public void filterFluentAPI() {
+		final TextSearch originalQuery = new TextSearch();
+		final TextSearch updatedQuery = originalQuery.filter(FILTER);
+
+		assertSame(originalQuery, updatedQuery);
+		final Set<SearchFilter> filters = Deencapsulation.getField(originalQuery, "filters");
+
+		assertTrue(filters.contains(FILTER));
+	}
+
+	/**
 	 * Test that the query parameter names and values are correctly provided when requested.
 	 */
 	@Test
 	public void correctQueryParametersCreated() {
-		final TextSearch query = new TextSearch(SEARCH_STRING).sortOrder(SORT_ORDER).groupByPack(GROUP_BY_PACK);
+		final TextSearch query =
+				new TextSearch(SEARCH_STRING).sortOrder(SORT_ORDER).groupByPack(GROUP_BY_PACK).filter(FILTER);
+
 		final Map<String, Object> queryParameters = query.getQueryParameters();
 
 		assertEquals(SEARCH_STRING, queryParameters.get("query"));
@@ -97,5 +124,8 @@ public class TextSearchTest {
 
 		final String groupByValue = GROUP_BY_PACK ? "1" : "0";
 		assertEquals(groupByValue, queryParameters.get("group_by_pack"));
+
+		final String expectedFilter = FILTER_FIELD + ':' + FILTER_VALUE;
+		assertEquals(expectedFilter, queryParameters.get("filter"));
 	}
 }

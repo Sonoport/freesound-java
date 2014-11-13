@@ -55,6 +55,9 @@ public class TextSearch extends Query<SoundResultsList> {
 	 * in the HTTP call. */
 	private SortOrder sortOrder;
 
+	/** Collection of filters that should be applied as part of the query. */
+	private Set<SearchFilter> filters;
+
 	/** Whether to group results by the pack to which they belong. */
 	private Boolean groupByPack;
 
@@ -81,6 +84,21 @@ public class TextSearch extends Query<SoundResultsList> {
 	 */
 	public TextSearch searchString(final String searchString) {
 		this.searchString = searchString;
+		return this;
+	}
+
+	/**
+	 * Add a filter to the query using the Fluent API approach.
+	 *
+	 * @param filter The filter to add
+	 * @return The current query
+	 */
+	public TextSearch filter(final SearchFilter filter) {
+		if (filters == null) {
+			filters = new HashSet<SearchFilter>();
+		}
+		filters.add(filter);
+
 		return this;
 	}
 
@@ -126,6 +144,17 @@ public class TextSearch extends Query<SoundResultsList> {
 			}
 
 			params.put(GROUP_BY_PACK_PARAMETER, numericBooleanValue);
+		}
+
+		if ((filters != null) && !filters.isEmpty()) {
+			final StringBuilder filterString = new StringBuilder();
+
+			for (final SearchFilter filter : filters) {
+				filterString.append(String.format("%s:%s", filter.getField(), filter.getValue()));
+				filterString.append(' ');
+			}
+
+			params.put("filter", filterString.toString().trim());
 		}
 
 		return params;
