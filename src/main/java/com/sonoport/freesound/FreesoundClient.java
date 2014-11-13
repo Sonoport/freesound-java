@@ -17,7 +17,11 @@ package com.sonoport.freesound;
 
 import java.io.IOException;
 
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import com.sonoport.freesound.query.Query;
 
 /**
  * Client used to make calls to the freesound.org API (v2).
@@ -43,6 +47,24 @@ public class FreesoundClient {
 	public FreesoundClient(final String clientId, final String clientSecret) {
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
+	}
+
+	/**
+	 * Execute a given query (synchronously) against the freesound API.
+	 *
+	 * @param query The query to execute
+	 */
+	public void executeQuery(final Query<?> query) {
+		final String url = API_ENDPOINT + query.getPath();
+		final String token = String.format("Token %s", clientSecret);
+
+		try {
+			final HttpResponse<JsonNode> httpResponse =
+					Unirest.get(url).fields(query.getQueryParameters()).header("Authorization", token).asJson();
+			query.setResponse(httpResponse);
+		} catch (final UnirestException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**
