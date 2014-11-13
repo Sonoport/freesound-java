@@ -21,6 +21,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
 
 /**
@@ -66,6 +67,40 @@ public class FreesoundClient {
 			query.setResponse(httpResponse);
 		} catch (final UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
+		}
+	}
+
+	/**
+	 * Retrieve the next page of results for a {@link PagingQuery}.
+	 *
+	 * @param query The {@link PagingQuery} being run
+	 * @throws FreesoundClientException If it is not possible to retrieve the next page
+	 */
+	public void nextPage(final PagingQuery<?, ?> query) throws FreesoundClientException {
+		if (query.hasNextPage()) {
+			final int currentPage = query.getPage();
+			query.setPage(currentPage + 1);
+
+			executeQuery(query);
+		} else {
+			throw new FreesoundClientException("No more pages of results");
+		}
+	}
+
+	/**
+	 * Retrieve the previous page of results for a {@link PagingQuery}.
+	 *
+	 * @param query The {@link PagingQuery} being run
+	 * @throws FreesoundClientException If it is not possible to retrieve the previous page
+	 */
+	public void previousPage(final PagingQuery<?, ?> query) throws FreesoundClientException {
+		if (query.hasPreviousPage()) {
+			final int currentPage = query.getPage();
+			query.setPage(currentPage - 1);
+
+			executeQuery(query);
+		} else {
+			throw new FreesoundClientException("At first page of results");
 		}
 	}
 

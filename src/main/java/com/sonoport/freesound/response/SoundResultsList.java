@@ -28,6 +28,12 @@ public class SoundResultsList {
 	/** The current page of search results. */
 	private List<Sound> sounds;
 
+	/** The URI to the next page of results (if any). */
+	private String nextPageURI;
+
+	/** The URI to the previous page of results (if any). */
+	private String previousPageURI;
+
 	/**
 	 * @return the count
 	 */
@@ -54,5 +60,33 @@ public class SoundResultsList {
 	 */
 	public void setSounds(final List<Sound> sounds) {
 		this.sounds = sounds;
+	}
+
+	/**
+	 * @return the nextPageURI
+	 */
+	public String getNextPageURI() {
+		return nextPageURI;
+	}
+
+	/**
+	 * @param nextPageURI the nextPageURI to set
+	 */
+	public void setNextPageURI(final String nextPageURI) {
+		this.nextPageURI = nextPageURI;
+	}
+
+	/**
+	 * @return the previousPageURI
+	 */
+	public String getPreviousPageURI() {
+		return previousPageURI;
+	}
+
+	/**
+	 * @param previousPageURI the previousPageURI to set
+	 */
+	public void setPreviousPageURI(final String previousPageURI) {
+		this.previousPageURI = previousPageURI;
 	}
 }

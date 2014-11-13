@@ -36,7 +36,7 @@ import com.sonoport.freesound.response.SoundResultsList;
  *
  * Full details of the query can be found at http://www.freesound.org/docs/api/resources_apiv2.html#text-search.
  */
-public class TextSearch extends Query<SoundResultsList> {
+public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 
 	/** The name of the query parameter to pass the search string over as. */
 	private static final String SEARCH_STRING_PARAMETER = "query";
@@ -126,7 +126,7 @@ public class TextSearch extends Query<SoundResultsList> {
 	}
 
 	@Override
-	public Map<String, Object> getQueryParameters() {
+	public Map<String, Object> getRequestParameters() {
 		final Map<String, Object> params = new HashMap<>();
 
 		if (searchString != null) {
@@ -169,18 +169,44 @@ public class TextSearch extends Query<SoundResultsList> {
 		final int resultCount = jsonResponse.getInt("count");
 		resultsList.setCount(resultCount);
 
+		if (jsonResponse.has("next") && !jsonResponse.isNull("next")) {
+			resultsList.setNextPageURI(jsonResponse.getString("next"));
+		} else {
+			resultsList.setNextPageURI(null);
+		}
+
+		if (jsonResponse.has("previous") && !jsonResponse.isNull("previous")) {
+			resultsList.setPreviousPageURI(jsonResponse.getString("previous"));
+		} else {
+			resultsList.setPreviousPageURI(null);
+		}
+
 		final List<Sound> sounds = new LinkedList<>();
 		final JSONArray soundResultsArray = jsonResponse.getJSONArray("results");
 		for (int i = 0; i < soundResultsArray.length(); i++) {
-			final JSONObject soundObject = soundResultsArray.getJSONObject(i);
-			if (soundObject != null) {
-				final Sound sound = convertSoundObject(soundObject);
-				sounds.add(sound);
+			if (!soundResultsArray.isNull(i)) {
+				final JSONObject soundObject = soundResultsArray.getJSONObject(i);
+				if ((soundObject != null)) {
+					final Sound sound = convertSoundObject(soundObject);
+					sounds.add(sound);
+				}
 			}
 		}
 		resultsList.setSounds(sounds);
 
 		return resultsList;
+	}
+
+	@Override
+	public boolean hasNextPage() {
+		final SoundResultsList results = getResults();
+		return results.getNextPageURI() != null;
+	}
+
+	@Override
+	public boolean hasPreviousPage() {
+		final SoundResultsList results = getResults();
+		return results.getPreviousPageURI() != null;
 	}
 
 	/**
