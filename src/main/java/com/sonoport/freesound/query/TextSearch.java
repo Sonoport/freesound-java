@@ -44,6 +44,9 @@ public class TextSearch extends Query<SoundResultsList> {
 	/** The name of the query parameter to pass the sort order over as. */
 	private static final String SORT_ORDER_PARAMETER = "sort";
 
+	/** The name of the parameter to pass the 'group by pack' flag over as. */
+	private static final String GROUP_BY_PACK_PARAMETER = "group_by_pack";
+
 	/** The string to use as the search criteria. This value is used to populate the 'query' parameter on the request,
 	 * so the full range of expressions permitted by the API can be specified. */
 	private String searchString;
@@ -51,6 +54,9 @@ public class TextSearch extends Query<SoundResultsList> {
 	/** The order in which to request results are sorted. The enum specified here contains the appropriate value to pass
 	 * in the HTTP call. */
 	private SortOrder sortOrder;
+
+	/** Whether to group results by the pack to which they belong. */
+	private Boolean groupByPack;
 
 	/**
 	 * No-arg constructor.
@@ -79,6 +85,18 @@ public class TextSearch extends Query<SoundResultsList> {
 	}
 
 	/**
+	 * Specify whether sound results should be grouped into the packs to which they belong, using the Fluent API
+	 * approach.
+	 *
+	 * @param groupByPack Whether sounds should be grouped
+	 * @return The current query
+	 */
+	public TextSearch groupByPack(final boolean groupByPack) {
+		this.groupByPack = Boolean.valueOf(groupByPack);
+		return this;
+	}
+
+	/**
 	 * Add a sort order to the query, using the Fluent API approach.
 	 *
 	 * @param sortOrder The sort order to apply
@@ -99,6 +117,15 @@ public class TextSearch extends Query<SoundResultsList> {
 
 		if (sortOrder != null) {
 			params.put(SORT_ORDER_PARAMETER, sortOrder.getParameterValue());
+		}
+
+		if (groupByPack != null) {
+			String numericBooleanValue = "0";
+			if (groupByPack) {
+				numericBooleanValue = "1";
+			}
+
+			params.put(GROUP_BY_PACK_PARAMETER, numericBooleanValue);
 		}
 
 		return params;
