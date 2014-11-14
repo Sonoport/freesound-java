@@ -21,6 +21,7 @@ import org.json.JSONObject;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
+import com.sonoport.freesound.response.mapping.Mapper;
 
 /**
  * Representation of a query of the freesound API, encapsulating the common elements the different types of calls.
@@ -32,6 +33,9 @@ public abstract class Query<R extends Object> {
 
 	/** The URI path to the query endpoint. */
 	private final String path;
+
+	/** {@link Mapper} used to convert results received from freesound into appropriate DTO type. */
+	private final Mapper<JSONObject, R> resultsMapper;
 
 	/** The HTTP response code received after making the call. */
 	private int httpResponseCode;
@@ -45,9 +49,11 @@ public abstract class Query<R extends Object> {
 
 	/**
 	 * @param path Endpoint to submit the query to
+	 * @param resultsMapper {@link Mapper} to convert results
 	 */
-	protected Query(final String path) {
+	protected Query(final String path, final Mapper<JSONObject, R> resultsMapper) {
 		this.path = path;
+		this.resultsMapper = resultsMapper;
 	}
 
 	/**
@@ -63,11 +69,11 @@ public abstract class Query<R extends Object> {
 	public final void setResponse(final HttpResponse<JsonNode> freesoundResponse) {
 		httpResponseCode = freesoundResponse.getCode();
 
+		final JSONObject body = freesoundResponse.getBody().getObject();
 		if (isErrorResponse()) {
-			final JSONObject body = freesoundResponse.getBody().getObject();
 			errorDetails = body.getString("detail");
 		} else {
-			results = processResponse(freesoundResponse);
+			results = resultsMapper.map(body);
 		}
 	}
 
@@ -77,14 +83,6 @@ public abstract class Query<R extends Object> {
 	public boolean isErrorResponse() {
 		return httpResponseCode >= 400;
 	}
-
-	/**
-	 * Process the HTTP response received from the API into the required result DTO format.
-	 *
-	 * @param freesoundResponse The response received from the HTTP call
-	 * @return DTO representation of the results
-	 */
-	protected abstract R processResponse(HttpResponse<JsonNode> freesoundResponse);
 
 	/**
 	 * @return the path

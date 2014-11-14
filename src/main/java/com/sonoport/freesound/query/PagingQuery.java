@@ -18,6 +18,10 @@ package com.sonoport.freesound.query;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONObject;
+
+import com.sonoport.freesound.response.mapping.Mapper;
+
 /**
  * Extension of {@link Query} that represents API calls that can return results that span multiple pages. The main
  * example of this are search queries, where there may be too many results to return in one go.
@@ -41,26 +45,30 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object>
 
 	/**
 	 * @param path The URI path to the API endpoint
+	 * @param resultsMapper {@link Mapper} to convert results
 	 */
-	protected PagingQuery(final String path) {
-		this(path, DEFAULT_PAGE_SIZE);
+	protected PagingQuery(final String path, final Mapper<JSONObject, R> resultsMapper) {
+		this(path, resultsMapper, DEFAULT_PAGE_SIZE);
 	}
 
 	/**
 	 * @param path The URI path to the API endpoint
+	 * @param resultsMapper {@link Mapper} to convert results
 	 * @param pageSize The number of results per page
 	 */
-	protected PagingQuery(final String path, final int pageSize) {
-		this(path, pageSize, 1);
+	protected PagingQuery(final String path, final Mapper<JSONObject, R> resultsMapper, final int pageSize) {
+		this(path, resultsMapper, pageSize, 1);
 	}
 
 	/**
 	 * @param path The URI path to the API endpoint
+	 * @param resultsMapper {@link Mapper} to convert results
 	 * @param pageSize The number of results per page
 	 * @param startPage The page to start at
 	 */
-	protected PagingQuery(final String path, final int pageSize, final int startPage) {
-		super(path);
+	protected PagingQuery(
+			final String path, final Mapper<JSONObject, R> resultsMapper, final int pageSize, final int startPage) {
+		super(path, resultsMapper);
 		setPageSize(pageSize);
 		setPage(startPage);
 	}

@@ -17,18 +17,11 @@ package com.sonoport.freesound.query;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.sonoport.freesound.response.Sound;
 import com.sonoport.freesound.response.SoundResultsList;
+import com.sonoport.freesound.response.mapping.SoundResultsListMapper;
 
 /**
  * Class used to represent a Text Search of the freesound.org content library. The class presents a fluent API to allow
@@ -69,7 +62,7 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 	 * No-arg constructor.
 	 */
 	public TextSearch() {
-		super("/search/text/");
+		super("/search/text/", new SoundResultsListMapper());
 	}
 
 	/**
@@ -214,43 +207,6 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 	}
 
 	@Override
-	protected SoundResultsList processResponse(final HttpResponse<JsonNode> freesoundResponse) {
-		final JSONObject jsonResponse = freesoundResponse.getBody().getObject();
-
-		final SoundResultsList resultsList = new SoundResultsList();
-
-		final int resultCount = jsonResponse.getInt("count");
-		resultsList.setCount(resultCount);
-
-		if (jsonResponse.has("next") && !jsonResponse.isNull("next")) {
-			resultsList.setNextPageURI(jsonResponse.getString("next"));
-		} else {
-			resultsList.setNextPageURI(null);
-		}
-
-		if (jsonResponse.has("previous") && !jsonResponse.isNull("previous")) {
-			resultsList.setPreviousPageURI(jsonResponse.getString("previous"));
-		} else {
-			resultsList.setPreviousPageURI(null);
-		}
-
-		final List<Sound> sounds = new LinkedList<>();
-		final JSONArray soundResultsArray = jsonResponse.getJSONArray("results");
-		for (int i = 0; i < soundResultsArray.length(); i++) {
-			if (!soundResultsArray.isNull(i)) {
-				final JSONObject soundObject = soundResultsArray.getJSONObject(i);
-				if ((soundObject != null)) {
-					final Sound sound = convertSoundObject(soundObject);
-					sounds.add(sound);
-				}
-			}
-		}
-		resultsList.setSounds(sounds);
-
-		return resultsList;
-	}
-
-	@Override
 	public boolean hasNextPage() {
 		final SoundResultsList results = getResults();
 		return results.getNextPageURI() != null;
@@ -260,33 +216,6 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 	public boolean hasPreviousPage() {
 		final SoundResultsList results = getResults();
 		return results.getPreviousPageURI() != null;
-	}
-
-	/**
-	 * Convert the details of an individual sound from its {@link JSONObject} representation to a {@link Sound} object.
-	 *
-	 * @param soundObject JSON representation of a sound
-	 * @return DTO representation of the sound
-	 */
-	private Sound convertSoundObject(final JSONObject soundObject) {
-		final Sound sound = new Sound();
-
-		sound.setId(soundObject.getInt("id"));
-		sound.setUsername(soundObject.getString("username"));
-		sound.setName(soundObject.getString("name"));
-		sound.setLicense(soundObject.getString("license"));
-
-		final Set<String> tags = new HashSet<>();
-		final JSONArray tagsArray = soundObject.getJSONArray("tags");
-		for (int i = 0; i < tagsArray.length(); i++) {
-			final String tag = tagsArray.getString(i);
-			if (tag != null) {
-				tags.add(tag);
-			}
-		}
-		sound.setTags(tags);
-
-		return sound;
 	}
 
 }
