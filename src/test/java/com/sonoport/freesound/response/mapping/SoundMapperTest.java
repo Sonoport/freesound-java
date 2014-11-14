@@ -63,7 +63,7 @@ public class SoundMapperTest extends MapperTest {
 	private static final String GEOTAG = null;
 
 	/** Creation date from file. The number here is the equivalent time-since-epoch value for 2007-10-25T18:43:27. */
-	private static final Date DATE_CREATED = new Date(1193334207000L);
+	private static final Date DATE_CREATED = new Date(1193337807000L);
 
 	/** License value from file. */
 	private static final String LICENSE = "http://creativecommons.org/licenses/by/3.0/";

@@ -22,6 +22,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,6 +137,8 @@ public abstract class Mapper<S extends Object, R extends Object> {
 		if (dateString != null) {
 			try {
 				final SimpleDateFormat dateFormat = new SimpleDateFormat(FREESOUND_DATE_FORMAT);
+				dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+
 				date = dateFormat.parse(dateString);
 			} catch (final ParseException e) {
 				// TODO Log a warning
