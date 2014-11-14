@@ -26,7 +26,7 @@ import java.util.Set;
 public class Sound {
 
 	/** The sound’s unique identifier. */
-	private int id;
+	private Integer id;
 
 	/** The URI for this sound on the Freesound website. */
 	private String url;
@@ -54,27 +54,27 @@ public class Sound {
 	private String type;
 
 	/** The number of channels. */
-	private int channels;
+	private Integer channels;
 
 	/** The size of the file in bytes. */
-	private int filesize;
+	private Integer filesize;
 
 	/** The bit rate of the sound in kbps. */
-	private int bitrate;
+	private Integer bitrate;
 
 	/** The bit depth of the sound. */
-	private int bitdepth;
+	private Integer bitdepth;
 
 	/** The duration of the sound in seconds. */
-	private long duration;
+	private Float duration;
 
 	/** The sample rate of the sound. */
-	private int samplerate;
+	private Float samplerate;
 
 	/** The username of the uploader of the sound. */
 	private String username;
 
-	/** If the sound is part of a pack, this URI points to that pack’s API resource. */
+	/** If the sound is part of a pack, this URI poIntegers to that pack’s API resource. */
 	private String pack;
 
 	/** The URI for retrieving the original sound. */
@@ -95,13 +95,13 @@ public class Sound {
 	private Map<String, String> images;
 
 	/** The number of times the sound was downloaded. */
-	private int numberOfDownloads;
+	private Integer numberOfDownloads;
 
 	/** The average rating of the sound. */
-	private byte averageRating;
+	private Float averageRating;
 
 	/** The number of times the sound was rated. */
-	private int numberOfRatings;
+	private Integer numberOfRatings;
 
 	/** The URI for rating the sound. */
 	private String ratingURI;
@@ -110,25 +110,25 @@ public class Sound {
 	private String commentsURI;
 
 	/** The number of comments. */
-	private int numberOfComments;
+	private Integer numberOfComments;
 
 	/** The URI to comment the sound. */
 	private String commentURI;
 
-	/** URI pointing to the similarity resource (to get a list of similar sounds). */
+	/** URI poIntegering to the similarity resource (to get a list of similar sounds). */
 	private String similarSoundsURI;
 
 	/**
 	 * @return the id
 	 */
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(final int id) {
+	public void setId(final Integer id) {
 		this.id = id;
 	}
 
@@ -247,84 +247,84 @@ public class Sound {
 	/**
 	 * @return the channels
 	 */
-	public int getChannels() {
+	public Integer getChannels() {
 		return channels;
 	}
 
 	/**
 	 * @param channels the channels to set
 	 */
-	public void setChannels(final int channels) {
+	public void setChannels(final Integer channels) {
 		this.channels = channels;
 	}
 
 	/**
 	 * @return the filesize
 	 */
-	public int getFilesize() {
+	public Integer getFilesize() {
 		return filesize;
 	}
 
 	/**
 	 * @param filesize the filesize to set
 	 */
-	public void setFilesize(final int filesize) {
+	public void setFilesize(final Integer filesize) {
 		this.filesize = filesize;
 	}
 
 	/**
 	 * @return the bitrate
 	 */
-	public int getBitrate() {
+	public Integer getBitrate() {
 		return bitrate;
 	}
 
 	/**
 	 * @param bitrate the bitrate to set
 	 */
-	public void setBitrate(final int bitrate) {
+	public void setBitrate(final Integer bitrate) {
 		this.bitrate = bitrate;
 	}
 
 	/**
 	 * @return the bitdepth
 	 */
-	public int getBitdepth() {
+	public Integer getBitdepth() {
 		return bitdepth;
 	}
 
 	/**
 	 * @param bitdepth the bitdepth to set
 	 */
-	public void setBitdepth(final int bitdepth) {
+	public void setBitdepth(final Integer bitdepth) {
 		this.bitdepth = bitdepth;
 	}
 
 	/**
 	 * @return the duration
 	 */
-	public long getDuration() {
+	public Float getDuration() {
 		return duration;
 	}
 
 	/**
 	 * @param duration the duration to set
 	 */
-	public void setDuration(final long duration) {
+	public void setDuration(final Float duration) {
 		this.duration = duration;
 	}
 
 	/**
 	 * @return the samplerate
 	 */
-	public int getSamplerate() {
+	public Float getSamplerate() {
 		return samplerate;
 	}
 
 	/**
 	 * @param samplerate the samplerate to set
 	 */
-	public void setSamplerate(final int samplerate) {
+	public void setSamplerate(final Float samplerate) {
 		this.samplerate = samplerate;
 	}
 
@@ -415,42 +415,42 @@ public class Sound {
 	/**
 	 * @return the numberOfDownloads
 	 */
-	public int getNumberOfDownloads() {
+	public Integer getNumberOfDownloads() {
 		return numberOfDownloads;
 	}
 
 	/**
 	 * @param numberOfDownloads the numberOfDownloads to set
 	 */
-	public void setNumberOfDownloads(final int numberOfDownloads) {
+	public void setNumberOfDownloads(final Integer numberOfDownloads) {
 		this.numberOfDownloads = numberOfDownloads;
 	}
 
 	/**
 	 * @return the averageRating
 	 */
-	public byte getAverageRating() {
+	public Float getAverageRating() {
 		return averageRating;
 	}
 
 	/**
 	 * @param averageRating the averageRating to set
 	 */
-	public void setAverageRating(final byte averageRating) {
+	public void setAverageRating(final Float averageRating) {
 		this.averageRating = averageRating;
 	}
 
 	/**
 	 * @return the numberOfRatings
 	 */
-	public int getNumberOfRatings() {
+	public Integer getNumberOfRatings() {
 		return numberOfRatings;
 	}
 
 	/**
 	 * @param numberOfRatings the numberOfRatings to set
 	 */
-	public void setNumberOfRatings(final int numberOfRatings) {
+	public void setNumberOfRatings(final Integer numberOfRatings) {
 		this.numberOfRatings = numberOfRatings;
 	}
 
@@ -485,14 +485,14 @@ public class Sound {
 	/**
 	 * @return the numberOfComments
 	 */
-	public int getNumberOfComments() {
+	public Integer getNumberOfComments() {
 		return numberOfComments;
 	}
 
 	/**
 	 * @param numberOfComments the numberOfComments to set
 	 */
-	public void setNumberOfComments(final int numberOfComments) {
+	public void setNumberOfComments(final Integer numberOfComments) {
 		this.numberOfComments = numberOfComments;
 	}
 

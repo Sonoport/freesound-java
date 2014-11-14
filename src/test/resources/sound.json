@@ -1,0 +1,52 @@
+{
+    "id": 42937, 
+    "url": "http://www.freesound.org/people/AGFX/sounds/42937/", 
+    "name": "Elec hand drill drilling metal rough 2.wav", 
+    "tags": [
+        "environmental-sounds-research", 
+        "electric", 
+        "drilling", 
+        "recording", 
+        "tool", 
+        "workshop", 
+        "field"
+    ], 
+    "description": "Electric hand drill with bit drilling and grinding into metal plate", 
+    "geotag": null, 
+    "created": "2007-10-25T18:43:27", 
+    "license": "http://creativecommons.org/licenses/by/3.0/", 
+    "type": "wav", 
+    "channels": 1, 
+    "filesize": 1259334, 
+    "bitrate": 1152, 
+    "bitdepth": 24, 
+    "duration": 8.71440277778, 
+    "samplerate": 48000.0, 
+    "username": "AGFX", 
+    "pack": "http://www.freesound.org/apiv2/packs/2716/", 
+    "download": "https://www.freesound.org/apiv2/sounds/42937/download/", 
+    "bookmark": "https://www.freesound.org/apiv2/sounds/42937/bookmark/", 
+    "previews": {
+        "preview-lq-ogg": "http://www.freesound.org/data/previews/42/42937_50975-lq.ogg", 
+        "preview-lq-mp3": "http://www.freesound.org/data/previews/42/42937_50975-lq.mp3", 
+        "preview-hq-ogg": "http://www.freesound.org/data/previews/42/42937_50975-hq.ogg", 
+        "preview-hq-mp3": "http://www.freesound.org/data/previews/42/42937_50975-hq.mp3"
+    }, 
+    "images": {
+        "waveform_l": "http://www.freesound.org/data/displays/42/42937_50975_wave_L.png", 
+        "waveform_m": "http://www.freesound.org/data/displays/42/42937_50975_wave_M.png", 
+        "spectral_m": "http://www.freesound.org/data/displays/42/42937_50975_spec_M.jpg", 
+        "spectral_l": "http://www.freesound.org/data/displays/42/42937_50975_spec_L.jpg"
+    }, 
+    "num_downloads": 4434, 
+    "avg_rating": 4.0, 
+    "num_ratings": 52, 
+    "rate": "https://www.freesound.org/apiv2/sounds/42937/rate/", 
+    "comments": "http://www.freesound.org/apiv2/sounds/42937/comments/", 
+    "num_comments": 6, 
+    "comment": "https://www.freesound.org/apiv2/sounds/42937/comment/", 
+    "similar_sounds": "http://www.freesound.org/apiv2/sounds/42937/similar/", 
+    "analysis": "No descriptors specified. You should indicate which descriptors you want with the 'descriptors' request parameter.", 
+    "analysis_frames": "http://www.freesound.org/data/analysis/42/42937_50975_frames.json", 
+    "analysis_stats": "http://www.freesound.org/apiv2/sounds/42937/analysis/"
+}
