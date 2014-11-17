@@ -35,7 +35,7 @@ import com.sonoport.freesound.query.Query;
 public class FreesoundClient {
 
 	/** Base address for all calls to the freesound.org APIv2. */
-	private static final String API_ENDPOINT = "https://www.freesound.org/apiv2";
+	protected static final String API_ENDPOINT = "https://www.freesound.org/apiv2";
 
 	/** The Client ID created by freesound.org for the application. */
 	private final String clientId;
