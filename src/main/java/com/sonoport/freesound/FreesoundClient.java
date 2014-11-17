@@ -16,11 +16,13 @@
 package com.sonoport.freesound;
 
 import java.io.IOException;
+import java.util.Map.Entry;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
+import com.mashape.unirest.request.GetRequest;
 import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
 
@@ -62,8 +64,28 @@ public class FreesoundClient {
 		final String token = String.format("Token %s", clientSecret);
 
 		try {
-			final HttpResponse<JsonNode> httpResponse =
-					Unirest.get(url).fields(query.getQueryParameters()).header("Authorization", token).asJson();
+			final GetRequest request = Unirest.get(url);
+			request.header("Authorization", token);
+
+			/*
+			 * Add any named route parameters to the request (i.e. elements used to build the URI, such as
+			 * '/sound/{sound_id}' would have a parameter named 'sound_id').
+			 */
+			if ((query.getRouteParameters() != null) && !query.getRouteParameters().isEmpty()) {
+				for (final Entry<String, String> routeParameter : query.getRouteParameters().entrySet()) {
+					request.routeParam(routeParameter.getKey(), routeParameter.getValue());
+				}
+			}
+
+			/*
+			 * Add in any fields to the request. For GET requests, these manifest themselves as query parameters
+			 * (i.e. after the '?' in the URI).
+			 */
+			if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
+				request.fields(query.getQueryParameters());
+			}
+
+			final HttpResponse<JsonNode> httpResponse = request.asJson();
 			query.setResponse(httpResponse);
 		} catch (final UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
