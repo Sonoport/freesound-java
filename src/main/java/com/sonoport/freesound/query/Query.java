@@ -57,6 +57,11 @@ public abstract class Query<R extends Object> {
 	}
 
 	/**
+	 * @return Route parameters used to construct the URI
+	 */
+	public abstract Map<String, String> getRouteParameters();
+
+	/**
 	 * @return Query parameters and values to include in the query
 	 */
 	public abstract Map<String, Object> getQueryParameters();

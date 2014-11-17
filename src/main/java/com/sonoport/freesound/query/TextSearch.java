@@ -15,6 +15,7 @@
  */
 package com.sonoport.freesound.query;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -216,6 +217,11 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 	public boolean hasPreviousPage() {
 		final SoundResultsList results = getResults();
 		return results.getPreviousPageURI() != null;
+	}
+
+	@Override
+	public Map<String, String> getRouteParameters() {
+		return Collections.emptyMap();
 	}
 
 }
