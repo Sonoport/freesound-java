@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.mashape.unirest.request.GetRequest;
 import com.sonoport.freesound.response.Sound;
 import com.sonoport.freesound.response.mapping.SoundMapper;
 
@@ -30,6 +31,15 @@ import com.sonoport.freesound.response.mapping.SoundMapper;
  */
 public class SoundInstanceQuery extends Query<Sound> {
 
+	/** The name of the path parameter used to determine the sound to retrieve. */
+	protected static final String SOUND_IDENTIFIER_PARAMETER = "sound_id";
+
+	/**
+	 * The path to the freesound endpoint. Sound identifier is specified as a named parameter which will be populated
+	 * at runtime by {@link GetRequest#routeParam(String, String)}.
+	 */
+	private static final String REQUEST_PATH = String.format("/sounds/{%s}", SOUND_IDENTIFIER_PARAMETER);
+
 	/** The identifier of the sound to retrieve. */
 	private final int soundId;
 
@@ -37,7 +47,7 @@ public class SoundInstanceQuery extends Query<Sound> {
 	 * @param soundId The identifier of the sound
 	 */
 	public SoundInstanceQuery(final int soundId) {
-		super("/sounds/{sound_id}", new SoundMapper());
+		super(REQUEST_PATH, new SoundMapper());
 		this.soundId = soundId;
 	}
 
@@ -49,7 +59,7 @@ public class SoundInstanceQuery extends Query<Sound> {
 	@Override
 	public Map<String, String> getRouteParameters() {
 		final Map<String, String> routeParameters = new HashMap<>();
-		routeParameters.put("sound_id", String.valueOf(soundId));
+		routeParameters.put(SOUND_IDENTIFIER_PARAMETER, String.valueOf(soundId));
 
 		return routeParameters;
 	}

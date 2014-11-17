@@ -16,6 +16,7 @@
 package com.sonoport.freesound.query;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
@@ -127,5 +128,19 @@ public class TextSearchTest {
 
 		final String expectedFilter = FILTER_FIELD + ':' + FILTER_VALUE;
 		assertEquals(expectedFilter, queryParameters.get("filter"));
+	}
+
+	/**
+	 * Test that no route parameters are generated for these queries.
+	 */
+	@Test
+	public void correctRouteParametersCreated() {
+		final TextSearch query =
+				new TextSearch(SEARCH_STRING).sortOrder(SORT_ORDER).groupByPack(GROUP_BY_PACK).filter(FILTER);
+
+		final Map<String, String> routeParameters = query.getRouteParameters();
+
+		assertNotNull(routeParameters);
+		assertTrue(routeParameters.isEmpty());
 	}
 }
