@@ -15,18 +15,30 @@
  */
 package com.sonoport.freesound.response.mapping;
 
-import com.sonoport.freesound.response.User;
+import org.json.JSONObject;
+
+import com.sonoport.freesound.response.CurrentUser;
 
 /**
- * Map the freesound.org JSON representation of an individual user instance to a {@link User} DTO.
+ * Map the freesound.org JSON representation of the currently authorised user to a {@link CurrentUser} DTO.
  */
-public class UserMapper extends AbstractUserMapper<User> {
+public class CurrentUserMapper extends AbstractUserMapper<CurrentUser> {
 
 	/**
 	 * No-arg constructor.
 	 */
-	public UserMapper() {
-		super(User.class);
+	public CurrentUserMapper() {
+		super(CurrentUser.class);
+	}
+
+	@Override
+	public CurrentUser map(final JSONObject source) {
+		final CurrentUser currentUser = super.map(source);
+
+		currentUser.setEmail(extractFieldValue(source, "email", String.class));
+		currentUser.setUniqueIdentifier(extractFieldValue(source, "unique_id", String.class));
+
+		return currentUser;
 	}
 
 }
