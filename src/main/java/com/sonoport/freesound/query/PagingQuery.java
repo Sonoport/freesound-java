@@ -44,31 +44,43 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object>
 	private int pageSize;
 
 	/**
+	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path The URI path to the API endpoint
 	 * @param resultsMapper {@link Mapper} to convert results
 	 */
-	protected PagingQuery(final String path, final Mapper<JSONObject, R> resultsMapper) {
-		this(path, resultsMapper, DEFAULT_PAGE_SIZE);
+	protected PagingQuery(
+			final HTTPRequestMethod httpRequestMethod, final String path, final Mapper<JSONObject, R> resultsMapper) {
+		this(httpRequestMethod, path, resultsMapper, DEFAULT_PAGE_SIZE);
 	}
 
 	/**
+	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path The URI path to the API endpoint
 	 * @param resultsMapper {@link Mapper} to convert results
 	 * @param pageSize The number of results per page
 	 */
-	protected PagingQuery(final String path, final Mapper<JSONObject, R> resultsMapper, final int pageSize) {
-		this(path, resultsMapper, pageSize, 1);
+	protected PagingQuery(
+			final HTTPRequestMethod httpRequestMethod,
+			final String path,
+			final Mapper<JSONObject, R> resultsMapper,
+			final int pageSize) {
+		this(httpRequestMethod, path, resultsMapper, pageSize, 1);
 	}
 
 	/**
+	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path The URI path to the API endpoint
 	 * @param resultsMapper {@link Mapper} to convert results
 	 * @param pageSize The number of results per page
 	 * @param startPage The page to start at
 	 */
 	protected PagingQuery(
-			final String path, final Mapper<JSONObject, R> resultsMapper, final int pageSize, final int startPage) {
-		super(path, resultsMapper);
+			final HTTPRequestMethod httpRequestMethod,
+			final String path,
+			final Mapper<JSONObject, R> resultsMapper,
+			final int pageSize,
+			final int startPage) {
+		super(httpRequestMethod, path, resultsMapper);
 		setPageSize(pageSize);
 		setPage(startPage);
 	}

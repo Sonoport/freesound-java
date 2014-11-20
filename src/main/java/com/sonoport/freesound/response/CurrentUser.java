@@ -23,7 +23,7 @@ package com.sonoport.freesound.response;
 public class CurrentUser extends User {
 
 	/** Unique identifier associated with the user. */
-	private String uniqueIdentifier;
+	private Integer uniqueIdentifier;
 
 	/** Email address of the user. */
 	private String email;
@@ -31,14 +31,14 @@ public class CurrentUser extends User {
 	/**
 	 * @return the uniqueIdentifier
 	 */
-	public String getUniqueIdentifier() {
+	public Integer getUniqueIdentifier() {
 		return uniqueIdentifier;
 	}
 
 	/**
 	 * @param uniqueIdentifier the uniqueIdentifier to set
 	 */
-	public void setUniqueIdentifier(final String uniqueIdentifier) {
+	public void setUniqueIdentifier(final Integer uniqueIdentifier) {
 		this.uniqueIdentifier = uniqueIdentifier;
 	}
 

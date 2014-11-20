@@ -19,7 +19,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.mashape.unirest.request.GetRequest;
 import com.sonoport.freesound.response.Sound;
 import com.sonoport.freesound.response.mapping.SoundMapper;
 
@@ -36,7 +35,7 @@ public class SoundInstanceQuery extends Query<Sound> {
 
 	/**
 	 * The path to the freesound endpoint. Sound identifier is specified as a named parameter which will be populated
-	 * at runtime by {@link GetRequest#routeParam(String, String)}.
+	 * at runtime by the <code>routeParam(String, String)</code> method.
 	 */
 	private static final String REQUEST_PATH = String.format("/sounds/{%s}", SOUND_IDENTIFIER_PARAMETER);
 
@@ -47,7 +46,7 @@ public class SoundInstanceQuery extends Query<Sound> {
 	 * @param soundId The identifier of the sound
 	 */
 	public SoundInstanceQuery(final int soundId) {
-		super(REQUEST_PATH, new SoundMapper());
+		super(HTTPRequestMethod.GET, REQUEST_PATH, new SoundMapper());
 		this.soundId = soundId;
 	}
 

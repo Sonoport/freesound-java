@@ -63,7 +63,7 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 	 * No-arg constructor.
 	 */
 	public TextSearch() {
-		super("/search/text/", new SoundResultsListMapper());
+		super(HTTPRequestMethod.GET, "/search/text/", new SoundResultsListMapper());
 	}
 
 	/**

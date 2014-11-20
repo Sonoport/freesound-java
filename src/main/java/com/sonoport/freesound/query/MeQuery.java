@@ -13,32 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.response.mapping;
+package com.sonoport.freesound.query;
 
-import org.json.JSONObject;
+import java.util.Collections;
+import java.util.Map;
 
 import com.sonoport.freesound.response.CurrentUser;
+import com.sonoport.freesound.response.mapping.CurrentUserMapper;
 
 /**
- * Map the freesound.org JSON representation of the currently authorised user to a {@link CurrentUser} DTO.
+ * Query used to retrieve full details of the currently authorised user.
  */
-public class CurrentUserMapper extends AbstractUserMapper<CurrentUser> {
+public class MeQuery extends OAuthQuery<CurrentUser> {
 
 	/**
-	 * No-arg constructor.
+	 * @param oauthToken The OAuth token associated with the user
 	 */
-	public CurrentUserMapper() {
-		super(CurrentUser.class);
+	public MeQuery(final String oauthToken) {
+		super(HTTPRequestMethod.GET, "/me/", new CurrentUserMapper(), oauthToken);
 	}
 
 	@Override
-	public CurrentUser map(final JSONObject source) {
-		final CurrentUser currentUser = super.map(source);
+	public Map<String, String> getRouteParameters() {
+		return Collections.emptyMap();
+	}
 
-		currentUser.setEmail(extractFieldValue(source, "email", String.class));
-		currentUser.setUniqueIdentifier(extractFieldValue(source, "unique_id", Integer.class));
-
-		return currentUser;
+	@Override
+	public Map<String, Object> getQueryParameters() {
+		return Collections.emptyMap();
 	}
 
 }

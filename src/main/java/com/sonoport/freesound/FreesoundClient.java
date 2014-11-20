@@ -23,8 +23,15 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
+import com.mashape.unirest.request.HttpRequest;
+import com.mashape.unirest.request.HttpRequestWithBody;
+import com.sonoport.freesound.query.AccessTokenQuery;
+import com.sonoport.freesound.query.OAuth2AccessTokenRequest;
+import com.sonoport.freesound.query.OAuthQuery;
 import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
+import com.sonoport.freesound.query.RefreshOAuth2AccessTokenRequest;
+import com.sonoport.freesound.response.AccessTokenDetails;
 
 /**
  * Client used to make calls to the freesound.org API (v2).
@@ -61,11 +68,41 @@ public class FreesoundClient {
 	 */
 	public void executeQuery(final Query<?> query) throws FreesoundClientException {
 		final String url = API_ENDPOINT + query.getPath();
-		final String token = String.format("Token %s", clientSecret);
 
 		try {
-			final GetRequest request = Unirest.get(url);
-			request.header("Authorization", token);
+			HttpRequest request;
+			switch (query.getHttpRequestMethod()) {
+				case GET:
+					request = Unirest.get(url);
+
+					if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
+						((GetRequest) request).fields(query.getQueryParameters());
+					}
+
+					break;
+
+				case POST:
+					request = Unirest.post(url);
+
+					if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
+						((HttpRequestWithBody) request).fields(query.getQueryParameters());
+					}
+
+					break;
+
+				default:
+					request = Unirest.get(url);
+			}
+
+			if (query instanceof OAuthQuery) {
+				final String oauthToken = ((OAuthQuery<?>) query).getOauthToken();
+				request.header("Authorization", String.format("Bearer %s", oauthToken));
+			} else if (query instanceof AccessTokenQuery) {
+				// Don't set the Authorization header
+			} else {
+				request.header("Authorization", String.format("Token %s", clientSecret));
+			}
+
 
 			/*
 			 * Add any named route parameters to the request (i.e. elements used to build the URI, such as
@@ -75,14 +112,6 @@ public class FreesoundClient {
 				for (final Entry<String, String> routeParameter : query.getRouteParameters().entrySet()) {
 					request.routeParam(routeParameter.getKey(), routeParameter.getValue());
 				}
-			}
-
-			/*
-			 * Add in any fields to the request. For GET requests, these manifest themselves as query parameters
-			 * (i.e. after the '?' in the URI).
-			 */
-			if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
-				request.fields(query.getQueryParameters());
 			}
 
 			final HttpResponse<JsonNode> httpResponse = request.asJson();
@@ -124,6 +153,41 @@ public class FreesoundClient {
 		} else {
 			throw new FreesoundClientException("At first page of results");
 		}
+	}
+
+	/**
+	 * Redeem an authorisation code received from freesound.org for an access token that can be used to make calls to
+	 * OAuth2 protected resources.
+	 *
+	 * @param authorisationCode The authorisation code received
+	 * @return Details of the access token returned
+	 *
+	 * @throws FreesoundClientException Any exception thrown during call
+	 */
+	public AccessTokenDetails redeemAuthorisationCodeForAccessToken(final String authorisationCode)
+			throws FreesoundClientException {
+		final OAuth2AccessTokenRequest tokenRequest =
+				new OAuth2AccessTokenRequest(clientId, clientSecret, authorisationCode);
+
+		executeQuery(tokenRequest);
+
+		return tokenRequest.getResults();
+	}
+
+	/**
+	 * Retrieve a new OAuth2 access token using a refresh token.
+	 *
+	 * @param refreshToken The refresh token to present
+	 * @return Details of the access token returned
+	 * @throws FreesoundClientException Any exception thrown during call
+	 */
+	public AccessTokenDetails refreshAccessToken(final String refreshToken) throws FreesoundClientException {
+		final RefreshOAuth2AccessTokenRequest tokenRequest =
+				new RefreshOAuth2AccessTokenRequest(clientId, clientSecret, refreshToken);
+
+		executeQuery(tokenRequest);
+
+		return tokenRequest.getResults();
 	}
 
 	/**

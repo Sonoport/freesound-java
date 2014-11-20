@@ -43,7 +43,7 @@ public class UserInstanceQuery extends Query<User> {
 	 * @param username The username to retrieve
 	 */
 	public UserInstanceQuery(final String username) {
-		super(PATH, new UserMapper());
+		super(HTTPRequestMethod.GET, PATH, new UserMapper());
 
 		if ((username == null) || username.trim().equals("")) {
 			throw new IllegalArgumentException("No username specified");

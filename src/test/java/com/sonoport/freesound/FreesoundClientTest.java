@@ -36,6 +36,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
+import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
 import com.sonoport.freesound.response.Sound;
@@ -207,7 +208,7 @@ public class FreesoundClientTest {
 		 * @param resultsMapper Mapper to use
 		 */
 		protected TestQuery(final SoundMapper resultsMapper) {
-			super(TEST_PATH, resultsMapper);
+			super(HTTPRequestMethod.GET, TEST_PATH, resultsMapper);
 		}
 
 		@Override
