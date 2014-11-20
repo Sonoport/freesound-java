@@ -31,6 +31,9 @@ import com.sonoport.freesound.response.mapping.Mapper;
  */
 public abstract class Query<R extends Object> {
 
+	/** The HTTP method to use in making the call to the API. */
+	private final HTTPRequestMethod httpRequestMethod;
+
 	/** The URI path to the query endpoint. */
 	private final String path;
 
@@ -48,10 +51,13 @@ public abstract class Query<R extends Object> {
 	private R results;
 
 	/**
+	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path Endpoint to submit the query to
 	 * @param resultsMapper {@link Mapper} to convert results
 	 */
-	protected Query(final String path, final Mapper<JSONObject, R> resultsMapper) {
+	protected Query(
+			final HTTPRequestMethod httpRequestMethod, final String path, final Mapper<JSONObject, R> resultsMapper) {
+		this.httpRequestMethod = httpRequestMethod;
 		this.path = path;
 		this.resultsMapper = resultsMapper;
 	}
@@ -122,6 +128,13 @@ public abstract class Query<R extends Object> {
 	 */
 	public String getErrorDetails() {
 		return errorDetails;
+	}
+
+	/**
+	 * @return the httpRequestMethod
+	 */
+	public HTTPRequestMethod getHttpRequestMethod() {
+		return httpRequestMethod;
 	}
 
 }

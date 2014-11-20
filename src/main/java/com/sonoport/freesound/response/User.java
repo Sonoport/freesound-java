@@ -19,8 +19,8 @@ import java.util.Date;
 import java.util.Map;
 
 /**
- * Object representing the data associated with a single sound instance on freesound.org. Full documentation of the data
- * structure can be found at http://www.freesound.org/docs/api/resources_apiv2.html#user-resources.
+ * Object representing the data associated with an individual user instance on freesound.org. Full documentation of the
+ * data structure can be found at http://www.freesound.org/docs/api/resources_apiv2.html#user-resources.
  */
 public class User {
 
