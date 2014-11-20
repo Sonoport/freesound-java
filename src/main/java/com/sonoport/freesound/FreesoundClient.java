@@ -67,51 +67,12 @@ public class FreesoundClient {
 	 * @throws FreesoundClientException Any errors encountered when performing API call
 	 */
 	public void executeQuery(final Query<?> query) throws FreesoundClientException {
-		final String url = API_ENDPOINT + query.getPath();
-
 		try {
-			HttpRequest request;
-			switch (query.getHttpRequestMethod()) {
-				case GET:
-					request = Unirest.get(url);
+			final HttpRequest request = buildHTTPRequest(query);
+			final String credential = buildAuthorisationCredential(query);
 
-					if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
-						((GetRequest) request).fields(query.getQueryParameters());
-					}
-
-					break;
-
-				case POST:
-					request = Unirest.post(url);
-
-					if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
-						((HttpRequestWithBody) request).fields(query.getQueryParameters());
-					}
-
-					break;
-
-				default:
-					request = Unirest.get(url);
-			}
-
-			if (query instanceof OAuthQuery) {
-				final String oauthToken = ((OAuthQuery<?>) query).getOauthToken();
-				request.header("Authorization", String.format("Bearer %s", oauthToken));
-			} else if (query instanceof AccessTokenQuery) {
-				// Don't set the Authorization header
-			} else {
-				request.header("Authorization", String.format("Token %s", clientSecret));
-			}
-
-
-			/*
-			 * Add any named route parameters to the request (i.e. elements used to build the URI, such as
-			 * '/sound/{sound_id}' would have a parameter named 'sound_id').
-			 */
-			if ((query.getRouteParameters() != null) && !query.getRouteParameters().isEmpty()) {
-				for (final Entry<String, String> routeParameter : query.getRouteParameters().entrySet()) {
-					request.routeParam(routeParameter.getKey(), routeParameter.getValue());
-				}
+			if (credential != null) {
+				request.header("Authorization", credential);
 			}
 
 			final HttpResponse<JsonNode> httpResponse = request.asJson();
@@ -119,6 +80,73 @@ public class FreesoundClient {
 		} catch (final UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
 		}
+	}
+
+	/**
+	 * Build the Unirest {@link HttpRequest} that will be used to make the call to the API.
+	 *
+	 * @param query The query to be made
+	 * @return Properly configured {@link HttpRequest} representing query
+	 */
+	private HttpRequest buildHTTPRequest(final Query<?> query) {
+		final String url = API_ENDPOINT + query.getPath();
+
+		HttpRequest request;
+		switch (query.getHttpRequestMethod()) {
+			case GET:
+				request = Unirest.get(url);
+
+				if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
+					((GetRequest) request).fields(query.getQueryParameters());
+				}
+
+				break;
+
+			case POST:
+				request = Unirest.post(url);
+
+				if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
+					((HttpRequestWithBody) request).fields(query.getQueryParameters());
+				}
+
+				break;
+
+			default:
+				request = Unirest.get(url);
+		}
+
+		/*
+		 * Add any named route parameters to the request (i.e. elements used to build the URI, such as
+		 * '/sound/{sound_id}' would have a parameter named 'sound_id').
+		 */
+		if ((query.getRouteParameters() != null) && !query.getRouteParameters().isEmpty()) {
+			for (final Entry<String, String> routeParameter : query.getRouteParameters().entrySet()) {
+				request.routeParam(routeParameter.getKey(), routeParameter.getValue());
+			}
+		}
+
+		return request;
+	}
+
+	/**
+	 * Build the credential that will be passed in the 'Authorization' HTTP header as part of the API call. The nature
+	 * of the credential will depend on the query being made.
+	 *
+	 * @param query The query being made
+	 * @return The string to pass in the Authorization header (or null if none)
+	 */
+	private String buildAuthorisationCredential(final Query<?> query) {
+		String credential = null;
+		if (query instanceof OAuthQuery) {
+			final String oauthToken = ((OAuthQuery<?>) query).getOauthToken();
+			credential = String.format("Bearer %s", oauthToken);
+		} else if (query instanceof AccessTokenQuery) {
+			// Don't set the Authorization header
+		} else {
+			credential = String.format("Token %s", clientSecret);
+		}
+
+		return credential;
 	}
 
 	/**
