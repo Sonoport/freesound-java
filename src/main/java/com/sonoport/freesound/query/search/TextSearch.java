@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.search;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,6 +21,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.sonoport.freesound.query.HTTPRequestMethod;
+import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.response.SoundResultsList;
 import com.sonoport.freesound.response.mapping.SoundResultsListMapper;
 

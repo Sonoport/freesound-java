@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.oauth2;
+
 
 /**
- * Query used to request an OAuth2 access token based on an authorisation code previously returned.
+ * Query used to request a new OAuth2 access token based on a refresh token previously issued.
  */
-public class OAuth2AccessTokenRequest extends AccessTokenQuery {
+public class RefreshOAuth2AccessTokenRequest extends AccessTokenQuery {
 
 	/**
 	 * @param clientId Application client id
 	 * @param clientSecret Application client secret
-	 * @param authorisationCode Authorisation code previously received
+	 * @param refreshToken The refresh token to present
 	 */
-	public OAuth2AccessTokenRequest(final String clientId, final String clientSecret, final String authorisationCode) {
-		super(clientId, clientSecret, "authorization_code", "code", authorisationCode);
+	public RefreshOAuth2AccessTokenRequest(
+			final String clientId, final String clientSecret, final String refreshToken) {
+		super(clientId, clientSecret, "refresh_token", "refresh_token", refreshToken);
 	}
 
 }

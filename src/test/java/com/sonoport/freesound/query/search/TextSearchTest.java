@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.search;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -26,6 +26,8 @@ import java.util.Set;
 import mockit.Deencapsulation;
 
 import org.junit.Test;
+
+import com.sonoport.freesound.query.search.TextSearch;
 
 /**
  * Unit tests to ensure the correct operation of {@link TextSearch}.

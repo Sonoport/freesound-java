@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.search;
 
 /**
  * Define what order search results should be returned as. Value is passed in the API call as a query parameter.

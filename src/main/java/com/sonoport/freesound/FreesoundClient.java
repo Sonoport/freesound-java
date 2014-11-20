@@ -25,12 +25,12 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
-import com.sonoport.freesound.query.AccessTokenQuery;
-import com.sonoport.freesound.query.OAuth2AccessTokenRequest;
 import com.sonoport.freesound.query.OAuthQuery;
 import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
-import com.sonoport.freesound.query.RefreshOAuth2AccessTokenRequest;
+import com.sonoport.freesound.query.oauth2.AccessTokenQuery;
+import com.sonoport.freesound.query.oauth2.OAuth2AccessTokenRequest;
+import com.sonoport.freesound.query.oauth2.RefreshOAuth2AccessTokenRequest;
 import com.sonoport.freesound.response.AccessTokenDetails;
 
 /**
