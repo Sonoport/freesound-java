@@ -1,21 +1,21 @@
 {
-    "url": "https://www.freesound.org/people/cjrowe/",
-    "username": "cjrowe",
-    "about": "",
-    "home_page": "",
+    "url": "http://www.freesound.org/people/wluna/", 
+    "username": "wluna", 
+    "about": "Hello, my name is Wilmar.\r\n\r\nI am the author of a sci-fi superheroine book called The Silver Ninja and am also a professional motion graphics animator and video editor.\r\n\r\nI love video games, films, and art. Please feel free to check out my book at thesilverninja.com, thanks!", 
+    "home_page": "http://www.thesilverninja.com/", 
     "avatar": {
-        "small": "https://www.freesound.org/media/images/32x32_avatar.png",
-        "large": "https://www.freesound.org/media/images/70x70_avatar.png",
-        "medium": "https://www.freesound.org/media/images/40x40_avatar.png"
-    },
-    "date_joined": "2014-11-11T12:38:42.205",
-    "num_sounds": 0,
-    "sounds": "https://www.freesound.org/apiv2/users/cjrowe/sounds/",
-    "num_packs": 0,
-    "packs": "https://www.freesound.org/apiv2/users/cjrowe/packs/",
-    "num_posts": 0,
-    "num_comments": 0,
-    "bookmark_categories": "https://www.freesound.org/apiv2/users/cjrowe/bookmark_categories/",
-    "email": "chris.rowe@sonoport.com",
-    "unique_id": 4709044
+        "small": "http://www.freesound.org/data/avatars/4038/4038431_S.jpg", 
+        "large": "http://www.freesound.org/data/avatars/4038/4038431_L.jpg", 
+        "medium": "http://www.freesound.org/data/avatars/4038/4038431_M.jpg"
+    }, 
+    "date_joined": "2014-01-28T01:04:15.047", 
+    "num_sounds": 6, 
+    "sounds": "http://www.freesound.org/apiv2/users/wluna/sounds/", 
+    "num_packs": 1, 
+    "packs": "http://www.freesound.org/apiv2/users/wluna/packs/", 
+    "num_posts": 0, 
+    "num_comments": 2, 
+    "bookmark_categories": "http://www.freesound.org/apiv2/users/wluna/bookmark_categories/",
+    "email": "email@random.com",
+    "unique_id": 1234567
 }
