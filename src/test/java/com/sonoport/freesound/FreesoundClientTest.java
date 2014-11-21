@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import mockit.Cascading;
+import mockit.Delegate;
 import mockit.Expectations;
 import mockit.Mocked;
 import mockit.Verifications;
@@ -36,6 +36,7 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
+import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
 import com.sonoport.freesound.response.Sound;
@@ -132,7 +133,7 @@ public class FreesoundClientTest {
 	public void executeQuery(
 			@Mocked final Unirest mockUnirest,
 			@Mocked final GetRequest mockGetRequest,
-			@Mocked @Cascading final HttpResponse<JsonNode> mockHttpResponse,
+			@Mocked final HttpResponse<JsonNode> mockHttpResponse,
 			@Mocked final SoundMapper mockResultsMapper) throws Exception {
 		final Sound sound = new Sound();
 		new Expectations() {
@@ -141,7 +142,7 @@ public class FreesoundClientTest {
 
 				mockGetRequest.header("Authorization", "Token " + CLIENT_SECRET);
 				mockGetRequest.routeParam(ROUTE_ELEMENT, ROUTE_ELEMENT_VALUE);
-				mockGetRequest.fields(with(new HashMap<String, Object>(), new Object() {
+				mockGetRequest.fields(with(new Delegate<HashMap<String, Object>>() {
 					@SuppressWarnings("unused")
 					void checkRequestParameters(final Map<String, Object> queryParameters) {
 						assertNotNull(queryParameters);
@@ -207,7 +208,7 @@ public class FreesoundClientTest {
 		 * @param resultsMapper Mapper to use
 		 */
 		protected TestQuery(final SoundMapper resultsMapper) {
-			super(TEST_PATH, resultsMapper);
+			super(HTTPRequestMethod.GET, TEST_PATH, resultsMapper);
 		}
 
 		@Override

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.search;
 
 /**
  * Representation of a filter that can be applied to a search. Multiple filters can be applied to a single query if

@@ -13,20 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.response.mapping;
+package com.sonoport.freesound.query.oauth2;
 
-import com.sonoport.freesound.response.User;
 
 /**
- * Map the freesound.org JSON representation of an individual user instance to a {@link User} DTO.
+ * Query used to request a new OAuth2 access token based on a refresh token previously issued.
  */
-public class UserMapper extends AbstractUserMapper<User> {
+public class RefreshOAuth2AccessTokenRequest extends AccessTokenQuery {
 
 	/**
-	 * No-arg constructor.
+	 * @param clientId Application client id
+	 * @param clientSecret Application client secret
+	 * @param refreshToken The refresh token to present
 	 */
-	public UserMapper() {
-		super(User.class);
+	public RefreshOAuth2AccessTokenRequest(
+			final String clientId, final String clientSecret, final String refreshToken) {
+		super(clientId, clientSecret, "refresh_token", "refresh_token", refreshToken);
 	}
 
 }

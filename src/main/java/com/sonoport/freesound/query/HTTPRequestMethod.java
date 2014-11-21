@@ -13,20 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.response.mapping;
-
-import com.sonoport.freesound.response.User;
+package com.sonoport.freesound.query;
 
 /**
- * Map the freesound.org JSON representation of an individual user instance to a {@link User} DTO.
+ * Enum representing the different HTTP request methods that can be used.
  */
-public class UserMapper extends AbstractUserMapper<User> {
+public enum HTTPRequestMethod {
 
-	/**
-	 * No-arg constructor.
-	 */
-	public UserMapper() {
-		super(User.class);
-	}
+	/** HTTP GET. */
+	GET,
 
+	/** HTTP POST. */
+	POST,
+
+	/** HTTP PUT. */
+	PUT,
+
+	/** HTTP DELETE. */
+	DELETE,
+
+	/** HTTP PATCH. */
+	PATCH,
+
+	/** HTTP HEAD. */
+	HEAD,
+
+	/** HTTP OPTIONS. */
+	OPTIONS;
 }
