@@ -197,7 +197,16 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#user-bookmark-catego
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#pack-instance
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int packId = 1234;
+PackInstanceQuery packInstanceQuery = new PackInstanceQuery(packId);
+
+freesoundClient.executeQuery(packInstanceQuery);
+
+Pack pack = packInstanceQuery.getResults();
+```
 
 ### Pack Sounds
 
