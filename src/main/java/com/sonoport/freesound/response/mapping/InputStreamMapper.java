@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.response.mapping;
 
+import java.io.InputStream;
 
 /**
- * Abstract extension of the {@link Query} class to represent queries that require OAuth2 credentials.
+ * Simple {@link Mapper} class that takes the {@link InputStream} received from the HTTP request, and passes it straight
+ * through the the requesting client.
  */
-public interface OAuthQuery {
+public class InputStreamMapper extends Mapper<InputStream, InputStream> {
 
-	/**
-	 * @return the oauthToken
-	 */
-	public String getOauthToken();
+	@Override
+	public InputStream map(final InputStream source) {
+		return source;
+	}
 
 }

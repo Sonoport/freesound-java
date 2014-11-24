@@ -17,19 +17,16 @@ package com.sonoport.freesound.query;
 
 import java.util.Map;
 
-import org.json.JSONObject;
-
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.sonoport.freesound.response.mapping.Mapper;
 
 /**
  * Representation of a query of the freesound API, encapsulating the common elements the different types of calls.
  * Implementation details are delegated to extending sub-classes.
  *
+ * @param <S> The source data type we expect to receive as raw data
  * @param <R> The data type of the results we'll return
  */
-public abstract class Query<R extends Object> {
+public abstract class Query<S extends Object, R extends Object> {
 
 	/** The HTTP method to use in making the call to the API. */
 	private final HTTPRequestMethod httpRequestMethod;
@@ -38,7 +35,7 @@ public abstract class Query<R extends Object> {
 	private final String path;
 
 	/** {@link Mapper} used to convert results received from freesound into appropriate DTO type. */
-	private final Mapper<JSONObject, R> resultsMapper;
+	private final Mapper<S, R> resultsMapper;
 
 	/** The HTTP response code received after making the call. */
 	private int httpResponseCode;
@@ -56,7 +53,7 @@ public abstract class Query<R extends Object> {
 	 * @param resultsMapper {@link Mapper} to convert results
 	 */
 	protected Query(
-			final HTTPRequestMethod httpRequestMethod, final String path, final Mapper<JSONObject, R> resultsMapper) {
+			final HTTPRequestMethod httpRequestMethod, final String path, final Mapper<S, R> resultsMapper) {
 		this.httpRequestMethod = httpRequestMethod;
 		this.path = path;
 		this.resultsMapper = resultsMapper;
@@ -75,18 +72,26 @@ public abstract class Query<R extends Object> {
 	/**
 	 * Set the raw response received from the HTTP call. Contents are passed on to sub-classes for mapping to DTOs.
 	 *
+	 * @param httpResponseCode The HTTP response code received
 	 * @param freesoundResponse The response received from the HTTP call
 	 */
-	public final void setResponse(final HttpResponse<JsonNode> freesoundResponse) {
-		httpResponseCode = freesoundResponse.getCode();
+	public final void setResponse(final int httpResponseCode, final S freesoundResponse) {
+		this.httpResponseCode = httpResponseCode;
 
-		final JSONObject body = freesoundResponse.getBody().getObject();
-		if (isErrorResponse()) {
-			errorDetails = body.getString("detail");
+		if (this.isErrorResponse()) {
+			errorDetails = extractErrorMessage(freesoundResponse);
 		} else {
-			results = resultsMapper.map(body);
+			results = resultsMapper.map(freesoundResponse);
 		}
 	}
+
+	/**
+	 * Extract the error message received in the event the request was not successful.
+	 *
+	 * @param freesoundResponse The response received
+	 * @return The error message
+	 */
+	protected abstract String extractErrorMessage(S freesoundResponse);
 
 	/**
 	 * @return Whether the HTTP call made resulted in an error response

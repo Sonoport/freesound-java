@@ -29,7 +29,7 @@ import com.sonoport.freesound.response.mapping.Mapper;
  * @param <Q> The type of the {@link PagingQuery} (required to implement Fluent API elements)
  * @param <R> The DTO type to return results as
  */
-public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object> extends Query<R> {
+public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object> extends JSONResponseQuery<R> {
 
 	/** The default page size if none is specified. */
 	private static final int DEFAULT_PAGE_SIZE = 15;

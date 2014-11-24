@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
-import com.sonoport.freesound.query.Query;
+import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.response.Pack;
 import com.sonoport.freesound.response.mapping.PackMapper;
 
@@ -30,7 +30,7 @@ import com.sonoport.freesound.response.mapping.PackMapper;
  *
  * http://www.freesound.org/docs/api/resources_apiv2.html#pack-resources
  */
-public class PackInstanceQuery extends Query<Pack> {
+public class PackInstanceQuery extends JSONResponseQuery<Pack> {
 
 	/** The route parameter that will be replaced with the pack identifier. */
 	protected static final String PACK_IDENTIFIER_PARAMETER = "packIdentifier";

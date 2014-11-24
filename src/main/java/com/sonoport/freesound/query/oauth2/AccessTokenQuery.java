@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
-import com.sonoport.freesound.query.Query;
+import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.response.AccessTokenDetails;
 import com.sonoport.freesound.response.mapping.AccessTokenDetailsMapper;
 
@@ -29,7 +29,7 @@ import com.sonoport.freesound.response.mapping.AccessTokenDetailsMapper;
  * be constructed manually, but are more easily used by calling the convenience methods in FreesoundClient to get or
  * renew access tokens.
  */
-public abstract class AccessTokenQuery extends Query<AccessTokenDetails> {
+public abstract class AccessTokenQuery extends JSONResponseQuery<AccessTokenDetails> {
 
 	/** The Client Id, as provided by freesound. */
 	private final String clientId;

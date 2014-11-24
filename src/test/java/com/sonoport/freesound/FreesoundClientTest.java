@@ -37,6 +37,7 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.request.GetRequest;
 import com.sonoport.freesound.query.HTTPRequestMethod;
+import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
 import com.sonoport.freesound.response.Sound;
@@ -157,7 +158,7 @@ public class FreesoundClientTest {
 			}
 		};
 
-		final Query<Sound> query = new TestQuery(mockResultsMapper);
+		final JSONResponseQuery<Sound> query = new TestQuery(mockResultsMapper);
 		freesoundClient.executeQuery(query);
 
 		assertSame(sound, query.getResults());
@@ -202,7 +203,7 @@ public class FreesoundClientTest {
 	/**
 	 * Simple {@link Query} class for usng in tests.
 	 */
-	private class TestQuery extends Query<Sound> {
+	private class TestQuery extends JSONResponseQuery<Sound> {
 
 		/**
 		 * @param resultsMapper Mapper to use

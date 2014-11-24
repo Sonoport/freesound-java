@@ -16,6 +16,7 @@
 package com.sonoport.freesound;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map.Entry;
 
 import com.mashape.unirest.http.HttpResponse;
@@ -25,6 +26,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import com.mashape.unirest.request.GetRequest;
 import com.mashape.unirest.request.HttpRequest;
 import com.mashape.unirest.request.HttpRequestWithBody;
+import com.sonoport.freesound.query.BinaryResponseQuery;
+import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.query.OAuthQuery;
 import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.Query;
@@ -57,6 +60,8 @@ public class FreesoundClient {
 	public FreesoundClient(final String clientId, final String clientSecret) {
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
+
+		Unirest.setDefaultHeader("Accept", "application/json, application/octet-stream");
 	}
 
 	/**
@@ -66,17 +71,55 @@ public class FreesoundClient {
 	 *
 	 * @throws FreesoundClientException Any errors encountered when performing API call
 	 */
-	public void executeQuery(final Query<?> query) throws FreesoundClientException {
+	public void executeQuery(final Query<?, ?> query) throws FreesoundClientException {
+		final HttpRequest request = buildHTTPRequest(query);
+		final String credential = buildAuthorisationCredential(query);
+
+		if (credential != null) {
+			request.header("Authorization", credential);
+		}
+
+		if (query instanceof JSONResponseQuery) {
+			executeQuery(request, (JSONResponseQuery<?>) query);
+		} else if (query instanceof BinaryResponseQuery) {
+			executeQuery(request, (BinaryResponseQuery) query);
+		} else {
+			throw new FreesoundClientException(String.format("Unknown request type: %s", query.getClass()));
+		}
+	}
+
+	/**
+	 * Execute a query that we expect to return a JSON object as a response.
+	 *
+	 * @param request The HTTP request to send
+	 * @param jsonResponseQuery The query the request has been constructed from
+	 *
+	 * @throws FreesoundClientException Any errors encountered
+	 */
+	private void executeQuery(
+			final HttpRequest request, final JSONResponseQuery<?> jsonResponseQuery) throws FreesoundClientException {
 		try {
-			final HttpRequest request = buildHTTPRequest(query);
-			final String credential = buildAuthorisationCredential(query);
+			final HttpResponse<JsonNode> jsonResponse = request.asJson();
+			jsonResponseQuery.setResponse(jsonResponse.getCode(), jsonResponse.getBody().getObject());
+		} catch (final UnirestException e) {
+			throw new FreesoundClientException("Error when attempting to make API call", e);
+		}
+	}
 
-			if (credential != null) {
-				request.header("Authorization", credential);
-			}
-
-			final HttpResponse<JsonNode> httpResponse = request.asJson();
-			query.setResponse(httpResponse);
+	/**
+	 * Execute a query that we expect to return a binary payload.
+	 *
+	 * @param request The HTTP request to send
+	 * @param binaryResponseQuery The query the request has been constructed from
+	 *
+	 * @throws FreesoundClientException Any errors encountered
+	 */
+	private void executeQuery(
+			final HttpRequest request, final BinaryResponseQuery binaryResponseQuery)
+					throws FreesoundClientException {
+		try {
+			final HttpResponse<InputStream> binaryResponse = request.asBinary();
+			binaryResponseQuery.setResponse(binaryResponse.getCode(), binaryResponse.getBody());
 		} catch (final UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
 		}
@@ -88,7 +131,7 @@ public class FreesoundClient {
 	 * @param query The query to be made
 	 * @return Properly configured {@link HttpRequest} representing query
 	 */
-	private HttpRequest buildHTTPRequest(final Query<?> query) {
+	private HttpRequest buildHTTPRequest(final Query<?, ?> query) {
 		final String url = API_ENDPOINT + query.getPath();
 
 		HttpRequest request;
@@ -135,10 +178,10 @@ public class FreesoundClient {
 	 * @param query The query being made
 	 * @return The string to pass in the Authorization header (or null if none)
 	 */
-	private String buildAuthorisationCredential(final Query<?> query) {
+	private String buildAuthorisationCredential(final Query<?, ?> query) {
 		String credential = null;
 		if (query instanceof OAuthQuery) {
-			final String oauthToken = ((OAuthQuery<?>) query).getOauthToken();
+			final String oauthToken = ((OAuthQuery) query).getOauthToken();
 			credential = String.format("Bearer %s", oauthToken);
 		} else if (query instanceof AccessTokenQuery) {
 			// Don't set the Authorization header
