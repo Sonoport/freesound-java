@@ -15,15 +15,14 @@
  */
 package com.sonoport.freesound.query;
 
-
 /**
- * Abstract extension of the {@link Query} class to represent queries that require OAuth2 credentials.
+ * Interface to be implemented by queries that require OAuth2 credentials.
  */
 public interface OAuthQuery {
 
 	/**
-	 * @return the oauthToken
+	 * @return The oauthToken to be presented with the request
 	 */
-	public String getOauthToken();
+	String getOauthToken();
 
 }
