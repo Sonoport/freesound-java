@@ -21,13 +21,19 @@ package com.sonoport.freesound.query.oauth2;
  */
 public class OAuth2AccessTokenRequest extends AccessTokenQuery {
 
+	/** The grant type to request from the OAuth2 endpoint. */
+	protected static final String GRANT_TYPE = "authorization_code";
+
+	/** The name of the parameter to pass the authorisation code through as. */
+	protected static final String CODE_PARAMETER_NAME = "code";
+
 	/**
 	 * @param clientId Application client id
 	 * @param clientSecret Application client secret
 	 * @param authorisationCode Authorisation code previously received
 	 */
 	public OAuth2AccessTokenRequest(final String clientId, final String clientSecret, final String authorisationCode) {
-		super(clientId, clientSecret, "authorization_code", "code", authorisationCode);
+		super(clientId, clientSecret, GRANT_TYPE, CODE_PARAMETER_NAME, authorisationCode);
 	}
 
 }

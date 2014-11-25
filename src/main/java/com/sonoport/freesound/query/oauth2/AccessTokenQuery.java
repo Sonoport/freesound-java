@@ -31,6 +31,15 @@ import com.sonoport.freesound.response.mapping.AccessTokenDetailsMapper;
  */
 public abstract class AccessTokenQuery extends JSONResponseQuery<AccessTokenDetails> {
 
+	/** The parameter to pass client identifiers through as. */
+	protected static final String CLIENT_ID_PARAMETER_NAME = "client_id";
+
+	/** The parameter to pass client secrets through as. */
+	protected static final String CLIENT_SECRET_PARAMETER_NAME = "client_secret";
+
+	/** The parameter to pass grant type requests through as. */
+	protected static final String GRANT_TYPE_PARAMETER_NAME = "grant_type";
+
 	/** The Client Id, as provided by freesound. */
 	private final String clientId;
 
@@ -71,9 +80,9 @@ public abstract class AccessTokenQuery extends JSONResponseQuery<AccessTokenDeta
 	public final Map<String, Object> getQueryParameters() {
 		final Map<String, Object> params = new HashMap<>();
 
-		params.put("client_id", clientId);
-		params.put("client_secret", clientSecret);
-		params.put("grant_type", grantType);
+		params.put(CLIENT_ID_PARAMETER_NAME, clientId);
+		params.put(CLIENT_SECRET_PARAMETER_NAME, clientSecret);
+		params.put(GRANT_TYPE_PARAMETER_NAME, grantType);
 		params.put(codeParameterName, code);
 
 		return params;
