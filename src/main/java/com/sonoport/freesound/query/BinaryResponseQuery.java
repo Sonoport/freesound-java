@@ -19,7 +19,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,9 +26,17 @@ import org.json.JSONObject;
 import com.sonoport.freesound.response.mapping.InputStreamMapper;
 
 /**
- * Abstract representation of a {@link Query} that returns a binary response.
+ * Abstract representation of a {@link Query} that returns a binary response. These queries will return an
+ * {@link InputStream} object representing the binary content returned by the API - it is the responsibility of the
+ * caller to properly close this.
  */
 public abstract class BinaryResponseQuery extends Query<InputStream, InputStream> {
+
+	/** Error message to return if a non-JSON-formatted error response is received. */
+	protected static final String JSON_EXCEPTION_MESSAGE = "A non-JSON formatted error response was received";
+
+	/** Error message to return if there is a problem processing the {@link InputStream} received. */
+	protected static final String IO_EXCEPTION_MESSAGE = "An error occurred processing the error response received";
 
 	/**
 	 * @param httpRequestMethod HTTP method to use for query
@@ -45,23 +52,21 @@ public abstract class BinaryResponseQuery extends Query<InputStream, InputStream
 			final BufferedReader streamReader = new BufferedReader(new InputStreamReader(freesoundResponse, "UTF-8"));
 			final StringBuilder responseStrBuilder = new StringBuilder();
 
-			String inputStr;
-			while ((inputStr = streamReader.readLine()) != null) {
-				responseStrBuilder.append(inputStr);
+			String streamContent;
+			while ((streamContent = streamReader.readLine()) != null) {
+				responseStrBuilder.append(streamContent);
 			}
 
 			final JSONObject jsonResponse = new JSONObject(responseStrBuilder.toString());
 
 			return jsonResponse.getString("detail");
-		} catch (final UnsupportedEncodingException e) {
-			e.printStackTrace();
 		} catch (final JSONException e) {
 			e.printStackTrace();
+			return JSON_EXCEPTION_MESSAGE;
 		} catch (final IOException e) {
 			e.printStackTrace();
+			return IO_EXCEPTION_MESSAGE;
 		}
-
-		return null;
 	}
 
 }
