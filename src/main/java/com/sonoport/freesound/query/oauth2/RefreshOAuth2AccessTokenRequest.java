@@ -21,10 +21,10 @@ package com.sonoport.freesound.query.oauth2;
 public class RefreshOAuth2AccessTokenRequest extends AccessTokenQuery {
 
 	/** The parameter name to pass the refresh token through as. */
-	protected static final String CODE_PARAMETER_NAME = "refresh_token";
+	public static final String CODE_PARAMETER_NAME = "refresh_token";
 
 	/** The grant type to request when refreshing tokens. */
-	protected static final String GRANT_TYPE = "refresh_token";
+	public static final String GRANT_TYPE = "refresh_token";
 
 	/**
 	 * @param clientId Application client id

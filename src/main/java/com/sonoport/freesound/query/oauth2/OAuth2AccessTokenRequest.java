@@ -22,10 +22,10 @@ package com.sonoport.freesound.query.oauth2;
 public class OAuth2AccessTokenRequest extends AccessTokenQuery {
 
 	/** The grant type to request from the OAuth2 endpoint. */
-	protected static final String GRANT_TYPE = "authorization_code";
+	public static final String GRANT_TYPE = "authorization_code";
 
 	/** The name of the parameter to pass the authorisation code through as. */
-	protected static final String CODE_PARAMETER_NAME = "code";
+	public static final String CODE_PARAMETER_NAME = "code";
 
 	/**
 	 * @param clientId Application client id

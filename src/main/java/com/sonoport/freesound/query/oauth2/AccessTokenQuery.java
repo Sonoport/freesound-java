@@ -31,14 +31,17 @@ import com.sonoport.freesound.response.mapping.AccessTokenDetailsMapper;
  */
 public abstract class AccessTokenQuery extends JSONResponseQuery<AccessTokenDetails> {
 
+	/** Path to the OAuth2 token endpoint. */
+	public static final String OAUTH_TOKEN_ENDPOINT_PATH = "/oauth2/access_token";
+
 	/** The parameter to pass client identifiers through as. */
-	protected static final String CLIENT_ID_PARAMETER_NAME = "client_id";
+	public static final String CLIENT_ID_PARAMETER_NAME = "client_id";
 
 	/** The parameter to pass client secrets through as. */
-	protected static final String CLIENT_SECRET_PARAMETER_NAME = "client_secret";
+	public static final String CLIENT_SECRET_PARAMETER_NAME = "client_secret";
 
 	/** The parameter to pass grant type requests through as. */
-	protected static final String GRANT_TYPE_PARAMETER_NAME = "grant_type";
+	public static final String GRANT_TYPE_PARAMETER_NAME = "grant_type";
 
 	/** The Client Id, as provided by freesound. */
 	private final String clientId;
@@ -68,7 +71,7 @@ public abstract class AccessTokenQuery extends JSONResponseQuery<AccessTokenDeta
 			final String grantType,
 			final String codeParameterName,
 			final String code) {
-		super(HTTPRequestMethod.POST, "/oauth2/access_token", new AccessTokenDetailsMapper());
+		super(HTTPRequestMethod.POST, OAUTH_TOKEN_ENDPOINT_PATH, new AccessTokenDetailsMapper());
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.grantType = grantType;
