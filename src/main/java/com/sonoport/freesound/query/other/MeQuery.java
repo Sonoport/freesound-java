@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.other;
 
 import java.util.Collections;
 import java.util.Map;
 
+import com.sonoport.freesound.query.HTTPRequestMethod;
+import com.sonoport.freesound.query.JSONResponseQuery;
+import com.sonoport.freesound.query.OAuthQuery;
 import com.sonoport.freesound.response.CurrentUser;
 import com.sonoport.freesound.response.mapping.CurrentUserMapper;
 
