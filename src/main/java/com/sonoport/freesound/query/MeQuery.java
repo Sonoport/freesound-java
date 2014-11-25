@@ -26,6 +26,7 @@ import com.sonoport.freesound.response.mapping.CurrentUserMapper;
  */
 public class MeQuery extends JSONResponseQuery<CurrentUser> implements OAuthQuery {
 
+	/** The OAuth bearer token to be presented with the request. */
 	private final String oauthToken;
 
 	/**
