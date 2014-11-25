@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Map;
 
 import mockit.Mocked;
@@ -101,12 +102,12 @@ public class BinaryResponseQueryTest {
 
 		@Override
 		public Map<String, String> getRouteParameters() {
-			return null;
+			return Collections.emptyMap();
 		}
 
 		@Override
 		public Map<String, Object> getQueryParameters() {
-			return null;
+			return Collections.emptyMap();
 		}
 
 	}
