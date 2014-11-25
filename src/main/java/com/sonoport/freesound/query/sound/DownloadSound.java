@@ -19,18 +19,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.sonoport.freesound.query.BinaryResponseQuery;
 import com.sonoport.freesound.query.HTTPRequestMethod;
-import com.sonoport.freesound.query.JSONResponseQuery;
-import com.sonoport.freesound.response.Sound;
-import com.sonoport.freesound.response.mapping.SoundMapper;
+import com.sonoport.freesound.query.OAuthQuery;
 
 /**
- * Class used to represent a request for details regarding a single sound instance. The sound to retrieve is identified
- * by a numeric identifier.
- *
- * http://www.freesound.org/docs/api/resources_apiv2.html#sound-instance
+ * Query class used to download a given sound from freesound.org.
  */
-public class SoundInstanceQuery extends JSONResponseQuery<Sound> {
+public class DownloadSound extends BinaryResponseQuery implements OAuthQuery {
 
 	/** The name of the path parameter used to determine the sound to retrieve. */
 	protected static final String SOUND_IDENTIFIER_PARAMETER = "sound_id";
@@ -39,17 +35,22 @@ public class SoundInstanceQuery extends JSONResponseQuery<Sound> {
 	 * The path to the freesound endpoint. Sound identifier is specified as a named parameter which will be populated
 	 * at runtime by the <code>routeParam(String, String)</code> method.
 	 */
-	private static final String REQUEST_PATH = String.format("/sounds/{%s}", SOUND_IDENTIFIER_PARAMETER);
+	private static final String REQUEST_PATH = String.format("/sounds/{%s}/download/", SOUND_IDENTIFIER_PARAMETER);
 
 	/** The identifier of the sound to retrieve. */
 	private final int soundId;
 
+	/** Bearer token used to authenticate request. */
+	private final String oauthToken;
+
 	/**
-	 * @param soundId The identifier of the sound
+	 * @param soundId Identifier of sound to download
+	 * @param oauthToken Token to use as authorisation
 	 */
-	public SoundInstanceQuery(final int soundId) {
-		super(HTTPRequestMethod.GET, REQUEST_PATH, new SoundMapper());
+	public DownloadSound(final int soundId, final String oauthToken) {
+		super(HTTPRequestMethod.GET, REQUEST_PATH);
 		this.soundId = soundId;
+		this.oauthToken = oauthToken;
 	}
 
 	@Override
@@ -63,6 +64,11 @@ public class SoundInstanceQuery extends JSONResponseQuery<Sound> {
 		routeParameters.put(SOUND_IDENTIFIER_PARAMETER, String.valueOf(soundId));
 
 		return routeParameters;
+	}
+
+	@Override
+	public String getOauthToken() {
+		return oauthToken;
 	}
 
 }

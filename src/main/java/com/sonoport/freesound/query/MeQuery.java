@@ -24,13 +24,17 @@ import com.sonoport.freesound.response.mapping.CurrentUserMapper;
 /**
  * Query used to retrieve full details of the currently authorised user.
  */
-public class MeQuery extends OAuthQuery<CurrentUser> {
+public class MeQuery extends JSONResponseQuery<CurrentUser> implements OAuthQuery {
+
+	/** The OAuth bearer token to be presented with the request. */
+	private final String oauthToken;
 
 	/**
 	 * @param oauthToken The OAuth token associated with the user
 	 */
 	public MeQuery(final String oauthToken) {
-		super(HTTPRequestMethod.GET, "/me/", new CurrentUserMapper(), oauthToken);
+		super(HTTPRequestMethod.GET, "/me/", new CurrentUserMapper());
+		this.oauthToken = oauthToken;
 	}
 
 	@Override
@@ -41,6 +45,11 @@ public class MeQuery extends OAuthQuery<CurrentUser> {
 	@Override
 	public Map<String, Object> getQueryParameters() {
 		return Collections.emptyMap();
+	}
+
+	@Override
+	public String getOauthToken() {
+		return oauthToken;
 	}
 
 }

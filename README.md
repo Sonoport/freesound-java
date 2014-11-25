@@ -122,7 +122,24 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#sound-comments
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#download-sound-oauth2-required
 
-**Not yet implemented**
+The download sound query returns an `InputStream` object containing the binary contents returned as a result of the call. Once the application has finished with this object, it must close it.
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+String oauthToken = "...";
+
+DownloadSound downloadSoundQuery = new DownloadSound(soundId, oauthToken);
+
+freesoundClient.executeQuery(downloadSoundQuery);
+
+InputStream is = downloadSoundQuery.getResults();
+
+// Do something with the InputStream
+
+is.close();
+```
 
 ### Upload Sound (OAuth2 required)
 

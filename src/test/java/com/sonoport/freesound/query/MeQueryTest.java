@@ -15,14 +15,28 @@
  */
 package com.sonoport.freesound.query;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
 /**
- * Interface to be implemented by queries that require OAuth2 credentials.
+ * Unit tests to ensure the correct operation of the {@link MeQuery} class.
  */
-public interface OAuthQuery {
+public class MeQueryTest {
+
+	/** OAuth bearer token to use in tests. */
+	private static final String OAUTH_TOKEN = "abc123def456";
 
 	/**
-	 * @return The oauthToken to be presented with the request
+	 * Ensure that {@link MeQuery} instances are correctly constructed.
 	 */
-	String getOauthToken();
+	@Test
+	public void meQueryCorrectlyConstructed() {
+		final MeQuery meQuery = new MeQuery(OAUTH_TOKEN);
 
+		assertEquals(OAUTH_TOKEN, meQuery.getOauthToken());
+		assertTrue(meQuery.getRouteParameters().isEmpty());
+		assertTrue(meQuery.getQueryParameters().isEmpty());
+	}
 }
