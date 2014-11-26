@@ -208,7 +208,16 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#user-sounds
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-packs
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+UserPacksQuery userPacksQuery = new UserPacksQuery(username);
+
+freesoundClient.executeQuery(userPacksQuery);
+
+PagingResponse<Pack> packs = userPacksQuery.getResults();
+```
 
 ### User Bookmark Categories
 
