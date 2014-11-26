@@ -34,10 +34,10 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
 			extends JSONResponseQuery<PagingResponse<I>> {
 
 	/** The default page size if none is specified. */
-	private static final int DEFAULT_PAGE_SIZE = 15;
+	public static final int DEFAULT_PAGE_SIZE = 15;
 
 	/** The maximum size of a single page. 150 is the specified maximum in the API documentation. */
-	private static final int MAXIMUM_PAGE_SIZE = 150;
+	public static final int MAXIMUM_PAGE_SIZE = 150;
 
 	/** The page that will be requested in the query. */
 	private int page;
