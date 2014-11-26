@@ -35,7 +35,7 @@ public class UserSoundsQuery extends PagingQuery<UserSoundsQuery, Sound> {
 	protected static final String USERNAME_ROUTE_PARAMETER = "username";
 
 	/** Path to the API endpoint. */
-	private static final String PATH = String.format("/users/%s/sounds/", USERNAME_ROUTE_PARAMETER);
+	private static final String PATH = String.format("/users/{%s}/sounds/", USERNAME_ROUTE_PARAMETER);
 
 	/** Name of parameter to include the list of fields to return, if specified. */
 	protected static final String FIELDS_PARAMETER = "fields";
