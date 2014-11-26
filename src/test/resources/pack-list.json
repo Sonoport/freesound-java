@@ -1,0 +1,18 @@
+{
+    "count": 33, 
+    "next": "http://www.freesound.org/apiv2/users/reinsamba/packs/?page=3", 
+    "previous": "http://www.freesound.org/apiv2/users/reinsamba/packs/?page=1", 
+    "results": [
+        {
+            "id": 2174, 
+            "url": "http://www.freesound.org/people/reinsamba/packs/2174/", 
+            "description": "Pack description", 
+            "created": "2007-05-08T22:26:23", 
+            "name": "whistle", 
+            "username": "reinsamba", 
+            "num_sounds": 5, 
+            "sounds": "http://www.freesound.org/apiv2/packs/2174/sounds/", 
+            "num_downloads": 403
+        }
+    ]
+}
