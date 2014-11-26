@@ -20,6 +20,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -27,12 +30,16 @@ import mockit.Deencapsulation;
 
 import org.junit.Test;
 
-import com.sonoport.freesound.query.search.TextSearch;
-
 /**
  * Unit tests to ensure the correct operation of {@link TextSearch}.
  */
 public class TextSearchTest {
+
+	/** Name of field to use when specifying those to include. */
+	private static final String FIELD_1 = "id";
+
+	/** Name of field to use when specifying those to include. */
+	private static final String FIELD_2 = "name";
 
 	/** Search string to use in tests. */
 	private static final String SEARCH_STRING = "cars";
@@ -44,7 +51,7 @@ public class TextSearchTest {
 	private static final boolean GROUP_BY_PACK = true;
 
 	/** Filed to filter on in tests. */
-	private static final String FILTER_FIELD = "name";
+	private static final String FILTER_FIELD = FIELD_2;
 
 	/** Value to filter on in tests. */
 	private static final String FILTER_VALUE = "mercedes";
@@ -144,5 +151,37 @@ public class TextSearchTest {
 
 		assertNotNull(routeParameters);
 		assertTrue(routeParameters.isEmpty());
+	}
+
+	/**
+	 * Test that specifying individual fields to include using the Fluent API works correctly.
+	 */
+	@Test
+	public void includeIndividualFieldsUsingFluentAPI() {
+		final TextSearch query = new TextSearch(SEARCH_STRING).includeField(FIELD_1).includeField(FIELD_2);
+
+		final String fieldsString = (String) query.getRequestParameters().get(TextSearch.FIELDS_PARAMETER);
+		final List<String> fields = Arrays.asList(fieldsString.split(","));
+
+		assertTrue(fields.size() == 2);
+		assertTrue(fields.contains(FIELD_1));
+		assertTrue(fields.contains(FIELD_2));
+	}
+
+	/**
+	 * Test that specifying fields to include using the Fluent API works correctly.
+	 */
+	@Test
+	public void includeFieldsUsingFluentAPI() {
+		final Set<String> fieldsToInclude = new HashSet<String>(Arrays.asList(FIELD_1, FIELD_2));
+
+		final TextSearch query = new TextSearch(SEARCH_STRING).includeFields(fieldsToInclude);
+
+		final String fieldsString = (String) query.getRequestParameters().get(TextSearch.FIELDS_PARAMETER);
+		final List<String> fields = Arrays.asList(fieldsString.split(","));
+
+		assertTrue(fields.size() == 2);
+		assertTrue(fields.contains(FIELD_1));
+		assertTrue(fields.contains(FIELD_2));
 	}
 }

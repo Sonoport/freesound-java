@@ -35,6 +35,9 @@ import com.sonoport.freesound.response.mapping.SoundMapper;
  */
 public class TextSearch extends PagingQuery<TextSearch, Sound> {
 
+	/** Name of the parameter to pass the names of fields to include in responses as. */
+	protected static final String FIELDS_PARAMETER = "fields";
+
 	/** The name of the query parameter to pass the search string over as. */
 	private static final String SEARCH_STRING_PARAMETER = "query";
 
@@ -184,7 +187,7 @@ public class TextSearch extends PagingQuery<TextSearch, Sound> {
 			}
 			fieldsString.deleteCharAt(fieldsString.lastIndexOf(","));
 
-			params.put("fields", fieldsString.toString());
+			params.put(FIELDS_PARAMETER, fieldsString.toString());
 		}
 
 		if (groupByPack != null) {
