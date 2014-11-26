@@ -51,13 +51,25 @@ public class PagingQueryTest {
 	/**
 	 * Ensure that we cannot set the page size to a value larger than the maximum specified by the API.
 	 */
-	@Test
+	@Test (expected = IllegalArgumentException.class)
 	public void cannotSetPageSizeLargerThanMaximum() {
-		final int pageSize = PagingQuery.MAXIMUM_PAGE_SIZE + 1;
+		new TestPagingQuery().pageSize(PagingQuery.MAXIMUM_PAGE_SIZE + 1);
+	}
 
-		final TestPagingQuery query = new TestPagingQuery().pageSize(pageSize);
+	/**
+	 * Ensure that we cannot specify a page size less than 1.
+	 */
+	@Test (expected = IllegalArgumentException.class)
+	public void cannotSetPageSizeLessThanOne() {
+		new TestPagingQuery().pageSize(0);
+	}
 
-		assertEquals(PagingQuery.MAXIMUM_PAGE_SIZE, query.getPageSize());
+	/**
+	 * Ensure that we cannot specify a page number less than 1.
+	 */
+	@Test (expected = IllegalArgumentException.class)
+	public void cannotSetPageNumberLessThanOne() {
+		new TestPagingQuery().page(0);
 	}
 
 	/**

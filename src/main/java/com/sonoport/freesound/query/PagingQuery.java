@@ -156,6 +156,10 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
 	 * @param page the page to set
 	 */
 	public void setPage(final int page) {
+		if (page < 1) {
+			throw new IllegalArgumentException("Must specifiy a page number greater than 0");
+		}
+
 		this.page = page;
 	}
 
@@ -170,11 +174,14 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
 	 * @param pageSize the pageSize to set
 	 */
 	public void setPageSize(final int pageSize) {
-		if (pageSize <= MAXIMUM_PAGE_SIZE) {
-			this.pageSize = pageSize;
-		} else {
-			this.pageSize = MAXIMUM_PAGE_SIZE;
+		if (pageSize < 1) {
+			throw new IllegalArgumentException("Must specifiy a page size greater than 0");
+		} else if (pageSize > MAXIMUM_PAGE_SIZE) {
+			throw new IllegalArgumentException(
+					String.format("Cannot specify a page size greater than %s", MAXIMUM_PAGE_SIZE));
 		}
+
+		this.pageSize = pageSize;
 	}
 
 }
