@@ -25,8 +25,10 @@ import com.sonoport.freesound.response.PagingResponse;
 import com.sonoport.freesound.response.Sound;
 
 /**
- * Unit tests to ensure the correct operation of {@link SoundResultsListMapper}. The test data used is defined in
- * <code>/src/test/resources/search-results.json</code>.
+ * Unit tests to ensure the correct operation of {@link PagingResponseMapper} when handling sounds and {@link Sound}
+ * objects.
+ *
+ * The test data used is defined in <code>/src/test/resources/sound-list.json</code>.
  */
 public class SoundListMappingTest extends MapperTest {
 
@@ -51,7 +53,7 @@ public class SoundListMappingTest extends MapperTest {
 	 */
 	@Test
 	public void parseSoundResults() throws Exception {
-		final JSONObject jsonSearchResults = readJSONFile("/search-results.json");
+		final JSONObject jsonSearchResults = readJSONFile("/sound-list.json");
 
 		final PagingResponse<Sound> soundResultsList = mapper.map(jsonSearchResults);
 

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query.pack;
+package com.sonoport.freesound.query.user;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,7 +34,7 @@ public class UserPacksQuery extends PagingQuery<UserPacksQuery, Pack> {
 	protected static final String USERNAME_ROUTE_PARAM = "username";
 
 	/** Path to API endpoint. */
-	protected static final String PATH = String.format("/users/%s/packs/", USERNAME_ROUTE_PARAM);
+	protected static final String PATH = String.format("/users/{%s}/packs/", USERNAME_ROUTE_PARAM);
 
 	/** The username of the user to retrieve packs for. */
 	private final String username;
