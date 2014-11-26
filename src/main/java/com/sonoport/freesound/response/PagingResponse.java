@@ -18,15 +18,17 @@ package com.sonoport.freesound.response;
 import java.util.List;
 
 /**
- * Class representing the contents of a search performed against the freesound.org API.
+ * Class used to represent a list of items returned by the API that may spread over a number of pages.
+ *
+ * @param <I> The type of the items in the results
  */
-public class SoundResultsList {
+public class PagingResponse<I extends Object> {
 
 	/** The number of sounds matching the search terms. */
 	private int count;
 
 	/** The current page of search results. */
-	private List<Sound> sounds;
+	private List<I> items;
 
 	/** The URI to the next page of results (if any). */
 	private String nextPageURI;
@@ -49,17 +51,17 @@ public class SoundResultsList {
 	}
 
 	/**
-	 * @return the sounds
+	 * @return the items
 	 */
-	public List<Sound> getSounds() {
-		return sounds;
+	public List<I> getItems() {
+		return items;
 	}
 
 	/**
-	 * @param sounds the sounds to set
+	 * @param items the items to set
 	 */
-	public void setSounds(final List<Sound> sounds) {
-		this.sounds = sounds;
+	public void setItems(final List<I> items) {
+		this.items = items;
 	}
 
 	/**

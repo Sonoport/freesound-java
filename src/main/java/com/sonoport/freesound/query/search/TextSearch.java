@@ -23,8 +23,9 @@ import java.util.Set;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.PagingQuery;
-import com.sonoport.freesound.response.SoundResultsList;
-import com.sonoport.freesound.response.mapping.SoundResultsListMapper;
+import com.sonoport.freesound.response.Sound;
+import com.sonoport.freesound.response.mapping.PagingResponseMapper;
+import com.sonoport.freesound.response.mapping.SoundMapper;
 
 /**
  * Class used to represent a Text Search of the freesound.org content library. The class presents a fluent API to allow
@@ -32,7 +33,7 @@ import com.sonoport.freesound.response.mapping.SoundResultsListMapper;
  *
  * Full details of the query can be found at http://www.freesound.org/docs/api/resources_apiv2.html#text-search.
  */
-public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
+public class TextSearch extends PagingQuery<TextSearch, Sound> {
 
 	/** The name of the query parameter to pass the search string over as. */
 	private static final String SEARCH_STRING_PARAMETER = "query";
@@ -65,7 +66,7 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 	 * No-arg constructor.
 	 */
 	public TextSearch() {
-		super(HTTPRequestMethod.GET, "/search/text/", new SoundResultsListMapper());
+		super(HTTPRequestMethod.GET, "/search/text/", new PagingResponseMapper<Sound>(new SoundMapper()));
 	}
 
 	/**
@@ -207,18 +208,6 @@ public class TextSearch extends PagingQuery<TextSearch, SoundResultsList> {
 		}
 
 		return params;
-	}
-
-	@Override
-	public boolean hasNextPage() {
-		final SoundResultsList results = getResults();
-		return results.getNextPageURI() != null;
-	}
-
-	@Override
-	public boolean hasPreviousPage() {
-		final SoundResultsList results = getResults();
-		return results.getPreviousPageURI() != null;
 	}
 
 	@Override

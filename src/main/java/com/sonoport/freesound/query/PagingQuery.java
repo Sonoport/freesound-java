@@ -18,18 +18,20 @@ package com.sonoport.freesound.query;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONObject;
-
-import com.sonoport.freesound.response.mapping.Mapper;
+import com.sonoport.freesound.response.PagingResponse;
+import com.sonoport.freesound.response.mapping.PagingResponseMapper;
 
 /**
- * Extension of {@link Query} that represents API calls that can return results that span multiple pages. The main
- * example of this are search queries, where there may be too many results to return in one go.
+ * Extension of {@link JSONResponseQuery} that represents API calls that can return results that span multiple pages.
+ * The main example of this are search queries, where there may be too many results to return in one go. Results are
+ * returned as an instance of {@link PagingResponse} which contains the common elements relating to the paging, plus a
+ * list of the current page of results.
  *
  * @param <Q> The type of the {@link PagingQuery} (required to implement Fluent API elements)
- * @param <R> The DTO type to return results as
+ * @param <I> The DTO type of the items in the list
  */
-public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object> extends JSONResponseQuery<R> {
+public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
+			extends JSONResponseQuery<PagingResponse<I>> {
 
 	/** The default page size if none is specified. */
 	private static final int DEFAULT_PAGE_SIZE = 15;
@@ -46,23 +48,23 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object>
 	/**
 	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path The URI path to the API endpoint
-	 * @param resultsMapper {@link Mapper} to convert results
+	 * @param resultsMapper {@link PagingResponseMapper} to convert results
 	 */
 	protected PagingQuery(
-			final HTTPRequestMethod httpRequestMethod, final String path, final Mapper<JSONObject, R> resultsMapper) {
+			final HTTPRequestMethod httpRequestMethod, final String path, final PagingResponseMapper<I> resultsMapper) {
 		this(httpRequestMethod, path, resultsMapper, DEFAULT_PAGE_SIZE);
 	}
 
 	/**
 	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path The URI path to the API endpoint
-	 * @param resultsMapper {@link Mapper} to convert results
+	 * @param resultsMapper {@link PagingResponseMapper} to convert results
 	 * @param pageSize The number of results per page
 	 */
 	protected PagingQuery(
 			final HTTPRequestMethod httpRequestMethod,
 			final String path,
-			final Mapper<JSONObject, R> resultsMapper,
+			final PagingResponseMapper<I> resultsMapper,
 			final int pageSize) {
 		this(httpRequestMethod, path, resultsMapper, pageSize, 1);
 	}
@@ -70,14 +72,14 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object>
 	/**
 	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path The URI path to the API endpoint
-	 * @param resultsMapper {@link Mapper} to convert results
+	 * @param resultsMapper {@link PagingResponseMapper} to convert results
 	 * @param pageSize The number of results per page
 	 * @param startPage The page to start at
 	 */
 	protected PagingQuery(
 			final HTTPRequestMethod httpRequestMethod,
 			final String path,
-			final Mapper<JSONObject, R> resultsMapper,
+			final PagingResponseMapper<I> resultsMapper,
 			final int pageSize,
 			final int startPage) {
 		super(httpRequestMethod, path, resultsMapper);
@@ -130,12 +132,18 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, R>, R extends Object>
 	/**
 	 * @return Whether there is another page of results after the current one
 	 */
-	public abstract boolean hasNextPage();
+	public boolean hasNextPage() {
+		final PagingResponse<I> results = getResults();
+		return results.getNextPageURI() != null;
+	}
 
 	/**
 	 * @return Whether there is page of results before the current one
 	 */
-	public abstract boolean hasPreviousPage();
+	public boolean hasPreviousPage() {
+		final PagingResponse<I> results = getResults();
+		return results.getPreviousPageURI() != null;
+	}
 
 	/**
 	 * @return the page
