@@ -15,18 +15,10 @@
  */
 package com.sonoport.freesound.query.oauth2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
-import org.junit.Test;
-
 /**
  * Unit tests to ensure the correct operation of {@link OAuth2AccessTokenRequest}.
  */
-public class OAuth2AccessTokenRequestTest {
+public class OAuth2AccessTokenRequestTest extends AccessTokenQueryTest<OAuth2AccessTokenRequest> {
 
 	/** The client identifier to use in tests. */
 	private static final String CLIENT_ID = "foo";
@@ -38,21 +30,18 @@ public class OAuth2AccessTokenRequestTest {
 	private static final String AUTHORISATION_CODE = "abc123";
 
 	/**
-	 * Ensure that {@link OAuth2AccessTokenRequest}s are correctly constructed.
+	 * No-arg constructor.
 	 */
-	@Test
-	public void accessTokenRequestCorrectlyConstructed() {
-		final OAuth2AccessTokenRequest request =
-				new OAuth2AccessTokenRequest(CLIENT_ID, CLIENT_SECRET, AUTHORISATION_CODE);
+	public OAuth2AccessTokenRequestTest() {
+		super(CLIENT_ID,
+				CLIENT_SECRET,
+				OAuth2AccessTokenRequest.GRANT_TYPE,
+				OAuth2AccessTokenRequest.CODE_PARAMETER_NAME,
+				AUTHORISATION_CODE);
+	}
 
-		assertNotNull(request.getRouteParameters());
-		assertTrue(request.getRouteParameters().isEmpty());
-
-		final Map<String, Object> queryParameters = request.getQueryParameters();
-		assertEquals(CLIENT_ID, queryParameters.get(AccessTokenQuery.CLIENT_ID_PARAMETER_NAME));
-		assertEquals(CLIENT_SECRET, queryParameters.get(AccessTokenQuery.CLIENT_SECRET_PARAMETER_NAME));
-		assertEquals(
-				OAuth2AccessTokenRequest.GRANT_TYPE, queryParameters.get(AccessTokenQuery.GRANT_TYPE_PARAMETER_NAME));
-		assertEquals(AUTHORISATION_CODE, queryParameters.get(OAuth2AccessTokenRequest.CODE_PARAMETER_NAME));
+	@Override
+	protected OAuth2AccessTokenRequest newQueryInstance() {
+		return new OAuth2AccessTokenRequest(CLIENT_ID, CLIENT_SECRET, AUTHORISATION_CODE);
 	}
 }

@@ -15,18 +15,10 @@
  */
 package com.sonoport.freesound.query.oauth2;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.util.Map;
-
-import org.junit.Test;
-
 /**
  * Unit tests to ensure the correct operation of {@link RefreshOAuth2AccessTokenRequest}.
  */
-public class RefreshOAuth2AccessTokenRequestTest {
+public class RefreshOAuth2AccessTokenRequestTest extends AccessTokenQueryTest<RefreshOAuth2AccessTokenRequest> {
 
 	/** The client identifier to use in tests. */
 	private static final String CLIENT_ID = "foo";
@@ -38,22 +30,18 @@ public class RefreshOAuth2AccessTokenRequestTest {
 	private static final String REFRESH_TOKEN = "abc123";
 
 	/**
-	 * Ensure that {@link RefreshOAuth2AccessTokenRequest}s are constructed correctly.
+	 * No-arg constructor.
 	 */
-	@Test
-	public void refreshTokeRequestCorrectlyConstructed() {
-		final RefreshOAuth2AccessTokenRequest request =
-				new RefreshOAuth2AccessTokenRequest(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN);
-
-		assertNotNull(request.getRouteParameters());
-		assertTrue(request.getRouteParameters().isEmpty());
-
-		final Map<String, Object> queryParameters = request.getQueryParameters();
-		assertEquals(CLIENT_ID, queryParameters.get(AccessTokenQuery.CLIENT_ID_PARAMETER_NAME));
-		assertEquals(CLIENT_SECRET, queryParameters.get(AccessTokenQuery.CLIENT_SECRET_PARAMETER_NAME));
-		assertEquals(
+	public RefreshOAuth2AccessTokenRequestTest() {
+		super(CLIENT_ID,
+				CLIENT_SECRET,
 				RefreshOAuth2AccessTokenRequest.GRANT_TYPE,
-				queryParameters.get(AccessTokenQuery.GRANT_TYPE_PARAMETER_NAME));
-		assertEquals(REFRESH_TOKEN, queryParameters.get(RefreshOAuth2AccessTokenRequest.CODE_PARAMETER_NAME));
+				RefreshOAuth2AccessTokenRequest.CODE_PARAMETER_NAME,
+				REFRESH_TOKEN);
+	}
+
+	@Override
+	protected RefreshOAuth2AccessTokenRequest newQueryInstance() {
+		return new RefreshOAuth2AccessTokenRequest(CLIENT_ID, CLIENT_SECRET, REFRESH_TOKEN);
 	}
 }
