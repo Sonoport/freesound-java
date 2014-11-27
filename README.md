@@ -117,7 +117,16 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#similar-sounds
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#sound-comments
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+SoundCommentsQuery soundCommentsQuery = new SoundCommentsQuery(soundId);
+
+freesoundClient.executeQuery(soundCommentsQuery);
+
+PagingResponse<Comment> comments = query.getResults();
+```
 
 ### Download Sound (OAuth2 required)
 
