@@ -255,7 +255,16 @@ PagingResponse<Pack> packs = userPacksQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-bookmark-categories
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+UserBookmarkCategoriesQuery query = new UserBookmarkCategoriesQuery(username);
+
+executeQuery(query);
+
+PagingResponse<BookmarkCategory> results = query.getResults();
+```
 
 ### User Bookmark Category Sounds
 
