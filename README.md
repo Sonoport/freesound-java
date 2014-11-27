@@ -62,6 +62,7 @@ For more complex scenarios, a fluent builder is offered for the various options:
 * To specify filters: `.filter(SearchFilter)`
 * To specify sort order: `.sortOrder(SortOrder)`
 * To specify whether results should be grouped by pack: `.groupByPack(boolean)`
+* To specify the fields to return in the results: `.includeField(String)` or `.includeFields(Set<String>)`
 * To specify the number of results to return per page: `.pageSize(int)` (Maximum of 150)
 * To specify the page of results to retrieve: `.page(int)`
 
@@ -116,7 +117,16 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#similar-sounds
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#sound-comments
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+SoundCommentsQuery soundCommentsQuery = new SoundCommentsQuery(soundId);
+
+freesoundClient.executeQuery(soundCommentsQuery);
+
+PagingResponse<Comment> comments = query.getResults();
+```
 
 ### Download Sound (OAuth2 required)
 
@@ -202,7 +212,20 @@ User user = userInstanceQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-sounds
 
-**Not yet implemented**
+`UserSoundsQuery` allows you to specify which fields are returned for the sounds `Sound` records using the `.includeField(String)` and `.includeFields(Set<String>)` methods
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+Set<String> fieldsToInclude = new HashSet<>(Arrays.asList("id", "name", ...etc...));
+
+UserSoundsQuery userSoundsQuery = new UserSoundsQuery(username).includeFields(fieldsToInclude);
+
+freesoundClient.executeQuery(userSoundsQuery);
+
+PagingResponse<Sound> results = userSoundsQuery.getResults();
+```
 
 ### User Packs
 
