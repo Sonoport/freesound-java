@@ -15,7 +15,6 @@
  */
 package com.sonoport.freesound.query.sound;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,11 +46,6 @@ public class SoundCommentsQuery extends PagingQuery<SoundCommentsQuery, Comment>
 	public SoundCommentsQuery(final int soundId) {
 		super(HTTPRequestMethod.GET, PATH, new PagingResponseMapper<>(new CommentMapper()));
 		this.soundId = soundId;
-	}
-
-	@Override
-	protected Map<String, Object> getRequestParameters() {
-		return Collections.emptyMap();
 	}
 
 	@Override

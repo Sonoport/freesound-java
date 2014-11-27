@@ -35,8 +35,6 @@ public class UserPacksQueryTest {
 	public void userPacksQueryCorrectlyCreated() {
 		final UserPacksQuery query = new UserPacksQuery(USERNAME);
 
-		assertTrue(query.getRequestParameters().isEmpty());
-
 		assertTrue(query.getRouteParameters().size() == 1);
 		assertEquals(USERNAME, query.getRouteParameters().get(UserPacksQuery.USERNAME_ROUTE_PARAM));
 	}

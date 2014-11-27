@@ -15,22 +15,18 @@
  */
 package com.sonoport.freesound.query.pack;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
-import com.sonoport.freesound.query.PagingQuery;
-import com.sonoport.freesound.response.Sound;
-import com.sonoport.freesound.response.mapping.PagingResponseMapper;
-import com.sonoport.freesound.response.mapping.SoundMapper;
+import com.sonoport.freesound.query.SoundPagingQuery;
 
 /**
  * Query used to return details of all sounds in a given pack.
  *
  * API documentation at: http://www.freesound.org/docs/api/resources_apiv2.html#pack-sounds
  */
-public class PackSoundsQuery extends PagingQuery<PackSoundsQuery, Sound> {
+public class PackSoundsQuery extends SoundPagingQuery<PackSoundsQuery> {
 
 	/** Route parameter to substitute with pack identifier. */
 	protected static final String PACK_ID_ROUTE_PARAMETER = "pack_id";
@@ -45,13 +41,8 @@ public class PackSoundsQuery extends PagingQuery<PackSoundsQuery, Sound> {
 	 * @param packId Identifier of pack to retrieve sounds for
 	 */
 	public PackSoundsQuery(final int packId) {
-		super(HTTPRequestMethod.GET, PATH, new PagingResponseMapper<>(new SoundMapper()));
+		super(HTTPRequestMethod.GET, PATH);
 		this.packId = packId;
-	}
-
-	@Override
-	protected Map<String, Object> getRequestParameters() {
-		return Collections.emptyMap();
 	}
 
 	@Override

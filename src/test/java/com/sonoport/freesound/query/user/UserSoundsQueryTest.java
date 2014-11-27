@@ -19,11 +19,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.Test;
+
+import com.sonoport.freesound.query.SoundPagingQuery;
 
 /**
  * Unit tests to ensure that {@link UserSoundsQuery} operates correctly.
@@ -44,24 +44,13 @@ public class UserSoundsQueryTest {
 	 */
 	@Test
 	public void queryObjectCorrectlyConstructed() {
-		final UserSoundsQuery userSoundsQuery = new UserSoundsQuery(USERNAME);
+		final UserSoundsQuery userSoundsQuery =
+				new UserSoundsQuery(USERNAME).includeField(FIELD_1).includeField(FIELD_2);
 
 		assertTrue(userSoundsQuery.getRouteParameters().size() == 1);
 		assertEquals(USERNAME, userSoundsQuery.getRouteParameters().get(UserSoundsQuery.USERNAME_ROUTE_PARAMETER));
 
-		assertTrue(userSoundsQuery.getRequestParameters().size() == 0);
-	}
-
-	/**
-	 * Ensure that specifying fields individually using the FLuent API works correctly.
-	 */
-	@Test
-	public void specifyIndividualFieldsUsingFluentAPI() {
-		final UserSoundsQuery userSoundsQuery =
-				new UserSoundsQuery(USERNAME).includeField(FIELD_1).includeField(FIELD_2);
-
-		assertTrue(userSoundsQuery.getRequestParameters().size() == 1);
-		final String fieldsList = (String) userSoundsQuery.getRequestParameters().get(UserSoundsQuery.FIELDS_PARAMETER);
+		final String fieldsList = (String) userSoundsQuery.getQueryParameters().get(SoundPagingQuery.FIELDS_PARAMETER);
 		final List<String> fieldsParameterValues = Arrays.asList(fieldsList.split(","));
 
 		assertTrue(fieldsParameterValues.size() == 2);
@@ -69,22 +58,4 @@ public class UserSoundsQueryTest {
 		assertTrue(fieldsParameterValues.contains(FIELD_2));
 	}
 
-	/**
-	 * Ensure that specifying fields as a batch using the FLuent API works correctly.
-	 */
-	@Test
-	public void specifyCollectionOfFieldsUsingFluentAPI() {
-		final Set<String> fields = new HashSet<>(Arrays.asList(FIELD_1, FIELD_2));
-
-		final UserSoundsQuery userSoundsQuery =
-				new UserSoundsQuery(USERNAME).includeFields(fields);
-
-		assertTrue(userSoundsQuery.getRequestParameters().size() == 1);
-		final String fieldsList = (String) userSoundsQuery.getRequestParameters().get(UserSoundsQuery.FIELDS_PARAMETER);
-		final List<String> fieldsParameterValues = Arrays.asList(fieldsList.split(","));
-
-		assertTrue(fieldsParameterValues.size() == 2);
-		assertTrue(fieldsParameterValues.contains(FIELD_1));
-		assertTrue(fieldsParameterValues.contains(FIELD_2));
-	}
 }
