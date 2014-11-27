@@ -270,7 +270,30 @@ PagingResponse<BookmarkCategory> results = query.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-bookmark-category-sounds
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+int categoryId = 123;
+UserBookmarkCategorySoundsQuery query = new UserBookmarkCategorySoundsQuery(username, categoryId);
+
+executeQuery(query);
+
+PagingResponse<Sound> results = query.getResults();
+```
+
+Or, if you want to retrieve bookmarked sounds that have not yet been categorised by the user:
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+UserUncategorisedBookmarkedSoundsQuery query = new UserUncategorisedBookmarkedSoundsQuery(username);
+
+executeQuery(query);
+
+PagingResponse<Sound> results = query.getResults();
+```
 
 ### Pack Instance
 
