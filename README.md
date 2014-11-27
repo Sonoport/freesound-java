@@ -111,7 +111,16 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#sound-analysis
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#similar-sounds
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundIdentifier = 123;
+SimilarSoundsQuery similarSoundsQuery = new SimilarSoundsQuery(soundIdentifier);
+
+freesoundClient.executeQuery(similarSoundsQuery);
+
+PagingResponse<Sound> sounds = similarSoundsQuery.getResults();
+```
 
 ### Sound Comments
 
