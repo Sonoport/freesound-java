@@ -15,7 +15,6 @@
  */
 package com.sonoport.freesound.query.user;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,11 +44,6 @@ public class UserPacksQuery extends PagingQuery<UserPacksQuery, Pack> {
 	public UserPacksQuery(final String username) {
 		super(HTTPRequestMethod.GET, PATH, new PagingResponseMapper<>(new PackMapper()));
 		this.username = username;
-	}
-
-	@Override
-	protected Map<String, Object> getRequestParameters() {
-		return Collections.emptyMap();
 	}
 
 	@Override

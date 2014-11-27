@@ -112,22 +112,13 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
 	}
 
 	@Override
-	public final Map<String, Object> getQueryParameters() {
+	public Map<String, Object> getQueryParameters() {
 		final Map<String, Object> queryParams = new HashMap<>();
 		queryParams.put("page", Integer.valueOf(page));
 		queryParams.put("page_size", Integer.valueOf(pageSize));
 
-		queryParams.putAll(getRequestParameters());
-
 		return queryParams;
 	}
-
-	/**
-	 * Build the set of request parameters specific to the implementing query class.
-	 *
-	 * @return Parameters relating to the query
-	 */
-	protected abstract Map<String, Object> getRequestParameters();
 
 	/**
 	 * @return Whether there is another page of results after the current one

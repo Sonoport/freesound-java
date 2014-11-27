@@ -16,16 +16,12 @@
 package com.sonoport.freesound.query.search;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
-import com.sonoport.freesound.query.PagingQuery;
-import com.sonoport.freesound.response.Sound;
-import com.sonoport.freesound.response.mapping.PagingResponseMapper;
-import com.sonoport.freesound.response.mapping.SoundMapper;
+import com.sonoport.freesound.query.SoundPagingQuery;
 
 /**
  * Class used to represent a Text Search of the freesound.org content library. The class presents a fluent API to allow
@@ -33,7 +29,7 @@ import com.sonoport.freesound.response.mapping.SoundMapper;
  *
  * Full details of the query can be found at http://www.freesound.org/docs/api/resources_apiv2.html#text-search.
  */
-public class TextSearch extends PagingQuery<TextSearch, Sound> {
+public class TextSearch extends SoundPagingQuery<TextSearch> {
 
 	/** Name of the parameter to pass the names of fields to include in responses as. */
 	protected static final String FIELDS_PARAMETER = "fields";
@@ -58,10 +54,6 @@ public class TextSearch extends PagingQuery<TextSearch, Sound> {
 	/** Collection of filters that should be applied as part of the query. */
 	private Set<SearchFilter> filters;
 
-	/** The fields to retrieve as part of the query. If values are specified here, only those fields will be returned.
-	 * If no values are specified, freesound will return a default set. */
-	private Set<String> fields;
-
 	/** Whether to group results by the pack to which they belong. */
 	private Boolean groupByPack;
 
@@ -69,7 +61,7 @@ public class TextSearch extends PagingQuery<TextSearch, Sound> {
 	 * No-arg constructor.
 	 */
 	public TextSearch() {
-		super(HTTPRequestMethod.GET, "/search/text/", new PagingResponseMapper<Sound>(new SoundMapper()));
+		super(HTTPRequestMethod.GET, "/search/text/");
 	}
 
 	/**
@@ -129,47 +121,9 @@ public class TextSearch extends PagingQuery<TextSearch, Sound> {
 		return this;
 	}
 
-	/**
-	 * Specify a field to return in the results using the Fluent API approach. Users may specify this method multiple
-	 * times to define the collection of fields they want returning, and/or use {@link TextSearch#includeFields(Set)} to
-	 * define them as a batch.
-	 *
-	 * @param field The field to include in the results
-	 * @return The current query
-	 */
-	public TextSearch includeField(final String field) {
-		if (this.fields == null) {
-			this.fields = new HashSet<>();
-		}
-
-		if (field != null) {
-			this.fields.add(field);
-		}
-
-		return this;
-	}
-
-	/**
-	 * Specify the set of fields to return in the results. Defined using the Fluent API approach.
-	 *
-	 * @param fields The fields to return
-	 * @return The current query
-	 */
-	public TextSearch includeFields(final Set<String> fields) {
-		if (this.fields == null) {
-			this.fields = new HashSet<>();
-		}
-
-		if (fields != null) {
-			this.fields.addAll(fields);
-		}
-
-		return this;
-	}
-
 	@Override
-	public Map<String, Object> getRequestParameters() {
-		final Map<String, Object> params = new HashMap<>();
+	public Map<String, Object> getQueryParameters() {
+		final Map<String, Object> params = super.getQueryParameters();
 
 		if (searchString != null) {
 			params.put(SEARCH_STRING_PARAMETER, searchString);
@@ -177,17 +131,6 @@ public class TextSearch extends PagingQuery<TextSearch, Sound> {
 
 		if (sortOrder != null) {
 			params.put(SORT_ORDER_PARAMETER, sortOrder.getParameterValue());
-		}
-
-		if ((fields != null) && !fields.isEmpty()) {
-			final StringBuilder fieldsString = new StringBuilder();
-			for (final String field : fields) {
-				fieldsString.append(field);
-				fieldsString.append(',');
-			}
-			fieldsString.deleteCharAt(fieldsString.lastIndexOf(","));
-
-			params.put(FIELDS_PARAMETER, fieldsString.toString());
 		}
 
 		if (groupByPack != null) {

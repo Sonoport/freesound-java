@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query.user;
+package com.sonoport.freesound.query.pack;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -26,12 +26,12 @@ import org.junit.Test;
 import com.sonoport.freesound.query.SoundPagingQuery;
 
 /**
- * Unit tests to ensure that {@link UserSoundsQuery} operates correctly.
+ * Unit tests to ensure the correct operation of {@link PackSoundsQuery}.
  */
-public class UserSoundsQueryTest {
+public class PackSoundsQueryTest {
 
-	/** Username of use in tests. */
-	private static final String USERNAME = "foobar";
+	/** Pack identifier to use in tests. */
+	private static final int PACK_ID = 12345;
 
 	/** Field name to use when specifying values to return. */
 	private static final String FIELD_1 = "id";
@@ -40,22 +40,20 @@ public class UserSoundsQueryTest {
 	private static final String FIELD_2 = "name";
 
 	/**
-	 * Ensure that {@link UserSoundsQuery} objects are correctly created.
+	 * Ensure that instances of {@link PackSoundsQuery} are correctly constructed.
 	 */
 	@Test
-	public void queryObjectCorrectlyConstructed() {
-		final UserSoundsQuery userSoundsQuery =
-				new UserSoundsQuery(USERNAME).includeField(FIELD_1).includeField(FIELD_2);
+	public void packSoundsQueryCorrectlyCreated() {
+		final PackSoundsQuery query = new PackSoundsQuery(PACK_ID).includeField(FIELD_1).includeField(FIELD_2);
 
-		assertTrue(userSoundsQuery.getRouteParameters().size() == 1);
-		assertEquals(USERNAME, userSoundsQuery.getRouteParameters().get(UserSoundsQuery.USERNAME_ROUTE_PARAMETER));
+		assertTrue(query.getRouteParameters().size() == 1);
+		assertEquals(String.valueOf(PACK_ID), query.getRouteParameters().get(PackSoundsQuery.PACK_ID_ROUTE_PARAMETER));
 
-		final String fieldsList = (String) userSoundsQuery.getQueryParameters().get(SoundPagingQuery.FIELDS_PARAMETER);
+		final String fieldsList = (String) query.getQueryParameters().get(SoundPagingQuery.FIELDS_PARAMETER);
 		final List<String> fieldsParameterValues = Arrays.asList(fieldsList.split(","));
 
 		assertTrue(fieldsParameterValues.size() == 2);
 		assertTrue(fieldsParameterValues.contains(FIELD_1));
 		assertTrue(fieldsParameterValues.contains(FIELD_2));
 	}
-
 }

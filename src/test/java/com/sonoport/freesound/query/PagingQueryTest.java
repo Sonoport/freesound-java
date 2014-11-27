@@ -139,11 +139,6 @@ public class PagingQueryTest {
 		}
 
 		@Override
-		protected Map<String, Object> getRequestParameters() {
-			return Collections.emptyMap();
-		}
-
-		@Override
 		public Map<String, String> getRouteParameters() {
 			return Collections.emptyMap();
 		}

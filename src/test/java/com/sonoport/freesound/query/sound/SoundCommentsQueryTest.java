@@ -35,8 +35,6 @@ public class SoundCommentsQueryTest {
 	public void soundCommentsQueryCorrectlyConstructed() {
 		final SoundCommentsQuery query = new SoundCommentsQuery(SOUND_ID);
 
-		assertTrue(query.getRequestParameters().size() == 0);
-
 		assertTrue(query.getRouteParameters().size() == 1);
 		assertEquals(
 				String.valueOf(SOUND_ID), query.getRouteParameters().get(SoundCommentsQuery.SOUND_ID_ROUTE_PARAMETER));

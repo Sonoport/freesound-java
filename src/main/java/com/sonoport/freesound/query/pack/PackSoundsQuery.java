@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query.user;
+package com.sonoport.freesound.query.pack;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,31 +22,33 @@ import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.SoundPagingQuery;
 
 /**
- * Query used to retrieve all the sounds owned by a particular user.
+ * Query used to return details of all sounds in a given pack.
+ *
+ * API documentation at: http://www.freesound.org/docs/api/resources_apiv2.html#pack-sounds
  */
-public class UserSoundsQuery extends SoundPagingQuery<UserSoundsQuery> {
+public class PackSoundsQuery extends SoundPagingQuery<PackSoundsQuery> {
 
-	/** Name of the parameter in the path to replace with the username of owner of the sounds to retrieve. */
-	protected static final String USERNAME_ROUTE_PARAMETER = "username";
+	/** Route parameter to substitute with pack identifier. */
+	protected static final String PACK_ID_ROUTE_PARAMETER = "pack_id";
 
-	/** Path to the API endpoint. */
-	private static final String PATH = String.format("/users/{%s}/sounds/", USERNAME_ROUTE_PARAMETER);
+	/** Path to API endpoint. */
+	private static final String PATH = String.format("/packs/{%s}/sounds/", PACK_ID_ROUTE_PARAMETER);
 
-	/** The username of the owner of the sounds to retrieve. */
-	private final String username;
+	/** Identifier of pack to retrieve sounds for. */
+	private final int packId;
 
 	/**
-	 * @param username Username of the owner of the sounds to retrieve
+	 * @param packId Identifier of pack to retrieve sounds for
 	 */
-	public UserSoundsQuery(final String username) {
+	public PackSoundsQuery(final int packId) {
 		super(HTTPRequestMethod.GET, PATH);
-		this.username = username;
+		this.packId = packId;
 	}
 
 	@Override
 	public Map<String, String> getRouteParameters() {
 		final Map<String, String> routeParams = new HashMap<>();
-		routeParams.put(USERNAME_ROUTE_PARAMETER, username);
+		routeParams.put(PACK_ID_ROUTE_PARAMETER, String.valueOf(packId));
 
 		return routeParams;
 	}
