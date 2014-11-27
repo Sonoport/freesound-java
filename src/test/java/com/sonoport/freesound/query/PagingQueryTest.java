@@ -19,20 +19,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.junit.Test;
 
 import com.sonoport.freesound.response.PagingResponse;
-import com.sonoport.freesound.response.Sound;
-import com.sonoport.freesound.response.mapping.PagingResponseMapper;
-import com.sonoport.freesound.response.mapping.SoundMapper;
 
 /**
  * Unit tests the ensure that common code associated with queries that return paged results operates correctly.
+ *
+ * @param <R> The data type returned in the list of results
+ * @param <T> The subclass of {@link PagingQuery} under test
  */
-public class PagingQueryTest {
+public abstract class PagingQueryTest<R extends Object, T extends PagingQuery<T, R>> extends JSONResponseQueryTest<T> {
 
 	/**
 	 * Ensure that Fluent API methods correctly populate the page/page size values.
@@ -42,7 +39,8 @@ public class PagingQueryTest {
 		final int pageSize = 50;
 		final int page = 2;
 
-		final TestPagingQuery query = new TestPagingQuery().pageSize(pageSize).page(page);
+		final T query = newQueryInstance();
+		query.pageSize(pageSize).page(page);
 
 		assertEquals(pageSize, query.getPageSize());
 		assertEquals(page, query.getPage());
@@ -53,7 +51,8 @@ public class PagingQueryTest {
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void cannotSetPageSizeLargerThanMaximum() {
-		new TestPagingQuery().pageSize(PagingQuery.MAXIMUM_PAGE_SIZE + 1);
+		final T query = newQueryInstance();
+		query.pageSize(PagingQuery.MAXIMUM_PAGE_SIZE + 1);
 	}
 
 	/**
@@ -61,7 +60,8 @@ public class PagingQueryTest {
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void cannotSetPageSizeLessThanOne() {
-		new TestPagingQuery().pageSize(0);
+		final T query = newQueryInstance();
+		query.pageSize(0);
 	}
 
 	/**
@@ -69,7 +69,8 @@ public class PagingQueryTest {
 	 */
 	@Test (expected = IllegalArgumentException.class)
 	public void cannotSetPageNumberLessThanOne() {
-		new TestPagingQuery().page(0);
+		final T query = newQueryInstance();
+		query.page(0);
 	}
 
 	/**
@@ -78,8 +79,8 @@ public class PagingQueryTest {
 	 */
 	@Test
 	public void atFirstPageOfResults() {
-		final TestPagingQuery query = new TestPagingQuery();
-		final PagingResponse<Sound> results = new PagingResponse<>();
+		final T query = newQueryInstance();
+		final PagingResponse<R> results = new PagingResponse<>();
 
 		results.setNextPageURI("https://www.freesound.org/sounds?page=2");
 		results.setPreviousPageURI(null);
@@ -96,8 +97,8 @@ public class PagingQueryTest {
 	 */
 	@Test
 	public void inMiddleOfResults() {
-		final TestPagingQuery query = new TestPagingQuery();
-		final PagingResponse<Sound> results = new PagingResponse<>();
+		final T query = newQueryInstance();
+		final PagingResponse<R> results = new PagingResponse<>();
 
 		results.setNextPageURI("https://www.freesound.org/sounds?page=1");
 		results.setPreviousPageURI("https://www.freesound.org/sounds?page=3");
@@ -114,8 +115,8 @@ public class PagingQueryTest {
 	 */
 	@Test
 	public void atLastPageOfResults() {
-		final TestPagingQuery query = new TestPagingQuery();
-		final PagingResponse<Sound> results = new PagingResponse<>();
+		final T query = newQueryInstance();
+		final PagingResponse<R> results = new PagingResponse<>();
 
 		results.setNextPageURI(null);
 		results.setPreviousPageURI("https://www.freesound.org/sounds?page=1");
@@ -126,22 +127,4 @@ public class PagingQueryTest {
 		assertFalse(query.hasNextPage());
 	}
 
-	/**
-	 * Simple subclass of {@link PagingQuery} to use in tests.
-	 */
-	private class TestPagingQuery extends PagingQuery<TestPagingQuery, Sound> {
-
-		/**
-		 * No-arg constructor.
-		 */
-		public TestPagingQuery() {
-			super(HTTPRequestMethod.GET, "/foo", new PagingResponseMapper<>(new SoundMapper()));
-		}
-
-		@Override
-		public Map<String, String> getRouteParameters() {
-			return Collections.emptyMap();
-		}
-
-	}
 }

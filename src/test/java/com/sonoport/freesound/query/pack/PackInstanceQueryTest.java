@@ -20,10 +20,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.query.JSONResponseQueryTest;
+
 /**
  * Ensure that {@link PackInstanceQuery} objects are created and operate correctly.
  */
-public class PackInstanceQueryTest {
+public class PackInstanceQueryTest extends JSONResponseQueryTest<PackInstanceQuery> {
 
 	/** Pack identifier to use in tests. */
 	private static final int PACK_ID = 1234;
@@ -40,5 +42,10 @@ public class PackInstanceQueryTest {
 				String.valueOf(PACK_ID), query.getRouteParameters().get(PackInstanceQuery.PACK_IDENTIFIER_PARAMETER));
 
 		assertTrue(query.getQueryParameters().isEmpty());
+	}
+
+	@Override
+	protected PackInstanceQuery newQueryInstance() {
+		return new PackInstanceQuery(PACK_ID);
 	}
 }

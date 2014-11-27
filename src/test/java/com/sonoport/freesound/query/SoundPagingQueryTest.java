@@ -18,18 +18,20 @@ package com.sonoport.freesound.query;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.response.Sound;
+
 /**
  * Unit tests to ensure the common code within {@link SoundPagingQuery} is operating correctly.
+ *
+ * @param <T> The subclass of {@link SoundPagingQuery} under test
  */
-public class SoundPagingQueryTest {
+public abstract class SoundPagingQueryTest<T extends SoundPagingQuery<T>> extends PagingQueryTest<Sound, T> {
 
 	/** Field name to use when specifying values to return. */
 	private static final String FIELD_1 = "id";
@@ -42,7 +44,8 @@ public class SoundPagingQueryTest {
 	 */
 	@Test
 	public void specifyIndividualFieldsUsingFluentAPI() {
-		final TestSoundPagingQuery query = new TestSoundPagingQuery().includeField(FIELD_1).includeField(FIELD_2);
+		final T query = newQueryInstance();
+		query.includeField(FIELD_1).includeField(FIELD_2);
 
 		final String fieldsList = (String) query.getQueryParameters().get(SoundPagingQuery.FIELDS_PARAMETER);
 		final List<String> fieldsParameterValues = Arrays.asList(fieldsList.split(","));
@@ -59,7 +62,8 @@ public class SoundPagingQueryTest {
 	public void specifyCollectionOfFieldsUsingFluentAPI() {
 		final Set<String> fields = new HashSet<>(Arrays.asList(FIELD_1, FIELD_2));
 
-		final TestSoundPagingQuery query = new TestSoundPagingQuery().includeFields(fields);
+		final T query = newQueryInstance();
+		query.includeFields(fields);
 
 		final String fieldsList = (String) query.getQueryParameters().get(SoundPagingQuery.FIELDS_PARAMETER);
 		final List<String> fieldsParameterValues = Arrays.asList(fieldsList.split(","));
@@ -69,22 +73,4 @@ public class SoundPagingQueryTest {
 		assertTrue(fieldsParameterValues.contains(FIELD_2));
 	}
 
-	/**
-	 * Simple subclass of {@link SoundPagingQuery} to use in tests.
-	 */
-	private class TestSoundPagingQuery extends SoundPagingQuery<TestSoundPagingQuery> {
-
-		/**
-		 * No-arg constructor.
-		 */
-		public TestSoundPagingQuery() {
-			super(HTTPRequestMethod.GET, "/foo/");
-		}
-
-		@Override
-		public Map<String, String> getRouteParameters() {
-			return Collections.emptyMap();
-		}
-
-	}
 }

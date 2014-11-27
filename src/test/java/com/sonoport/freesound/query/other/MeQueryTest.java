@@ -20,10 +20,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.query.JSONResponseQueryTest;
+
 /**
  * Unit tests to ensure the correct operation of the {@link MeQuery} class.
  */
-public class MeQueryTest {
+public class MeQueryTest extends JSONResponseQueryTest<MeQuery> {
 
 	/** OAuth bearer token to use in tests. */
 	private static final String OAUTH_TOKEN = "abc123def456";
@@ -38,5 +40,10 @@ public class MeQueryTest {
 		assertEquals(OAUTH_TOKEN, meQuery.getOauthToken());
 		assertTrue(meQuery.getRouteParameters().isEmpty());
 		assertTrue(meQuery.getQueryParameters().isEmpty());
+	}
+
+	@Override
+	protected MeQuery newQueryInstance() {
+		return new MeQuery(OAUTH_TOKEN);
 	}
 }

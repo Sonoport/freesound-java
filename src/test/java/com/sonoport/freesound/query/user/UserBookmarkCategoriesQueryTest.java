@@ -20,10 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.query.PagingQueryTest;
+import com.sonoport.freesound.response.BookmarkCategory;
+
 /**
  * Unit tests to ensure the correct operation of {@link UserBookmarkCategoriesQuery}.
  */
-public class UserBookmarkCategoriesQueryTest {
+public class UserBookmarkCategoriesQueryTest extends PagingQueryTest<BookmarkCategory, UserBookmarkCategoriesQuery> {
 
 	/** User name to use in tests. */
 	private static final String USERNAME = "foo";
@@ -37,5 +40,10 @@ public class UserBookmarkCategoriesQueryTest {
 
 		assertTrue(query.getRouteParameters().size() == 1);
 		assertEquals(USERNAME, query.getRouteParameters().get(UserBookmarkCategoriesQuery.USERNAME_ROUTE_PARAMETER));
+	}
+
+	@Override
+	protected UserBookmarkCategoriesQuery newQueryInstance() {
+		return new UserBookmarkCategoriesQuery(USERNAME);
 	}
 }

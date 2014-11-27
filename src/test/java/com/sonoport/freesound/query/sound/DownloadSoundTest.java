@@ -21,10 +21,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.query.BinaryResponseQueryTest;
+
 /**
  * Unit tests to ensure the correct operation of the {@link DownloadSound} query class.
  */
-public class DownloadSoundTest {
+public class DownloadSoundTest extends BinaryResponseQueryTest<DownloadSound> {
 
 	/** Sound identifier to use in tests. */
 	private static final int SOUND_ID = 1234;
@@ -48,5 +50,10 @@ public class DownloadSoundTest {
 				downloadSound.getRouteParameters().get(DownloadSound.SOUND_IDENTIFIER_PARAMETER));
 
 		assertEquals(OAUTH_TOKEN, downloadSound.getOauthToken());
+	}
+
+	@Override
+	protected DownloadSound newQueryInstance() {
+		return new DownloadSound(SOUND_ID, OAUTH_TOKEN);
 	}
 }

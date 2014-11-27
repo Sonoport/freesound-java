@@ -20,10 +20,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.query.SoundPagingQueryTest;
+
 /**
  * Unit tests to ensure the correct operation of {@link SimilarSoundsQuery}.
  */
-public class SimilarSoundsQueryTest {
+public class SimilarSoundsQueryTest extends SoundPagingQueryTest<SimilarSoundsQuery> {
 
 	/** Sound identifier to use in tests. */
 	private static final int SOUND_ID = 12345;
@@ -38,5 +40,10 @@ public class SimilarSoundsQueryTest {
 		assertTrue(query.getRouteParameters().size() == 1);
 		assertEquals(
 				String.valueOf(SOUND_ID), query.getRouteParameters().get(SimilarSoundsQuery.SOUND_ID_ROUTE_PARAMETER));
+	}
+
+	@Override
+	protected SimilarSoundsQuery newQueryInstance() {
+		return new SimilarSoundsQuery(SOUND_ID);
 	}
 }

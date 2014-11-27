@@ -20,10 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.query.PagingQueryTest;
+import com.sonoport.freesound.response.Comment;
+
 /**
  * Unit tests to ensure the correct operation of {@link SoundCommentsQuery}.
  */
-public class SoundCommentsQueryTest {
+public class SoundCommentsQueryTest extends PagingQueryTest<Comment, SoundCommentsQuery> {
 
 	/** Sound identifier to use in tests. */
 	private static final int SOUND_ID = 1234;
@@ -38,5 +41,10 @@ public class SoundCommentsQueryTest {
 		assertTrue(query.getRouteParameters().size() == 1);
 		assertEquals(
 				String.valueOf(SOUND_ID), query.getRouteParameters().get(SoundCommentsQuery.SOUND_ID_ROUTE_PARAMETER));
+	}
+
+	@Override
+	protected SoundCommentsQuery newQueryInstance() {
+		return new SoundCommentsQuery(SOUND_ID);
 	}
 }

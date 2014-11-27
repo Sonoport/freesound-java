@@ -18,44 +18,32 @@ package com.sonoport.freesound.query.user;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.junit.Test;
 
-import com.sonoport.freesound.query.SoundPagingQuery;
+import com.sonoport.freesound.query.SoundPagingQueryTest;
 
 /**
  * Unit tests to ensure that {@link UserSoundsQuery} operates correctly.
  */
-public class UserSoundsQueryTest {
+public class UserSoundsQueryTest extends SoundPagingQueryTest<UserSoundsQuery> {
 
 	/** Username of use in tests. */
 	private static final String USERNAME = "foobar";
-
-	/** Field name to use when specifying values to return. */
-	private static final String FIELD_1 = "id";
-
-	/** Field name to use when specifying values to return. */
-	private static final String FIELD_2 = "name";
 
 	/**
 	 * Ensure that {@link UserSoundsQuery} objects are correctly created.
 	 */
 	@Test
 	public void queryObjectCorrectlyConstructed() {
-		final UserSoundsQuery userSoundsQuery =
-				new UserSoundsQuery(USERNAME).includeField(FIELD_1).includeField(FIELD_2);
+		final UserSoundsQuery userSoundsQuery = new UserSoundsQuery(USERNAME);
 
 		assertTrue(userSoundsQuery.getRouteParameters().size() == 1);
 		assertEquals(USERNAME, userSoundsQuery.getRouteParameters().get(UserSoundsQuery.USERNAME_ROUTE_PARAMETER));
+	}
 
-		final String fieldsList = (String) userSoundsQuery.getQueryParameters().get(SoundPagingQuery.FIELDS_PARAMETER);
-		final List<String> fieldsParameterValues = Arrays.asList(fieldsList.split(","));
-
-		assertTrue(fieldsParameterValues.size() == 2);
-		assertTrue(fieldsParameterValues.contains(FIELD_1));
-		assertTrue(fieldsParameterValues.contains(FIELD_2));
+	@Override
+	protected UserSoundsQuery newQueryInstance() {
+		return new UserSoundsQuery(USERNAME);
 	}
 
 }

@@ -20,10 +20,13 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.query.PagingQueryTest;
+import com.sonoport.freesound.response.Pack;
+
 /**
  * Unit tests to ensure the correct operation of {@link UserPacksQuery}.
  */
-public class UserPacksQueryTest {
+public class UserPacksQueryTest extends PagingQueryTest<Pack, UserPacksQuery> {
 
 	/** User name to use in tests. */
 	private static final String USERNAME = "foobar";
@@ -37,5 +40,10 @@ public class UserPacksQueryTest {
 
 		assertTrue(query.getRouteParameters().size() == 1);
 		assertEquals(USERNAME, query.getRouteParameters().get(UserPacksQuery.USERNAME_ROUTE_PARAM));
+	}
+
+	@Override
+	protected UserPacksQuery newQueryInstance() {
+		return new UserPacksQuery(USERNAME);
 	}
 }

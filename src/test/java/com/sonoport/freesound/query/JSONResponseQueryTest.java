@@ -17,19 +17,15 @@ package com.sonoport.freesound.query;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.Collections;
-import java.util.Map;
-
 import org.json.JSONObject;
 import org.junit.Test;
 
-import com.sonoport.freesound.response.Sound;
-import com.sonoport.freesound.response.mapping.SoundMapper;
-
 /**
  * Unit tests to ensure the common code in {@link JSONResponseQuery} class operates correctly.
+ *
+ * @param <T> The subclass of {@link JSONResponseQuery} under test
  */
-public class JSONResponseQueryTest {
+public abstract class JSONResponseQueryTest<T extends JSONResponseQuery<?>> {
 
 	/** The error message to use in tests. */
 	private static final String ERROR_MESSAGE = "An error occured";
@@ -43,7 +39,7 @@ public class JSONResponseQueryTest {
 	 */
 	@Test
 	public void extractErrorMessageFromJSON() {
-		final TestJSONResponseQuery query = new TestJSONResponseQuery();
+		final T query = newQueryInstance();
 
 		final String errorMessage = query.extractErrorMessage(ERROR_JSON);
 
@@ -51,26 +47,9 @@ public class JSONResponseQueryTest {
 	}
 
 	/**
-	 * Simple subclass of {@link JSONResponseQuery} to use in tests.
+	 * Build and return a simple instance of the query under test.
+	 *
+	 * @return Instance of query under test
 	 */
-	private class TestJSONResponseQuery extends JSONResponseQuery<Sound> {
-
-		/**
-		 * No-arg constructor.
-		 */
-		protected TestJSONResponseQuery() {
-			super(HTTPRequestMethod.GET, "/blah", new SoundMapper());
-		}
-
-		@Override
-		public Map<String, String> getRouteParameters() {
-			return Collections.emptyMap();
-		}
-
-		@Override
-		public Map<String, Object> getQueryParameters() {
-			return Collections.emptyMap();
-		}
-
-	}
+	protected abstract T newQueryInstance();
 }

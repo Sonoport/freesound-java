@@ -20,8 +20,6 @@ import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Map;
 
 import mockit.Mocked;
 import mockit.NonStrictExpectations;
@@ -30,8 +28,10 @@ import org.junit.Test;
 
 /**
  * Unit tests to ensure that the common code within {@link BinaryResponseQuery} is operating correctly.
+ *
+ * @param <T> The subclass of {@link BinaryResponseQuery} under test
  */
-public class BinaryResponseQueryTest {
+public abstract class BinaryResponseQueryTest<T extends BinaryResponseQuery> {
 
 	/** The error message to use in tests. */
 	private static final String ERROR_MESSAGE = "An error occured";
@@ -46,7 +46,7 @@ public class BinaryResponseQueryTest {
 	 */
 	@Test
 	public void extractErrorMessageFromResponse() {
-		final TestBinaryResponseQuery query = new TestBinaryResponseQuery();
+		final T query = newQueryInstance();
 		final InputStream is = new ByteArrayInputStream(ERROR_JSON.getBytes());
 
 		final String errorMessage = query.extractErrorMessage(is);
@@ -59,7 +59,7 @@ public class BinaryResponseQueryTest {
 	 */
 	@Test
 	public void nonJSONResponse() {
-		final TestBinaryResponseQuery query = new TestBinaryResponseQuery();
+		final T query = newQueryInstance();
 		final InputStream is = new ByteArrayInputStream(ERROR_MESSAGE.getBytes());
 
 		final String errorMessage = query.extractErrorMessage(is);
@@ -81,7 +81,7 @@ public class BinaryResponseQueryTest {
 			}
 		};
 
-		final TestBinaryResponseQuery query = new TestBinaryResponseQuery();
+		final T query = newQueryInstance();
 
 		final String errorMessage = query.extractErrorMessage(mockInputStream);
 
@@ -89,26 +89,9 @@ public class BinaryResponseQueryTest {
 	}
 
 	/**
-	 * Simple subclass of {@link BinaryResponseQuery} to use in tests.
+	 * Build and return a simple instance of the query under test.
+	 *
+	 * @return Instance of query under test
 	 */
-	private class TestBinaryResponseQuery extends BinaryResponseQuery {
-
-		/**
-		 * No-arg constructor.
-		 */
-		protected TestBinaryResponseQuery() {
-			super(HTTPRequestMethod.GET, "");
-		}
-
-		@Override
-		public Map<String, String> getRouteParameters() {
-			return Collections.emptyMap();
-		}
-
-		@Override
-		public Map<String, Object> getQueryParameters() {
-			return Collections.emptyMap();
-		}
-
-	}
+	protected abstract T newQueryInstance();
 }

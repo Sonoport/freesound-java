@@ -23,12 +23,12 @@ import java.util.Map;
 
 import org.junit.Test;
 
-import com.sonoport.freesound.query.sound.SoundInstanceQuery;
+import com.sonoport.freesound.query.JSONResponseQueryTest;
 
 /**
  * Unit tests to ensure the correct operation of {@link SoundInstanceQuery}.
  */
-public class SoundInstanceQueryTest {
+public class SoundInstanceQueryTest extends JSONResponseQueryTest<SoundInstanceQuery> {
 
 	/** The sound identifier to use in tests. */
 	private static final int SOUND_ID = 123;
@@ -47,6 +47,11 @@ public class SoundInstanceQueryTest {
 		final Map<String, Object> queryParameters = query.getQueryParameters();
 		assertNotNull(queryParameters);
 		assertTrue(queryParameters.isEmpty());
+	}
+
+	@Override
+	protected SoundInstanceQuery newQueryInstance() {
+		return new SoundInstanceQuery(SOUND_ID);
 	}
 
 }
