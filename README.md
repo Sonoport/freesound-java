@@ -273,7 +273,20 @@ Pack pack = packInstanceQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#pack-sounds
 
-**Not yet implemented**
+`PackSoundsQuery` allows you to optionally specify which fields are returned for the sounds `Sound` records using the `.includeField(String)` and `.includeFields(Set<String>)` methods
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int packId = 123;
+Set<String> fieldsToInclude = new HashSet<>(Arrays.asList("id", "name", ...etc...));
+
+PackSoundsQuery packSoundsQuery = new PackSoundsQuery(packId).includeFields(fieldsToInclude);
+
+freesoundClient.executeQuery(packSoundsQuery);
+
+PagingResponse<Sound> results = packSoundsQuery.getResults();
+```
 
 ### Download Pack (OAuth2 required)
 
