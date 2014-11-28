@@ -14,7 +14,7 @@ Releases of the library are available through the Maven Central repository at th
 <dependency>
     <groupId>com.sonoport</groupId>
     <artifactId>freesound-java</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
