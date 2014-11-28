@@ -60,6 +60,23 @@ public class BookmarkSoundTest extends JSONResponseQueryTest<BookmarkSound> {
 	}
 
 	/**
+	 * Ensure that {@link BookmarkSound} objects are correctly created when using the 'full' constructor.
+	 */
+	@Test
+	public void fullDetailsBookmarkSoundQueryCorrectlyConstructed() {
+		final BookmarkSound query = new BookmarkSound(SOUND_ID, OAUTH_TOKEN, BOOKMARK_NAME, BOOKMARK_CATEGORY);
+
+		assertEquals(OAUTH_TOKEN, query.getOauthToken());
+
+		assertTrue(query.getRouteParameters().size() == 1);
+		assertEquals(String.valueOf(SOUND_ID), query.getRouteParameters().get(BookmarkSound.SOUND_ID_ROUTE_PARAMETER));
+
+		final Map<String, Object> queryParameters = query.getQueryParameters();
+		assertEquals(BOOKMARK_NAME, queryParameters.get(BookmarkSound.BOOKMARK_NAME_PARAMETER));
+		assertEquals(BOOKMARK_CATEGORY, queryParameters.get(BookmarkSound.BOOKMARK_CATEGORY_PARAMETER));
+	}
+
+	/**
 	 * Ensure that use of the Fluent API methods correctly populates values in query parameters.
 	 */
 	@Test

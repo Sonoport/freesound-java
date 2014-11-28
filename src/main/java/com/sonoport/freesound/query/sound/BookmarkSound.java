@@ -29,6 +29,10 @@ import com.sonoport.freesound.response.mapping.DetailStringMapper;
  * methods.
  *
  * API documentation: http://www.freesound.org/docs/api/resources_apiv2.html#bookmark-sound-oauth2-required
+ *
+ * Note that there is currently a bug in the Freesound API that means both name and category of the bookmark must be
+ * specified at present (despite the documentation stating they are optional). A bug has been raised on GitHub covering
+ * this issue: https://github.com/MTG/freesound/issues/642.
  */
 public class BookmarkSound extends JSONResponseQuery<String> implements OAuthQuery {
 
@@ -61,9 +65,22 @@ public class BookmarkSound extends JSONResponseQuery<String> implements OAuthQue
 	 * @param oauthToken OAuth token to present with request
 	 */
 	public BookmarkSound(final int soundId, final String oauthToken) {
+		this(soundId, oauthToken, null, null);
+	}
+
+	/**
+	 * @param soundId Identifier of sound to bookmark
+	 * @param oauthToken OAuth token to present with request
+	 * @param bookmarkName Name to give the bookmark
+	 * @param bookmarkCategory Category to assign the bookmark to
+	 */
+	public BookmarkSound(
+			final int soundId, final String oauthToken, final String bookmarkName, final String bookmarkCategory) {
 		super(HTTPRequestMethod.POST, PATH, new DetailStringMapper());
 		this.soundId = soundId;
 		this.oauthToken = oauthToken;
+		this.bookmarkName = bookmarkName;
+		this.bookmarkCategory = bookmarkCategory;
 	}
 
 	/**
