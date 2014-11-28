@@ -20,32 +20,29 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.sonoport.freesound.query.JSONResponseQueryTest;
+import com.sonoport.freesound.query.SoundPagingQueryTest;
 
 /**
- * Ensure that {@link PackInstanceQuery} objects are created and operate correctly.
+ * Unit tests to ensure the correct operation of {@link PackSoundsQuery}.
  */
-public class PackInstanceQueryTest extends JSONResponseQueryTest<PackInstanceQuery> {
+public class PackSoundsQueryTest extends SoundPagingQueryTest<PackSoundsQuery> {
 
 	/** Pack identifier to use in tests. */
-	private static final int PACK_ID = 1234;
+	private static final int PACK_ID = 12345;
 
 	/**
-	 * Test to ensure that {@link PackInstanceQuery} objects are correctly created.
+	 * Ensure that instances of {@link PackSoundsQuery} are correctly constructed.
 	 */
 	@Test
-	public void checkPackInstanceQueryCreatedCorrectly() {
-		final PackInstanceQuery query = new PackInstanceQuery(PACK_ID);
+	public void packSoundsQueryCorrectlyCreated() {
+		final PackSoundsQuery query = new PackSoundsQuery(PACK_ID);
 
 		assertTrue(query.getRouteParameters().size() == 1);
-		assertEquals(
-				String.valueOf(PACK_ID), query.getRouteParameters().get(PackInstanceQuery.PACK_IDENTIFIER_PARAMETER));
-
-		assertTrue(query.getQueryParameters().isEmpty());
+		assertEquals(String.valueOf(PACK_ID), query.getRouteParameters().get(PackSoundsQuery.PACK_ID_ROUTE_PARAMETER));
 	}
 
 	@Override
-	protected PackInstanceQuery newQueryInstance() {
-		return new PackInstanceQuery(PACK_ID);
+	protected PackSoundsQuery newQueryInstance() {
+		return new PackSoundsQuery(PACK_ID);
 	}
 }

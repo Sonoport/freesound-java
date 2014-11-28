@@ -15,11 +15,16 @@
  */
 package com.sonoport.freesound.query.oauth2;
 
-
 /**
  * Query used to request a new OAuth2 access token based on a refresh token previously issued.
  */
 public class RefreshOAuth2AccessTokenRequest extends AccessTokenQuery {
+
+	/** The parameter name to pass the refresh token through as. */
+	public static final String CODE_PARAMETER_NAME = "refresh_token";
+
+	/** The grant type to request when refreshing tokens. */
+	public static final String GRANT_TYPE = "refresh_token";
 
 	/**
 	 * @param clientId Application client id
@@ -28,7 +33,7 @@ public class RefreshOAuth2AccessTokenRequest extends AccessTokenQuery {
 	 */
 	public RefreshOAuth2AccessTokenRequest(
 			final String clientId, final String clientSecret, final String refreshToken) {
-		super(clientId, clientSecret, "refresh_token", "refresh_token", refreshToken);
+		super(clientId, clientSecret, GRANT_TYPE, CODE_PARAMETER_NAME, refreshToken);
 	}
 
 }

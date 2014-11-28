@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
-import com.sonoport.freesound.query.Query;
+import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.response.User;
 import com.sonoport.freesound.response.mapping.UserMapper;
 
@@ -30,7 +30,7 @@ import com.sonoport.freesound.response.mapping.UserMapper;
  *
  * http://www.freesound.org/docs/api/resources_apiv2.html#user-instance
  */
-public class UserInstanceQuery extends Query<User> {
+public class UserInstanceQuery extends JSONResponseQuery<User> {
 
 	/** Route parameter containing username of user resource to retrieve. */
 	protected static final String USERNAME_PARAMETER = "username";

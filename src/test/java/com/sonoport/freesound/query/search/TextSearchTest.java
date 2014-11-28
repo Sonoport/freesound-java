@@ -27,12 +27,12 @@ import mockit.Deencapsulation;
 
 import org.junit.Test;
 
-import com.sonoport.freesound.query.search.TextSearch;
+import com.sonoport.freesound.query.SoundPagingQueryTest;
 
 /**
  * Unit tests to ensure the correct operation of {@link TextSearch}.
  */
-public class TextSearchTest {
+public class TextSearchTest extends SoundPagingQueryTest<TextSearch> {
 
 	/** Search string to use in tests. */
 	private static final String SEARCH_STRING = "cars";
@@ -145,4 +145,10 @@ public class TextSearchTest {
 		assertNotNull(routeParameters);
 		assertTrue(routeParameters.isEmpty());
 	}
+
+	@Override
+	protected TextSearch newQueryInstance() {
+		return new TextSearch();
+	}
+
 }

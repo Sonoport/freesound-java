@@ -21,12 +21,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.sonoport.freesound.query.user.UserInstanceQuery;
+import com.sonoport.freesound.query.JSONResponseQueryTest;
 
 /**
  * Unit tests to ensure {@link UserInstanceQuery} objects are correctly created.
  */
-public class UserInstanceQueryTest {
+public class UserInstanceQueryTest extends JSONResponseQueryTest<UserInstanceQuery> {
 
 	/** User name to use in tests. */
 	private static final String USERNAME = "foobar";
@@ -73,5 +73,10 @@ public class UserInstanceQueryTest {
 	@Test (expected = IllegalArgumentException.class)
 	public void nullUsername() throws Exception {
 		new UserInstanceQuery(null);
+	}
+
+	@Override
+	protected UserInstanceQuery newQueryInstance() {
+		return new UserInstanceQuery(USERNAME);
 	}
 }

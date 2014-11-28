@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
-import com.sonoport.freesound.query.Query;
+import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.response.AccessTokenDetails;
 import com.sonoport.freesound.response.mapping.AccessTokenDetailsMapper;
 
@@ -29,7 +29,19 @@ import com.sonoport.freesound.response.mapping.AccessTokenDetailsMapper;
  * be constructed manually, but are more easily used by calling the convenience methods in FreesoundClient to get or
  * renew access tokens.
  */
-public abstract class AccessTokenQuery extends Query<AccessTokenDetails> {
+public abstract class AccessTokenQuery extends JSONResponseQuery<AccessTokenDetails> {
+
+	/** Path to the OAuth2 token endpoint. */
+	public static final String OAUTH_TOKEN_ENDPOINT_PATH = "/oauth2/access_token";
+
+	/** The parameter to pass client identifiers through as. */
+	public static final String CLIENT_ID_PARAMETER_NAME = "client_id";
+
+	/** The parameter to pass client secrets through as. */
+	public static final String CLIENT_SECRET_PARAMETER_NAME = "client_secret";
+
+	/** The parameter to pass grant type requests through as. */
+	public static final String GRANT_TYPE_PARAMETER_NAME = "grant_type";
 
 	/** The Client Id, as provided by freesound. */
 	private final String clientId;
@@ -59,7 +71,7 @@ public abstract class AccessTokenQuery extends Query<AccessTokenDetails> {
 			final String grantType,
 			final String codeParameterName,
 			final String code) {
-		super(HTTPRequestMethod.POST, "/oauth2/access_token", new AccessTokenDetailsMapper());
+		super(HTTPRequestMethod.POST, OAUTH_TOKEN_ENDPOINT_PATH, new AccessTokenDetailsMapper());
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 		this.grantType = grantType;
@@ -71,9 +83,9 @@ public abstract class AccessTokenQuery extends Query<AccessTokenDetails> {
 	public final Map<String, Object> getQueryParameters() {
 		final Map<String, Object> params = new HashMap<>();
 
-		params.put("client_id", clientId);
-		params.put("client_secret", clientSecret);
-		params.put("grant_type", grantType);
+		params.put(CLIENT_ID_PARAMETER_NAME, clientId);
+		params.put(CLIENT_SECRET_PARAMETER_NAME, clientSecret);
+		params.put(GRANT_TYPE_PARAMETER_NAME, grantType);
 		params.put(codeParameterName, code);
 
 		return params;

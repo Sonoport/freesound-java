@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.user;
 
 /**
- * Interface to be implemented by queries that require OAuth2 credentials.
+ * Convenience class, based on {@link UserBookmarkCategorySoundsQuery}, the retrieves all bookmarked sounds that have
+ * not yet been categorised by the given user.
  */
-public interface OAuthQuery {
+public final class UserUncategorisedBookmarkedSoundsQuery extends UserBookmarkCategorySoundsQuery {
+
+	/** Category id indicating 'uncategorised'. */
+	protected static final int UNCATEGORISED_CATEGORY_ID = 0;
 
 	/**
-	 * @return The oauthToken to be presented with the request
+	 * @param username Username to retrieve sounds for
 	 */
-	String getOauthToken();
-
+	public UserUncategorisedBookmarkedSoundsQuery(final String username) {
+		super(username, UNCATEGORISED_CATEGORY_ID);
+	}
 }

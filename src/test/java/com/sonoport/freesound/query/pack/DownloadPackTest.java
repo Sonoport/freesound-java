@@ -20,32 +20,36 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.sonoport.freesound.query.JSONResponseQueryTest;
+import com.sonoport.freesound.query.BinaryResponseQueryTest;
 
 /**
- * Ensure that {@link PackInstanceQuery} objects are created and operate correctly.
+ * Unit tests to ensure the correct operation of {@link DownloadPack}.
  */
-public class PackInstanceQueryTest extends JSONResponseQueryTest<PackInstanceQuery> {
+public class DownloadPackTest extends BinaryResponseQueryTest<DownloadPack> {
 
-	/** Pack identifier to use in tests. */
+	/** Pack Id to use in tests. */
 	private static final int PACK_ID = 1234;
 
+	/** OAuth2 token to use in tests. */
+	private static final String OAUTH_TOKEN = "abc123def";
+
 	/**
-	 * Test to ensure that {@link PackInstanceQuery} objects are correctly created.
+	 * Ensure that instances of {@link DownloadPack} are constructed correctly.
 	 */
 	@Test
-	public void checkPackInstanceQueryCreatedCorrectly() {
-		final PackInstanceQuery query = new PackInstanceQuery(PACK_ID);
+	public void checkDownloadQueryConstructedCorrectly() {
+		final DownloadPack downloadPack = newQueryInstance();
 
-		assertTrue(query.getRouteParameters().size() == 1);
+		assertTrue(downloadPack.getRouteParameters().size() == 1);
 		assertEquals(
-				String.valueOf(PACK_ID), query.getRouteParameters().get(PackInstanceQuery.PACK_IDENTIFIER_PARAMETER));
+				String.valueOf(PACK_ID), downloadPack.getRouteParameters().get(DownloadPack.PACK_ID_ROUTE_PARAMETER));
 
-		assertTrue(query.getQueryParameters().isEmpty());
+		assertEquals(OAUTH_TOKEN, downloadPack.getOauthToken());
 	}
 
 	@Override
-	protected PackInstanceQuery newQueryInstance() {
-		return new PackInstanceQuery(PACK_ID);
+	protected DownloadPack newQueryInstance() {
+		return new DownloadPack(PACK_ID, OAUTH_TOKEN);
 	}
+
 }

@@ -16,13 +16,16 @@
 package com.sonoport.freesound.query;
 
 /**
- * Interface to be implemented by queries that require OAuth2 credentials.
+ * Top level class for creating tests for {@link Query} classes.
+ *
+ * @param <T> {@link Query} class under test
  */
-public interface OAuthQuery {
+public abstract class QueryTest<T extends Query<?, ?>> {
 
 	/**
-	 * @return The oauthToken to be presented with the request
+	 * Build and return a simple instance of the query under test.
+	 *
+	 * @return Instance of query under test
 	 */
-	String getOauthToken();
-
+	protected abstract T newQueryInstance();
 }

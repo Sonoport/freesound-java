@@ -2,9 +2,21 @@ freesound-java
 ==============
 [ ![Codeship Status for Sonoport/freesound-java](https://codeship.com/projects/6b0c6770-4be5-0132-dce8-16e44e5e051f/status)](https://codeship.com/projects/46881) [![Coverage Status](https://img.shields.io/coveralls/Sonoport/freesound-java.svg)](https://coveralls.io/r/Sonoport/freesound-java)
 
-Java library for accessing the freesound.org API
+Java library for accessing the freesound.org API. 
+
+Made available under the Apache License, Version 2.0.
 
 # Usage
+
+Releases of the library are available through the Maven Central repository at the following coordinates:
+
+```xml
+<dependency>
+    <groupId>com.sonoport</groupId>
+    <artifactId>freesound-java</artifactId>
+    <version>0.3.0</version>
+</dependency>
+```
 
 Create an instance of FreesoundClient using your Client ID and Secret from the [details you registered with Freesound](http://freesound.org/api/apply). Calls to the API are made by building the appropriate Query subclass and passing it to FreesoundClient.executeQuery().
 
@@ -50,6 +62,7 @@ For more complex scenarios, a fluent builder is offered for the various options:
 * To specify filters: `.filter(SearchFilter)`
 * To specify sort order: `.sortOrder(SortOrder)`
 * To specify whether results should be grouped by pack: `.groupByPack(boolean)`
+* To specify the fields to return in the results: `.includeField(String)` or `.includeFields(Set<String>)`
 * To specify the number of results to return per page: `.pageSize(int)` (Maximum of 150)
 * To specify the page of results to retrieve: `.page(int)`
 
@@ -98,19 +111,54 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#sound-analysis
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#similar-sounds
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundIdentifier = 123;
+SimilarSoundsQuery similarSoundsQuery = new SimilarSoundsQuery(soundIdentifier);
+
+freesoundClient.executeQuery(similarSoundsQuery);
+
+PagingResponse<Sound> sounds = similarSoundsQuery.getResults();
+```
 
 ### Sound Comments
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#sound-comments
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+SoundCommentsQuery soundCommentsQuery = new SoundCommentsQuery(soundId);
+
+freesoundClient.executeQuery(soundCommentsQuery);
+
+PagingResponse<Comment> comments = query.getResults();
+```
 
 ### Download Sound (OAuth2 required)
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#download-sound-oauth2-required
 
-**Not yet implemented**
+The download sound query returns an `InputStream` object containing the binary contents returned as a result of the call. Once the application has finished with this object, it must close it.
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+String oauthToken = "...";
+
+DownloadSound downloadSoundQuery = new DownloadSound(soundId, oauthToken);
+
+freesoundClient.executeQuery(downloadSoundQuery);
+
+InputStream is = downloadSoundQuery.getResults();
+
+// Do something with the InputStream
+
+is.close();
+```
 
 ### Upload Sound (OAuth2 required)
 
@@ -140,7 +188,31 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#edit-sound-descripti
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#bookmark-sound-oauth2-required
 
-**Not yet implemented**
+There are two ways to create `BookmarkSound` query objects - by using the simple constructor and the Fluent API:
+
+```java
+int soundId = 123;
+String oauthToken = "...";
+String bookmarkName = "Bookmark Name";
+String bookmarkCategory = "category";
+
+BookmarkSound bookmarkQuery = new BookmarkSound(soundId, oauthToken).name(bookmarkName).category(bookmarkCategory);
+```
+
+Or, alternatively, specifying everything in the constructor:
+
+```java
+int soundId = 123;
+String oauthToken = "...";
+String bookmarkName = "Bookmark Name";
+String bookmarkCategory = "category";
+
+BookmarkSound bookmarkQuery = new BookmarkSound(soundId, oauthToken, bookmarkName, bookmarkCategory);
+```
+
+The result returned is a `String` containing the message received from the API.
+
+Note that, at present, there is a bug in the API that means the bookmark name and category MUST be specified, otherwise an HTTP 500 Internal Server Error is returned. These parameters should be optional (as specified in the API documentation), so a bug has been raised on GitHub to cover this: https://github.com/MTG/freesound/issues/642. Until this is resolved, use of the 'full' 4 parameter constructor is recommended.
 
 ### Rate Sound (OAuth2 required)
 
@@ -173,25 +245,79 @@ User user = userInstanceQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-sounds
 
-**Not yet implemented**
+`UserSoundsQuery` allows you to specify which fields are returned for the sounds `Sound` records using the `.includeField(String)` and `.includeFields(Set<String>)` methods
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+Set<String> fieldsToInclude = new HashSet<>(Arrays.asList("id", "name", ...etc...));
+
+UserSoundsQuery userSoundsQuery = new UserSoundsQuery(username).includeFields(fieldsToInclude);
+
+freesoundClient.executeQuery(userSoundsQuery);
+
+PagingResponse<Sound> results = userSoundsQuery.getResults();
+```
 
 ### User Packs
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-packs
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+UserPacksQuery userPacksQuery = new UserPacksQuery(username);
+
+freesoundClient.executeQuery(userPacksQuery);
+
+PagingResponse<Pack> packs = userPacksQuery.getResults();
+```
 
 ### User Bookmark Categories
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-bookmark-categories
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+UserBookmarkCategoriesQuery query = new UserBookmarkCategoriesQuery(username);
+
+executeQuery(query);
+
+PagingResponse<BookmarkCategory> results = query.getResults();
+```
 
 ### User Bookmark Category Sounds
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#user-bookmark-category-sounds
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+int categoryId = 123;
+UserBookmarkCategorySoundsQuery query = new UserBookmarkCategorySoundsQuery(username, categoryId);
+
+executeQuery(query);
+
+PagingResponse<Sound> results = query.getResults();
+```
+
+Or, if you want to retrieve bookmarked sounds that have not yet been categorised by the user:
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String username = "testuser";
+UserUncategorisedBookmarkedSoundsQuery query = new UserUncategorisedBookmarkedSoundsQuery(username);
+
+executeQuery(query);
+
+PagingResponse<Sound> results = query.getResults();
+```
 
 ### Pack Instance
 
@@ -212,13 +338,43 @@ Pack pack = packInstanceQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#pack-sounds
 
-**Not yet implemented**
+`PackSoundsQuery` allows you to optionally specify which fields are returned for the sounds `Sound` records using the `.includeField(String)` and `.includeFields(Set<String>)` methods
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int packId = 123;
+Set<String> fieldsToInclude = new HashSet<>(Arrays.asList("id", "name", ...etc...));
+
+PackSoundsQuery packSoundsQuery = new PackSoundsQuery(packId).includeFields(fieldsToInclude);
+
+freesoundClient.executeQuery(packSoundsQuery);
+
+PagingResponse<Sound> results = packSoundsQuery.getResults();
+```
 
 ### Download Pack (OAuth2 required)
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#download-pack-oauth2-required
 
-**Not yet implemented**
+The download pack query returns an `InputStream` object containing the binary contents returned as a result of the call - this consists of a ZIP compressed object containing all of the sounds in the pack. Once the application has finished with this object, it must close it.
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int packId = 123;
+String oauthToken = "...";
+
+DownloadPack downloadPackQuery = new DownloadPack(packId, oauthToken);
+
+freesoundClient.executeQuery(downloadPackQuery);
+
+InputStream is = downloadPackQuery.getResults();
+
+// Do something with the InputStream
+
+is.close();
+```
 
 ### Me (information about user authenticated using OAuth2, OAuth2 required)
 

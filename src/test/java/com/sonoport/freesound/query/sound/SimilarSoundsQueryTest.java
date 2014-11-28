@@ -13,39 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query.pack;
+package com.sonoport.freesound.query.sound;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import com.sonoport.freesound.query.JSONResponseQueryTest;
+import com.sonoport.freesound.query.SoundPagingQueryTest;
 
 /**
- * Ensure that {@link PackInstanceQuery} objects are created and operate correctly.
+ * Unit tests to ensure the correct operation of {@link SimilarSoundsQuery}.
  */
-public class PackInstanceQueryTest extends JSONResponseQueryTest<PackInstanceQuery> {
+public class SimilarSoundsQueryTest extends SoundPagingQueryTest<SimilarSoundsQuery> {
 
-	/** Pack identifier to use in tests. */
-	private static final int PACK_ID = 1234;
+	/** Sound identifier to use in tests. */
+	private static final int SOUND_ID = 12345;
 
 	/**
-	 * Test to ensure that {@link PackInstanceQuery} objects are correctly created.
+	 * Ensure that instances of {@link SimilarSoundsQuery} are constructed correctly.
 	 */
 	@Test
-	public void checkPackInstanceQueryCreatedCorrectly() {
-		final PackInstanceQuery query = new PackInstanceQuery(PACK_ID);
+	public void similarSoundsQueryCorrectlyCreated() {
+		final SimilarSoundsQuery query = new SimilarSoundsQuery(SOUND_ID);
 
 		assertTrue(query.getRouteParameters().size() == 1);
 		assertEquals(
-				String.valueOf(PACK_ID), query.getRouteParameters().get(PackInstanceQuery.PACK_IDENTIFIER_PARAMETER));
-
-		assertTrue(query.getQueryParameters().isEmpty());
+				String.valueOf(SOUND_ID), query.getRouteParameters().get(SimilarSoundsQuery.SOUND_ID_ROUTE_PARAMETER));
 	}
 
 	@Override
-	protected PackInstanceQuery newQueryInstance() {
-		return new PackInstanceQuery(PACK_ID);
+	protected SimilarSoundsQuery newQueryInstance() {
+		return new SimilarSoundsQuery(SOUND_ID);
 	}
 }

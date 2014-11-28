@@ -63,7 +63,7 @@ public abstract class Mapper<S extends Object, R extends Object> {
 	protected <T extends Object> T extractFieldValue(
 			final JSONObject jsonObject, final String field, final Class<T> fieldType) {
 		T fieldValue = null;
-		if (jsonObject.has(field) && !jsonObject.isNull(field)) {
+		if ((jsonObject != null) && jsonObject.has(field) && !jsonObject.isNull(field)) {
 			try {
 				if (fieldType == String.class) {
 					fieldValue = (T) jsonObject.getString(field);

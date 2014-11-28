@@ -13,16 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.response.mapping;
+
+import org.json.JSONObject;
 
 /**
- * Interface to be implemented by queries that require OAuth2 credentials.
+ * {@link Mapper} class that converts responses from the API that consist of a JSON dictionary containing a single
+ * 'detail' value.
  */
-public interface OAuthQuery {
+public class DetailStringMapper extends Mapper<JSONObject, String> {
 
-	/**
-	 * @return The oauthToken to be presented with the request
-	 */
-	String getOauthToken();
+	@Override
+	public String map(final JSONObject source) {
+		return extractFieldValue(source, "detail", String.class);
+	}
 
 }

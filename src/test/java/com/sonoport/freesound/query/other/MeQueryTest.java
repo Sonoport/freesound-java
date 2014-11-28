@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query.pack;
+package com.sonoport.freesound.query.other;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -23,29 +23,27 @@ import org.junit.Test;
 import com.sonoport.freesound.query.JSONResponseQueryTest;
 
 /**
- * Ensure that {@link PackInstanceQuery} objects are created and operate correctly.
+ * Unit tests to ensure the correct operation of the {@link MeQuery} class.
  */
-public class PackInstanceQueryTest extends JSONResponseQueryTest<PackInstanceQuery> {
+public class MeQueryTest extends JSONResponseQueryTest<MeQuery> {
 
-	/** Pack identifier to use in tests. */
-	private static final int PACK_ID = 1234;
+	/** OAuth bearer token to use in tests. */
+	private static final String OAUTH_TOKEN = "abc123def456";
 
 	/**
-	 * Test to ensure that {@link PackInstanceQuery} objects are correctly created.
+	 * Ensure that {@link MeQuery} instances are correctly constructed.
 	 */
 	@Test
-	public void checkPackInstanceQueryCreatedCorrectly() {
-		final PackInstanceQuery query = new PackInstanceQuery(PACK_ID);
+	public void meQueryCorrectlyConstructed() {
+		final MeQuery meQuery = new MeQuery(OAUTH_TOKEN);
 
-		assertTrue(query.getRouteParameters().size() == 1);
-		assertEquals(
-				String.valueOf(PACK_ID), query.getRouteParameters().get(PackInstanceQuery.PACK_IDENTIFIER_PARAMETER));
-
-		assertTrue(query.getQueryParameters().isEmpty());
+		assertEquals(OAUTH_TOKEN, meQuery.getOauthToken());
+		assertTrue(meQuery.getRouteParameters().isEmpty());
+		assertTrue(meQuery.getQueryParameters().isEmpty());
 	}
 
 	@Override
-	protected PackInstanceQuery newQueryInstance() {
-		return new PackInstanceQuery(PACK_ID);
+	protected MeQuery newQueryInstance() {
+		return new MeQuery(OAUTH_TOKEN);
 	}
 }

@@ -21,13 +21,16 @@ import static org.junit.Assert.assertTrue;
 import org.json.JSONObject;
 import org.junit.Test;
 
-import com.sonoport.freesound.response.SoundResultsList;
+import com.sonoport.freesound.response.PagingResponse;
+import com.sonoport.freesound.response.Sound;
 
 /**
- * Unit tests to ensure the correct operation of {@link SoundResultsListMapper}. The test data used is defined in
- * <code>/src/test/resources/search-results.json</code>.
+ * Unit tests to ensure the correct operation of {@link PagingResponseMapper} when handling sounds and {@link Sound}
+ * objects.
+ *
+ * The test data used is defined in <code>/src/test/resources/sound-list.json</code>.
  */
-public class SoundResultsListMapperTest extends MapperTest {
+public class SoundListMappingTest extends MapperTest {
 
 	/** The value for the number of results. */
 	private static final Integer COUNT = Integer.valueOf(4557);
@@ -41,7 +44,7 @@ public class SoundResultsListMapperTest extends MapperTest {
 			"http://www.freesound.org/apiv2/search/text/?&query=cars&page=1&page_size=3";
 
 	/** Instance of {@link SoundResultsListMapper} to use in tests. */
-	private final SoundResultsListMapper mapper = new SoundResultsListMapper();
+	private final PagingResponseMapper<Sound> mapper = new PagingResponseMapper<>(new SoundMapper());
 
 	/**
 	 * Ensure that mapper correctly parses the JSON structure of the search results.
@@ -50,14 +53,14 @@ public class SoundResultsListMapperTest extends MapperTest {
 	 */
 	@Test
 	public void parseSoundResults() throws Exception {
-		final JSONObject jsonSearchResults = readJSONFile("/search-results.json");
+		final JSONObject jsonSearchResults = readJSONFile("/sound-list.json");
 
-		final SoundResultsList soundResultsList = mapper.map(jsonSearchResults);
+		final PagingResponse<Sound> soundResultsList = mapper.map(jsonSearchResults);
 
 		assertEquals(COUNT, Integer.valueOf(soundResultsList.getCount()));
 		assertEquals(NEXT_PAGE, soundResultsList.getNextPageURI());
 		assertEquals(PREVIOUS_PAGE, soundResultsList.getPreviousPageURI());
 
-		assertTrue(soundResultsList.getSounds().size() == 3);
+		assertTrue(soundResultsList.getItems().size() == 3);
 	}
 }

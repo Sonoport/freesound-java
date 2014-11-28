@@ -13,24 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.sonoport.freesound.query;
+package com.sonoport.freesound.query.other;
 
 import java.util.Collections;
 import java.util.Map;
 
+import com.sonoport.freesound.query.HTTPRequestMethod;
+import com.sonoport.freesound.query.JSONResponseQuery;
+import com.sonoport.freesound.query.OAuthQuery;
 import com.sonoport.freesound.response.CurrentUser;
 import com.sonoport.freesound.response.mapping.CurrentUserMapper;
 
 /**
  * Query used to retrieve full details of the currently authorised user.
  */
-public class MeQuery extends OAuthQuery<CurrentUser> {
+public class MeQuery extends JSONResponseQuery<CurrentUser> implements OAuthQuery {
+
+	/** The OAuth bearer token to be presented with the request. */
+	private final String oauthToken;
 
 	/**
 	 * @param oauthToken The OAuth token associated with the user
 	 */
 	public MeQuery(final String oauthToken) {
-		super(HTTPRequestMethod.GET, "/me/", new CurrentUserMapper(), oauthToken);
+		super(HTTPRequestMethod.GET, "/me/", new CurrentUserMapper());
+		this.oauthToken = oauthToken;
 	}
 
 	@Override
@@ -41,6 +48,11 @@ public class MeQuery extends OAuthQuery<CurrentUser> {
 	@Override
 	public Map<String, Object> getQueryParameters() {
 		return Collections.emptyMap();
+	}
+
+	@Override
+	public String getOauthToken() {
+		return oauthToken;
 	}
 
 }
