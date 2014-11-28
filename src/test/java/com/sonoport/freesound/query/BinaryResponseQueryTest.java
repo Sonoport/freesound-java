@@ -31,7 +31,7 @@ import org.junit.Test;
  *
  * @param <T> The subclass of {@link BinaryResponseQuery} under test
  */
-public abstract class BinaryResponseQueryTest<T extends BinaryResponseQuery> {
+public abstract class BinaryResponseQueryTest<T extends BinaryResponseQuery> extends QueryTest<T> {
 
 	/** The error message to use in tests. */
 	private static final String ERROR_MESSAGE = "An error occured";
@@ -88,10 +88,4 @@ public abstract class BinaryResponseQueryTest<T extends BinaryResponseQuery> {
 		assertEquals(BinaryResponseQuery.IO_EXCEPTION_MESSAGE, errorMessage);
 	}
 
-	/**
-	 * Build and return a simple instance of the query under test.
-	 *
-	 * @return Instance of query under test
-	 */
-	protected abstract T newQueryInstance();
 }

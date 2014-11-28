@@ -25,7 +25,7 @@ import org.junit.Test;
  *
  * @param <T> The subclass of {@link JSONResponseQuery} under test
  */
-public abstract class JSONResponseQueryTest<T extends JSONResponseQuery<?>> {
+public abstract class JSONResponseQueryTest<T extends JSONResponseQuery<?>> extends QueryTest<T> {
 
 	/** The error message to use in tests. */
 	private static final String ERROR_MESSAGE = "An error occured";
@@ -45,11 +45,4 @@ public abstract class JSONResponseQueryTest<T extends JSONResponseQuery<?>> {
 
 		assertEquals(ERROR_MESSAGE, errorMessage);
 	}
-
-	/**
-	 * Build and return a simple instance of the query under test.
-	 *
-	 * @return Instance of query under test
-	 */
-	protected abstract T newQueryInstance();
 }
