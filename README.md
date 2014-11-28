@@ -333,7 +333,24 @@ PagingResponse<Sound> results = packSoundsQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#download-pack-oauth2-required
 
-**Not yet implemented**
+The download pack query returns an `InputStream` object containing the binary contents returned as a result of the call - this consists of a ZIP compressed object containing all of the sounds in the pack. Once the application has finished with this object, it must close it.
+
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int packId = 123;
+String oauthToken = "...";
+
+DownloadPack downloadPackQuery = new DownloadPack(packId, oauthToken);
+
+freesoundClient.executeQuery(downloadPackQuery);
+
+InputStream is = downloadPackQuery.getResults();
+
+// Do something with the InputStream
+
+is.close();
+```
 
 ### Me (information about user authenticated using OAuth2, OAuth2 required)
 
