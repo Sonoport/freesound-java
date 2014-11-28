@@ -188,7 +188,31 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#edit-sound-descripti
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#bookmark-sound-oauth2-required
 
-**Not yet implemented**
+There are two ways to create `BookmarkSound` query objects - by using the simple constructor and the Fluent API:
+
+```java
+int soundId = 123;
+String oauthToken = "...";
+String bookmarkName = "Bookmark Name";
+String bookmarkCategory = "category";
+
+BookmarkSound bookmarkQuery = new BookmarkSound(soundId, oauthToken).name(bookmarkName).category(bookmarkCategory);
+```
+
+Or, alternatively, specifying everything in the constructor:
+
+```java
+int soundId = 123;
+String oauthToken = "...";
+String bookmarkName = "Bookmark Name";
+String bookmarkCategory = "category";
+
+BookmarkSound bookmarkQuery = new BookmarkSound(soundId, oauthToken, bookmarkName, bookmarkCategory);
+```
+
+The result returned is a `String` containing the message received from the API.
+
+Note that, at present, there is a bug in the API that means the bookmark name and category MUST be specified, otherwise an HTTP 500 Internal Server Error is returned. These parameters should be optional (as specified in the API documentation), so a bug has been raised on GitHub to cover this: https://github.com/MTG/freesound/issues/642. Until this is resolved, use of the 'full' 4 parameter constructor is recommended.
 
 ### Rate Sound (OAuth2 required)
 
