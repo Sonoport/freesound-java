@@ -15,7 +15,7 @@
  */
 package com.sonoport.freesound.response.mapping;
 
-import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -34,15 +34,15 @@ public class AudioDescriptorsMapper extends Mapper<JSONObject, AudioDescriptors>
 		final JSONObject fixedLengthDescriptors = extractFieldValue(source, "fixed-length", JSONObject.class);
 		final JSONArray fixedLengthOneDimensionalDescriptors =
 				extractFieldValue(fixedLengthDescriptors, "one-dimensional", JSONArray.class);
-		audioDescriptors.setFixedLengthOneDimensional(new HashSet<>(parseArray(fixedLengthOneDimensionalDescriptors)));
+		audioDescriptors.setFixedLengthOneDimensional(new TreeSet<>(parseArray(fixedLengthOneDimensionalDescriptors)));
 
 		final JSONArray fixedLengthMultiDimensionalDescriptors =
 				extractFieldValue(fixedLengthDescriptors, "multi-dimensional", JSONArray.class);
 		audioDescriptors.setFixedLengthMultiDimensional(
-				new HashSet<>(parseArray(fixedLengthMultiDimensionalDescriptors)));
+				new TreeSet<>(parseArray(fixedLengthMultiDimensionalDescriptors)));
 
 		final JSONArray variableLengthDescriptors = extractFieldValue(source, "variable-length", JSONArray.class);
-		audioDescriptors.setVariableLength(new HashSet<>(parseArray(variableLengthDescriptors)));
+		audioDescriptors.setVariableLength(new TreeSet<>(parseArray(variableLengthDescriptors)));
 
 		return audioDescriptors;
 	}
