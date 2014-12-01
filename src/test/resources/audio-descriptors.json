@@ -1,0 +1,15 @@
+{
+    "variable-length": [
+        "rhythm.beats_position"
+    ],
+    "fixed-length": {
+        "multi-dimensional": [
+            "lowlevel.barkbands.dmean",
+            "lowlevel.barkbands.dmean2"
+        ],
+        "one-dimensional": [
+            "lowlevel.average_loudness",
+            "lowlevel.barkbands.dmean"
+        ]
+    }
+}
