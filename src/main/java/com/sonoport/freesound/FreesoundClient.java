@@ -47,6 +47,19 @@ public class FreesoundClient {
 	/** Base address for all calls to the freesound.org APIv2. */
 	protected static final String API_ENDPOINT = "https://www.freesound.org/apiv2";
 
+	/** Name of the HTTP Header specifying the user agent string. */
+	protected static final String HTTP_USER_AGENT_HEADER = "User-Agent";
+
+	/** The default User-Agent string to pass with requests, if user does not specify their own. */
+	protected static final String DEFAULT_USER_AGENT_STRING =
+			"Sonoport-freesound-java/0.4.0 (https://github.com/Sonoport/freesound-java)";
+
+	/** Name of the HTTP Header specifying the content types to be accepted. */
+	protected static final String HTTP_ACCEPT_HEADER = "Accept";
+
+	/** The content types the library will accept. */
+	protected static final String CONTENT_TYPES_TO_ACCEPT = "application/json, application/octet-stream";
+
 	/** The Client ID created by freesound.org for the application. */
 	private final String clientId;
 
@@ -58,10 +71,25 @@ public class FreesoundClient {
 	 * @param clientSecret Client Secret (API Key) for application
 	 */
 	public FreesoundClient(final String clientId, final String clientSecret) {
+		this(clientId, clientSecret, null);
+	}
+
+	/**
+	 * @param clientId Client ID for application
+	 * @param clientSecret Client Secret (API Key) for application
+	 * @param userAgentString The User-Agent string to send with all requests
+	 */
+	public FreesoundClient(final String clientId, final String clientSecret, final String userAgentString) {
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 
-		Unirest.setDefaultHeader("Accept", "application/json, application/octet-stream");
+		Unirest.setDefaultHeader(HTTP_ACCEPT_HEADER, CONTENT_TYPES_TO_ACCEPT);
+
+		if (userAgentString != null) {
+			Unirest.setDefaultHeader(HTTP_USER_AGENT_HEADER, userAgentString);
+		} else {
+			Unirest.setDefaultHeader(HTTP_USER_AGENT_HEADER, DEFAULT_USER_AGENT_STRING);
+		}
 	}
 
 	/**

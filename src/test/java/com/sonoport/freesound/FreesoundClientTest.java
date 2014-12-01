@@ -43,7 +43,6 @@ import com.sonoport.freesound.query.BinaryResponseQuery;
 import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.query.PagingQuery;
-import com.sonoport.freesound.query.Query;
 import com.sonoport.freesound.query.oauth2.AccessTokenQuery;
 import com.sonoport.freesound.query.oauth2.OAuth2AccessTokenRequest;
 import com.sonoport.freesound.query.oauth2.RefreshOAuth2AccessTokenRequest;
@@ -99,6 +98,9 @@ public class FreesoundClientTest {
 						"{ \"access_token\":\"%s\", \"scope\":\"%s\", \"expires_in\":%d, \"refresh_token\":\"%s\" }",
 						OAUTH_ACCESS_TOKEN, OAUTH_SCOPE, OAUTH_TOKEN_EXPIRES_IN, OAUTH_REFRESH_TOKEN));
 
+	/** Custom User-Agent string to use in tests. */
+	private static final String USER_AGENT_STRING = "freesound-java/test";
+
 	/** Instance of {@link FreesoundClient} to use in unit tests. */
 	private FreesoundClient freesoundClient;
 
@@ -108,6 +110,45 @@ public class FreesoundClientTest {
 	@Before
 	public void configureClient() {
 		freesoundClient = new FreesoundClient(CLIENT_ID, CLIENT_SECRET);
+	}
+
+	/**
+	 * Ensure that instances of {@link FreesoundClient} are created correctly with default options set.
+	 *
+	 * @param mockUnirest Mock {@link Unirest} object
+	 */
+	@SuppressWarnings("static-access")
+	@Test
+	public void defaultHeadersSetCorrectly(@Mocked final Unirest mockUnirest) {
+		new FreesoundClient(CLIENT_ID, CLIENT_SECRET);
+
+		new Verifications() {
+			{
+				mockUnirest.setDefaultHeader(
+						FreesoundClient.HTTP_ACCEPT_HEADER, FreesoundClient.CONTENT_TYPES_TO_ACCEPT);
+				mockUnirest.setDefaultHeader(
+						FreesoundClient.HTTP_USER_AGENT_HEADER, FreesoundClient.DEFAULT_USER_AGENT_STRING);
+			}
+		};
+	}
+
+	/**
+	 * Ensure that instances of {@link FreesoundClient} are created correctly with a custom User-Agent string specified.
+	 *
+	 * @param mockUnirest Mock {@link Unirest} object
+	 */
+	@SuppressWarnings("static-access")
+	@Test
+	public void headersSetCorrectlyWithCustomUserAgent(@Mocked final Unirest mockUnirest) {
+		new FreesoundClient(CLIENT_ID, CLIENT_SECRET, USER_AGENT_STRING);
+
+		new Verifications() {
+			{
+				mockUnirest.setDefaultHeader(
+						FreesoundClient.HTTP_ACCEPT_HEADER, FreesoundClient.CONTENT_TYPES_TO_ACCEPT);
+				mockUnirest.setDefaultHeader(FreesoundClient.HTTP_USER_AGENT_HEADER, USER_AGENT_STRING);
+			}
+		};
 	}
 
 	/**
