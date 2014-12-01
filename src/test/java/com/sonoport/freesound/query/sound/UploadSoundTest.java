@@ -47,6 +47,9 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 	/** Tag to use in tests. Contains a space that should be replaced with a hypen before being passed in to the API. */
 	private static final String TAG_2 = "second tag";
 
+	/** Tag to use in tests. */
+	private static final String TAG_3 = "another-tag";
+
 	/** Collection of tags to use in tests. */
 	private static final Set<String> TAGS = new HashSet<>(Arrays.asList(TAG_1, TAG_2));
 
@@ -118,6 +121,7 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 					.description(DESCRIPTION)
 					.license(LICENSE)
 					.tags(TAGS)
+					.tag(TAG_3)
 					.name(NAME)
 					.pack(PACK)
 					.geotag(GEOTAG);
@@ -129,9 +133,10 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 
 		final String tagsString = (String) uploadSound.getQueryParameters().get(UploadSound.TAGS_PARAMETER_NAME);
 		final Set<String> tags = new HashSet<>(Arrays.asList(tagsString.split(" ")));
-		assertTrue(tags.size() == 2);
+		assertTrue(tags.size() == 3);
 		assertTrue(tags.contains(TAG_1));
 		assertTrue(tags.contains(EXPECTED_TAG_2));
+		assertTrue(tags.contains(TAG_3));
 
 		assertEquals(NAME, uploadSound.getQueryParameters().get(UploadSound.SOUND_NAME_PARAMETER_NAME));
 		assertEquals(PACK, uploadSound.getQueryParameters().get(UploadSound.PACK_PARAMETER_NAME));

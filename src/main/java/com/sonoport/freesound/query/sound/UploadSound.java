@@ -131,6 +131,21 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 	}
 
 	/**
+	 * Specify an individual tag associated with the sound.
+	 *
+	 * @param tag The tag associated with the sound
+	 * @return The current {@link UploadSound} instance
+	 */
+	public UploadSound tag(final String tag) {
+		if (this.tags == null) {
+			this.tags = new HashSet<>();
+		}
+
+		this.tags.add(tag);
+		return this;
+	}
+
+	/**
 	 * Specify the tags associated with the sound.
 	 *
 	 * @param tags The tags associated with the sound
