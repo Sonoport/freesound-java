@@ -16,8 +16,10 @@
 package com.sonoport.freesound.query.sound;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -46,10 +48,13 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 	protected static final String TAGS_PARAMETER_NAME = "tags";
 
 	/** Parameter to pass the geotag through as. */
-	private static final String GEOTAG_PARAMETER_NAME = "geotag";
+	protected static final String GEOTAG_PARAMETER_NAME = "geotag";
 
 	/** Parameter to pass the pack name through as. */
 	protected static final String PACK_PARAMETER_NAME = "pack";
+
+	/** Parameter to pass the sound name through as. */
+	protected static final String SOUND_NAME_PARAMETER_NAME = "name";
 
 	/** Path to API endpoint. */
 	private static final String PATH = "/sounds/upload/";
@@ -61,20 +66,20 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 	private String name;
 
 	/** The tags that will be assigned to the sound. */
-	private final Set<String> tags;
+	private Set<String> tags;
 
 	/** A textual description of the sound. */
-	private final String description;
+	private String description;
 
 	/** The license of the sound. */
-	private final String license;
+	private String license;
 
 	/** The name of the pack where the sound should be included. If user has created no such pack with that name, a new
 	 * one will be created. */
 	private String pack;
 
 	/** Geotag information for the sound. */
-	private String geotag;
+	private Geotag geotag;
 
 	/**
 	 * Simplest means of uploading a sound - will have default details associated with it. Further details can be added
@@ -103,6 +108,77 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 		this.tags = tags;
 	}
 
+	/**
+	 * Specify a description for the sound being uploaded.
+	 *
+	 * @param description The description of the sound
+	 * @return The current {@link UploadSound} instance
+	 */
+	public UploadSound description(final String description) {
+		this.description = description;
+		return this;
+	}
+
+	/**
+	 * Specify the license associated with the sound.
+	 *
+	 * @param license The sound license
+	 * @return The current {@link UploadSound} instance
+	 */
+	public UploadSound license(final String license) {
+		this.license = license;
+		return this;
+	}
+
+	/**
+	 * Specify the tags associated with the sound.
+	 *
+	 * @param tags The tags associated with the sound
+	 * @return The current {@link UploadSound} instance
+	 */
+	public UploadSound tags(final Collection<String> tags) {
+		if (this.tags == null) {
+			this.tags = new HashSet<>();
+		}
+
+		this.tags.addAll(tags);
+
+		return this;
+	}
+
+	/**
+	 * Specify the name of the sound.
+	 *
+	 * @param name Name of the sound
+	 * @return The current {@link UploadSound} instance
+	 */
+	public UploadSound name(final String name) {
+		this.name = name;
+		return this;
+	}
+
+	/**
+	 * Specify the pack the sound should be included in. The pack will be created if it does not already exist.
+	 *
+	 * @param pack Name of the pack
+	 * @return The current {@link UploadSound} instance
+	 */
+	public UploadSound pack(final String pack) {
+		this.pack = pack;
+		return this;
+	}
+
+	/**
+	 * Specify geolocation details associated with the sound.
+	 *
+	 * @param geotag Geo details for sound
+	 * @return The current {@link UploadSound} instance
+	 */
+	public UploadSound geotag(final Geotag geotag) {
+		this.geotag = geotag;
+		return this;
+	}
+
 	@Override
 	public Map<String, String> getRouteParameters() {
 		return Collections.emptyMap();
@@ -115,7 +191,7 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 		queryParams.put(SOUND_FILE_PARAMETER_NAME, soundFile);
 
 		if (name != null) {
-			queryParams.put("name", name);
+			queryParams.put(SOUND_NAME_PARAMETER_NAME, name);
 		}
 
 		if (description != null) {
@@ -141,7 +217,9 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 		}
 
 		if (geotag != null) {
-			queryParams.put(GEOTAG_PARAMETER_NAME, geotag);
+			queryParams.put(
+					GEOTAG_PARAMETER_NAME,
+					geotag.getLatitude() + "," + geotag.getLongitude() + "," + geotag.getZoom());
 		}
 
 		return queryParams;
