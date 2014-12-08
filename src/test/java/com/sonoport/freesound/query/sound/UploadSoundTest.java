@@ -77,6 +77,9 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 	/** String the {@link Geotag} object should be converted into. */
 	private static final String EXPECTED_GEOTAG_STRING = LATITUDE + "," + LONGITUDE + "," + ZOOM;
 
+	/** OAuth2 access token to use in tests. */
+	private static final String OAUTH_TOKEN = "abc123def";
+
 	/** Mock {@link File} object to use in tests. */
 	@Mocked
 	private File mockFile;
@@ -90,6 +93,7 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 
 		assertTrue(uploadSound.getRouteParameters().isEmpty());
 		assertSame(mockFile, uploadSound.getQueryParameters().get(UploadSound.SOUND_FILE_PARAMETER_NAME));
+		assertEquals(OAUTH_TOKEN, uploadSound.getOauthToken());
 	}
 
 	/**
@@ -97,12 +101,13 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 	 */
 	@Test
 	public void completeConstructor() {
-		final UploadSound uploadSound = new UploadSound(mockFile, DESCRIPTION, LICENSE, TAGS);
+		final UploadSound uploadSound = new UploadSound(mockFile, DESCRIPTION, LICENSE, TAGS, OAUTH_TOKEN);
 
 		assertTrue(uploadSound.getRouteParameters().isEmpty());
 		assertSame(mockFile, uploadSound.getQueryParameters().get(UploadSound.SOUND_FILE_PARAMETER_NAME));
 		assertEquals(DESCRIPTION, uploadSound.getQueryParameters().get(UploadSound.DESCRIPTION_PARAMETER_NAME));
 		assertEquals(LICENSE, uploadSound.getQueryParameters().get(UploadSound.LICENSE_PARAMETER_NAME));
+		assertEquals(OAUTH_TOKEN, uploadSound.getOauthToken());
 
 		final String tagsString = (String) uploadSound.getQueryParameters().get(UploadSound.TAGS_PARAMETER_NAME);
 		final Set<String> tags = new HashSet<>(Arrays.asList(tagsString.split(" ")));
@@ -130,6 +135,7 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 		assertSame(mockFile, uploadSound.getQueryParameters().get(UploadSound.SOUND_FILE_PARAMETER_NAME));
 		assertEquals(DESCRIPTION, uploadSound.getQueryParameters().get(UploadSound.DESCRIPTION_PARAMETER_NAME));
 		assertEquals(LICENSE, uploadSound.getQueryParameters().get(UploadSound.LICENSE_PARAMETER_NAME));
+		assertEquals(OAUTH_TOKEN, uploadSound.getOauthToken());
 
 		final String tagsString = (String) uploadSound.getQueryParameters().get(UploadSound.TAGS_PARAMETER_NAME);
 		final Set<String> tags = new HashSet<>(Arrays.asList(tagsString.split(" ")));
@@ -145,7 +151,7 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 
 	@Override
 	protected UploadSound newQueryInstance() {
-		return new UploadSound(mockFile);
+		return new UploadSound(mockFile, OAUTH_TOKEN);
 	}
 
 }

@@ -25,6 +25,7 @@ import java.util.Set;
 
 import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.JSONResponseQuery;
+import com.sonoport.freesound.query.OAuthQuery;
 import com.sonoport.freesound.response.UploadedSoundDetails;
 import com.sonoport.freesound.response.mapping.UploadedSoundDetailsMapper;
 
@@ -33,10 +34,10 @@ import com.sonoport.freesound.response.mapping.UploadedSoundDetailsMapper;
  *
  * API documentation: http://www.freesound.org/docs/api/resources_apiv2.html#upload-sound-oauth2-required
  */
-public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
+public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> implements OAuthQuery {
 
 	/** Parameter to pass the sound file through as. */
-	protected static final String SOUND_FILE_PARAMETER_NAME = "audioFile";
+	protected static final String SOUND_FILE_PARAMETER_NAME = "audiofile";
 
 	/** Parameter to pass the sound description through as. */
 	protected static final String DESCRIPTION_PARAMETER_NAME = "description";
@@ -62,6 +63,9 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 	/** The file to upload. */
 	private final File soundFile;
 
+	/** OAuth2 Access Token to present with request. */
+	private final String oauthToken;
+
 	/** The name that will be given to the sound. If not provided, filename will be used. */
 	private String name;
 
@@ -86,9 +90,10 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 	 * using the Fluent API methods, or at a later time by using the Describe Sound query type.
 	 *
 	 * @param soundFile The sound file to upload
+	 * @param oauthToken OAuth2 credential
 	 */
-	public UploadSound(final File soundFile) {
-		this(soundFile, null, null, null);
+	public UploadSound(final File soundFile, final String oauthToken) {
+		this(soundFile, null, null, null, oauthToken);
 	}
 
 	/**
@@ -99,13 +104,20 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 	 * @param description Description of the sound
 	 * @param license License attached to sound
 	 * @param tags Tags associated with sound
+	 * @param oauthToken OAuth2 credential
 	 */
-	public UploadSound(final File soundFile, final String description, final String license, final Set<String> tags) {
+	public UploadSound(
+			final File soundFile,
+			final String description,
+			final String license,
+			final Set<String> tags,
+			final String oauthToken) {
 		super(HTTPRequestMethod.POST, PATH, new UploadedSoundDetailsMapper());
 		this.soundFile = soundFile;
 		this.description = description;
 		this.license = license;
 		this.tags = tags;
+		this.oauthToken = oauthToken;
 	}
 
 	/**
@@ -238,6 +250,11 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> {
 		}
 
 		return queryParams;
+	}
+
+	@Override
+	public String getOauthToken() {
+		return oauthToken;
 	}
 
 }
