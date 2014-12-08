@@ -24,6 +24,10 @@ import com.sonoport.freesound.License;
 /**
  * Query used to provide additional details relating to a previously uploaded sound. Sounds requiring these queries are
  * listed as 'Pending Description' in the 'Pending Uploads' query.
+ *
+ * Note that there is a bug in the API meaning that if the optional parameters (name and pack) are not specified, the
+ * call will fail (with a 500 response). A bug has been raised with Freesound at:
+ * https://github.com/MTG/freesound/issues/648
  */
 public class DescribeSound extends AbstractSoundUploadQuery<DescribeSound> {
 
