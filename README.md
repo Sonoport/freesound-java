@@ -178,7 +178,7 @@ Sounds uploaded using this form will require further details to be provided usin
 ```java
 File soundFile = new File(...);
 String description = "...";
-String license = "...";
+License license = ...;
 Set<String> tags = new HashSet<>();
 String oauthToken = "...";
 
@@ -189,7 +189,7 @@ In addition, the class provides a fluent builder approach for adding additional 
 
 * Sound Name: `.name(String)`
 * Sound Description: `.description(String)`
-* Sound License: `.license(String)`
+* Sound License: `.license(License)`
 * User Pack: `.pack(String)`
 * Sound Tags: `.tag(String)` and/or `.tags(Collection<String>)`
 * Geospatial Details: `.geotag(Geotag)`

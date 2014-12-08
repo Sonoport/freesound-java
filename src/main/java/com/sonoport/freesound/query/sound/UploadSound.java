@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.sonoport.freesound.License;
 import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.query.OAuthQuery;
@@ -76,7 +77,7 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> impleme
 	private String description;
 
 	/** The license of the sound. */
-	private String license;
+	private License license;
 
 	/** The name of the pack where the sound should be included. If user has created no such pack with that name, a new
 	 * one will be created. */
@@ -109,7 +110,7 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> impleme
 	public UploadSound(
 			final File soundFile,
 			final String description,
-			final String license,
+			final License license,
 			final Set<String> tags,
 			final String oauthToken) {
 		super(HTTPRequestMethod.POST, PATH, new UploadedSoundDetailsMapper());
@@ -137,7 +138,7 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> impleme
 	 * @param license The sound license
 	 * @return The current {@link UploadSound} instance
 	 */
-	public UploadSound license(final String license) {
+	public UploadSound license(final License license) {
 		this.license = license;
 		return this;
 	}
@@ -226,7 +227,7 @@ public class UploadSound extends JSONResponseQuery<UploadedSoundDetails> impleme
 		}
 
 		if (license != null) {
-			queryParams.put(LICENSE_PARAMETER_NAME, license);
+			queryParams.put(LICENSE_PARAMETER_NAME, license.getDescription());
 		}
 
 		if ((tags != null) && !tags.isEmpty()) {
