@@ -198,7 +198,17 @@ In addition, the class provides a fluent builder approach for adding additional 
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#describe-sound-oauth2-required
 
-**Not yet implemented**
+The Describe Sound functionality works in a similar manner to the Upload functionality, and provides the same fluent builder methods described above. The constructor is as follows:
+
+```java
+String soundFileName = "..."; // Name of the previously uploaded sound file
+String description = "...";
+License license = ...;
+Set<String> tags = new HashSet<>();
+String oauthToken = "...";
+
+DescribeSound describeSound = new DescribeSound(soundFileName, description, license, tags, oauthToken);
+```
 
 ### Pending Uploads (OAuth2 required)
 
