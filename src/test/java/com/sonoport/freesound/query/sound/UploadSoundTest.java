@@ -28,6 +28,7 @@ import mockit.Mocked;
 
 import org.junit.Test;
 
+import com.sonoport.freesound.License;
 import com.sonoport.freesound.query.JSONResponseQueryTest;
 
 /**
@@ -39,7 +40,7 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 	private static final String DESCRIPTION = "Sound Description";
 
 	/** License to use in tests. */
-	private static final String LICENSE = "Creative Commons 0";
+	private static final License LICENSE = License.CC_0;
 
 	/** Tag to use in tests. */
 	private static final String TAG_1 = "tag";
@@ -106,7 +107,10 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 		assertTrue(uploadSound.getRouteParameters().isEmpty());
 		assertSame(mockFile, uploadSound.getQueryParameters().get(UploadSound.SOUND_FILE_PARAMETER_NAME));
 		assertEquals(DESCRIPTION, uploadSound.getQueryParameters().get(UploadSound.DESCRIPTION_PARAMETER_NAME));
-		assertEquals(LICENSE, uploadSound.getQueryParameters().get(UploadSound.LICENSE_PARAMETER_NAME));
+
+		// Upload sound uses the textual description of the license
+		assertEquals(
+				LICENSE.getDescription(), uploadSound.getQueryParameters().get(UploadSound.LICENSE_PARAMETER_NAME));
 		assertEquals(OAUTH_TOKEN, uploadSound.getOauthToken());
 
 		final String tagsString = (String) uploadSound.getQueryParameters().get(UploadSound.TAGS_PARAMETER_NAME);
@@ -134,7 +138,10 @@ public class UploadSoundTest extends JSONResponseQueryTest<UploadSound> {
 		assertTrue(uploadSound.getRouteParameters().isEmpty());
 		assertSame(mockFile, uploadSound.getQueryParameters().get(UploadSound.SOUND_FILE_PARAMETER_NAME));
 		assertEquals(DESCRIPTION, uploadSound.getQueryParameters().get(UploadSound.DESCRIPTION_PARAMETER_NAME));
-		assertEquals(LICENSE, uploadSound.getQueryParameters().get(UploadSound.LICENSE_PARAMETER_NAME));
+
+		// Upload sound uses the textual description of the license
+		assertEquals(
+				LICENSE.getDescription(), uploadSound.getQueryParameters().get(UploadSound.LICENSE_PARAMETER_NAME));
 		assertEquals(OAUTH_TOKEN, uploadSound.getOauthToken());
 
 		final String tagsString = (String) uploadSound.getQueryParameters().get(UploadSound.TAGS_PARAMETER_NAME);

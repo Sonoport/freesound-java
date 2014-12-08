@@ -29,6 +29,7 @@ import java.util.Set;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import com.sonoport.freesound.License;
 import com.sonoport.freesound.response.PendingUploads;
 import com.sonoport.freesound.response.Sound;
 
@@ -51,7 +52,7 @@ public class PendingUploadsMapperTest extends MapperTest {
 	private static final String PENDING_MODERATION_SOUND_DESCRIPTION = "Goat bleat 2";
 
 	/** License of sound awaiting moderation. */
-	private static final String PENDING_MODERATION_SOUND_LICENSE = "http://creativecommons.org/licenses/by-nc/3.0/";
+	private static final License PENDING_MODERATION_SOUND_LICENSE = License.CC_ATTRIBUTION_NONCOMMERCIAL;
 
 	/** Tags associated with sound awaiting moderation. */
 	private static final Set<String> PENDING_MODERATION_SOUND_TAGS =

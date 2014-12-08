@@ -27,6 +27,7 @@ import java.util.Set;
 import org.json.JSONObject;
 import org.junit.Test;
 
+import com.sonoport.freesound.License;
 import com.sonoport.freesound.response.Sound;
 
 /**
@@ -66,7 +67,7 @@ public class SoundMapperTest extends MapperTest {
 	private static final Date DATE_CREATED = new Date(1193337807000L);
 
 	/** License value from file. */
-	private static final String LICENSE = "http://creativecommons.org/licenses/by/3.0/";
+	private static final License LICENSE = License.CC_ATTRIBUTION;
 
     /** Sound file type from file. */
     private static final String TYPE = "wav";
