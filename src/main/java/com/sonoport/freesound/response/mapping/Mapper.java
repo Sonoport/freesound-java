@@ -127,6 +127,32 @@ public abstract class Mapper<S extends Object, R extends Object> {
 	}
 
 	/**
+	 * Transform an array of JSON Objects into a {@link List} of DTOs.
+	 *
+	 * @param <T> The object type contained with in the array
+	 *
+	 * @param jsonArray The {@link JSONArray} to convert
+	 * @param objectMapper The {@link Mapper} to use to process the JSON objects
+	 *
+	 * @return List of DTOs
+	 */
+	protected <T extends Object> List<T> parseArray(
+			final JSONArray jsonArray, final Mapper<JSONObject, T> objectMapper) {
+		final List<T> arrayContents = new ArrayList<>();
+
+		if (jsonArray != null) {
+			for (int i = 0; i < jsonArray.length(); i++) {
+				final JSONObject element = jsonArray.getJSONObject(i);
+				if (element != null) {
+					arrayContents.add(objectMapper.map(element));
+				}
+			}
+		}
+
+		return arrayContents;
+	}
+
+	/**
 	 * Parse a date from a {@link String} to a {@link Date} object, assuming the freesound standard format.
 	 *
 	 * @param dateString The string to convert
