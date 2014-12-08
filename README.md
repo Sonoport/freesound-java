@@ -164,7 +164,35 @@ is.close();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#upload-sound-oauth2-required
 
-**Not yet implemented**
+There are two constructors that can be used to create a request to upload a sound, depending on how much information the user wishes to provide initially:
+
+```java
+File soundFile = new File(...);
+String oauthToken = "...";
+
+UploadSound uploadRequest = new UploadSound(soundFile, oauthToken);
+```
+
+Sounds uploaded using this form will require further details to be provided using the 'Describe Sound' functionality and, as such, will appear in the 'Pending Description' section of thelist of pending uploads. The second form includes the required description elements, so will automatically progress to the freesound moderation phase:
+
+```java
+File soundFile = new File(...);
+String description = "...";
+String license = "...";
+Set<String> tags = new HashSet<>();
+String oauthToken = "...";
+
+UploadSound uploadRequest = new UploadSound(soundFile, description, license, tags, oauthToken);
+```
+
+In addition, the class provides a fluent builder approach for adding additional elements:
+
+* Sound Name: `.name(String)`
+* Sound Description: `.description(String)`
+* Sound License: `.license(String)`
+* User Pack: `.pack(String)`
+* Sound Tags: `.tag(String)` and/or `.tags(Collection<String>)`
+* Geospatial Details: `.geotag(Geotag)`
 
 ### Describe Sound (OAuth2 required)
 
@@ -176,7 +204,17 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#describe-sound-oauth
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#pending-uploads-oauth2-required
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String oauthToken = "...";
+
+PendingUploadsQuery pendingUploadsQuery = new PendingUploadsQuery(oauthToken);
+
+freesoundClient.executeQuery(pendingUploadsQuery);
+
+PendingUploads pendingUploads = pendingUploadsQuery.getResults();
+```
 
 ### Edit Sound Description (OAuth2 required)
 
