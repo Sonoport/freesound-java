@@ -14,7 +14,7 @@ Releases of the library are available through the Maven Central repository at th
 <dependency>
     <groupId>com.sonoport</groupId>
     <artifactId>freesound-java</artifactId>
-    <version>0.4.0</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 
@@ -476,5 +476,14 @@ CurrentUser currentUser = meQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#available-audio-descriptors
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+AvailableAudioDescriptorsQuery query = new AvailableAudioDescriptorsQuery();
+
+freesoundClient.executeQuery(query);
+
+AudioDescriptors audioDescriptors = query.getResults();
+```
+
 
