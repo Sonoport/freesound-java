@@ -230,7 +230,14 @@ PendingUploads pendingUploads = pendingUploadsQuery.getResults();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#edit-sound-description-oauth2-required
 
-**Not yet implemented**
+The Edit Sound functionality takes a minimal constructor, and then makes use of the same fluent builder methods as Upload Sound and Describe Sound. Only the elements specified will be updated - anything not explitly included will remain unchanged.
+
+```java
+int soundId = 123;
+String oauthToken = "...";
+
+EditSoundDescription editSoundDescription = new EditSoundDescription(soundId, oauthToken);
+```
 
 ### Bookmark Sound (OAuth2 required)
 
