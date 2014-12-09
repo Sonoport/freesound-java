@@ -14,7 +14,7 @@ Releases of the library are available through the Maven Central repository at th
 <dependency>
     <groupId>com.sonoport</groupId>
     <artifactId>freesound-java</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 
@@ -164,25 +164,80 @@ is.close();
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#upload-sound-oauth2-required
 
-**Not yet implemented**
+There are two constructors that can be used to create a request to upload a sound, depending on how much information the user wishes to provide initially:
+
+```java
+File soundFile = new File(...);
+String oauthToken = "...";
+
+UploadSound uploadRequest = new UploadSound(soundFile, oauthToken);
+```
+
+Sounds uploaded using this form will require further details to be provided using the 'Describe Sound' functionality and, as such, will appear in the 'Pending Description' section of thelist of pending uploads. The second form includes the required description elements, so will automatically progress to the freesound moderation phase:
+
+```java
+File soundFile = new File(...);
+String description = "...";
+License license = ...;
+Set<String> tags = new HashSet<>();
+String oauthToken = "...";
+
+UploadSound uploadRequest = new UploadSound(soundFile, description, license, tags, oauthToken);
+```
+
+In addition, the class provides a fluent builder approach for adding additional elements:
+
+* Sound Name: `.name(String)`
+* Sound Description: `.description(String)`
+* Sound License: `.license(License)`
+* User Pack: `.pack(String)`
+* Sound Tags: `.tag(String)` and/or `.tags(Collection<String>)`
+* Geospatial Details: `.geotag(Geotag)`
 
 ### Describe Sound (OAuth2 required)
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#describe-sound-oauth2-required
 
-**Not yet implemented**
+The Describe Sound functionality works in a similar manner to the Upload functionality, and provides the same fluent builder methods described above. The constructor is as follows:
+
+```java
+String soundFileName = "..."; // Name of the previously uploaded sound file
+String description = "...";
+License license = ...;
+Set<String> tags = new HashSet<>();
+String oauthToken = "...";
+
+DescribeSound describeSound = new DescribeSound(soundFileName, description, license, tags, oauthToken);
+```
 
 ### Pending Uploads (OAuth2 required)
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#pending-uploads-oauth2-required
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+String oauthToken = "...";
+
+PendingUploadsQuery pendingUploadsQuery = new PendingUploadsQuery(oauthToken);
+
+freesoundClient.executeQuery(pendingUploadsQuery);
+
+PendingUploads pendingUploads = pendingUploadsQuery.getResults();
+```
 
 ### Edit Sound Description (OAuth2 required)
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#edit-sound-description-oauth2-required
 
-**Not yet implemented**
+The Edit Sound functionality takes a minimal constructor, and then makes use of the same fluent builder methods as Upload Sound and Describe Sound. Only the elements specified will be updated - anything not explitly included will remain unchanged.
+
+```java
+int soundId = 123;
+String oauthToken = "...";
+
+EditSoundDescription editSoundDescription = new EditSoundDescription(soundId, oauthToken);
+```
 
 ### Bookmark Sound (OAuth2 required)
 
@@ -218,13 +273,39 @@ Note that, at present, there is a bug in the API that means the bookmark name an
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#rate-sound-oauth2-required
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+int rating = 5;
+String oauthToken = "...";
+
+RateSound rateSoundQuery = new RateSound(soundId, rating, oauthToken);
+
+freesoundClient.executeQuery(rateSoundQuery);
+
+String response = rateSoundQuery.getResults();
+```
+
+Note that ratings must be between 0 and 5 (inclusive), otherwise an `IllegalArgumentException` will be thrown.
 
 ### Comment Sound (OAuth2 required)
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#comment-sound-oauth2-required
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+String comment = "...";
+String oauthToken = "...";
+
+CommentSound commentSoundQuery = new CommentSound(soundId, comment, oauthToken);
+
+freesoundClient.executeQuery(commentSoundQuery);
+
+String response = commentSoundQuery.getResults();
+```
 
 ### User Instance
 

@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 
+import com.sonoport.freesound.License;
+
 /**
  * Object representing the data associated with a single sound instance on freesound.org. Full documentation of the data
  * structure can be found at http://www.freesound.org/docs/api/resources_apiv2.html#sound-resources.
@@ -48,7 +50,7 @@ public class Sound {
 	private Date created;
 
 	/** The license under which the sound is available. */
-	private String license;
+	private License license;
 
 	/** The type of sound (wav, aif, aiff, mp3, or flac). */
 	private String type;
@@ -219,14 +221,14 @@ public class Sound {
 	/**
 	 * @return the license
 	 */
-	public String getLicense() {
+	public License getLicense() {
 		return license;
 	}
 
 	/**
 	 * @param license the license to set
 	 */
-	public void setLicense(final String license) {
+	public void setLicense(final License license) {
 		this.license = license;
 	}
 

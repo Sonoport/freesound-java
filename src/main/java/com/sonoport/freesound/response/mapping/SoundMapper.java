@@ -20,6 +20,7 @@ import java.util.HashSet;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.sonoport.freesound.License;
 import com.sonoport.freesound.response.Sound;
 
 /**
@@ -38,7 +39,7 @@ public class SoundMapper extends Mapper<JSONObject, Sound> {
 		sound.setDescription(extractFieldValue(source, "description", String.class));
 		sound.setGeotag(extractFieldValue(source, "geotag", String.class));
 		sound.setCreated(parseDate(extractFieldValue(source, "created", String.class)));
-		sound.setLicense(extractFieldValue(source, "license", String.class));
+		sound.setLicense(License.fromURI(extractFieldValue(source, "license", String.class)));
 		sound.setType(extractFieldValue(source, "type", String.class));
 		sound.setChannels(extractFieldValue(source, "channels", Integer.class));
 		sound.setFilesize(extractFieldValue(source, "filesize", Integer.class));
