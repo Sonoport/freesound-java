@@ -266,7 +266,21 @@ Note that, at present, there is a bug in the API that means the bookmark name an
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#rate-sound-oauth2-required
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+int rating = 5;
+String oauthToken = "...";
+
+RateSound rateSoundQuery = new RateSound(soundId, rating, oauthToken);
+
+freesoundClient.executeQuery(rateSoundQuery);
+
+String response = rateSoundQuery.getResults();
+```
+
+Note that ratings must be between 0 and 5 (inclusive), otherwise an `IllegalArgumentException` will be thrown.
 
 ### Comment Sound (OAuth2 required)
 
