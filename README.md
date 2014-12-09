@@ -272,7 +272,19 @@ See: http://www.freesound.org/docs/api/resources_apiv2.html#rate-sound-oauth2-re
 
 See: http://www.freesound.org/docs/api/resources_apiv2.html#comment-sound-oauth2-required
 
-**Not yet implemented**
+```java
+FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
+
+int soundId = 123;
+String comment = "...";
+String oauthToken = "...";
+
+CommentSound commentSoundQuery = new CommentSound(soundId, comment, oauthToken);
+
+freesoundClient.executeQuery(commentSoundQuery);
+
+String response = commentSoundQuery.getResults();
+```
 
 ### User Instance
 
