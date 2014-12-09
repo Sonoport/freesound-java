@@ -32,7 +32,7 @@ import com.sonoport.freesound.query.JSONResponseQueryTest;
  *
  * @param <T> Type of the subclass being tested
  */
-public abstract class SoundUploadQueryTest<T extends AbstractSoundUploadQuery<T>> extends JSONResponseQueryTest<T> {
+public abstract class SoundUploadQueryTest<T extends AbstractSoundUploadQuery<?, T>> extends JSONResponseQueryTest<T> {
 
 	/** Description to use in tests. */
 	protected static final String DESCRIPTION = "Sound Description";
@@ -95,8 +95,6 @@ public abstract class SoundUploadQueryTest<T extends AbstractSoundUploadQuery<T>
 					.geotag(GEOTAG);
 
 		assertEquals(OAUTH_TOKEN, soundUploadQuery.getOauthToken());
-
-		assertTrue(soundUploadQuery.getRouteParameters().isEmpty());
 		assertEquals(DESCRIPTION, soundUploadQuery.getQueryParameters().get(UploadSound.DESCRIPTION_PARAMETER_NAME));
 
 		// Upload sound uses the textual description of the license
