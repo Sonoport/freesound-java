@@ -21,21 +21,23 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.json.JSONObject;
+
 import com.sonoport.freesound.License;
 import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.JSONResponseQuery;
 import com.sonoport.freesound.query.OAuthQuery;
-import com.sonoport.freesound.response.UploadedSoundDetails;
-import com.sonoport.freesound.response.mapping.UploadedSoundDetailsMapper;
+import com.sonoport.freesound.response.mapping.Mapper;
 
 /**
  * Abstract class containing common code for queries that involve working with uploaded files. Provides fluent
  * builder-type methods for constructing queries.
  *
+ * @param <R> The response type
  * @param <T> The type of the extending subclass
  */
-public abstract class AbstractSoundUploadQuery<T extends AbstractSoundUploadQuery<T>>
-				extends JSONResponseQuery<UploadedSoundDetails> implements OAuthQuery {
+public abstract class AbstractSoundUploadQuery<R extends Object, T extends AbstractSoundUploadQuery<R, T>>
+				extends JSONResponseQuery<R> implements OAuthQuery {
 
 	/** Parameter to pass the sound description through as. */
 	protected static final String DESCRIPTION_PARAMETER_NAME = "description";
@@ -80,9 +82,11 @@ public abstract class AbstractSoundUploadQuery<T extends AbstractSoundUploadQuer
 	/**
 	 * @param path Path to API endpoint
 	 * @param oauthToken OAuth2 access token to present
+	 * @param responseMapper {@link Mapper} used to convert results
 	 */
-	protected AbstractSoundUploadQuery(final String path, final String oauthToken) {
-		super(HTTPRequestMethod.POST, path, new UploadedSoundDetailsMapper());
+	protected AbstractSoundUploadQuery(
+			final String path, final String oauthToken, final Mapper<JSONObject, R> responseMapper) {
+		super(HTTPRequestMethod.POST, path, responseMapper);
 
 		this.oauthToken = oauthToken;
 	}

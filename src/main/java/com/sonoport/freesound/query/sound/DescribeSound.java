@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sonoport.freesound.License;
+import com.sonoport.freesound.response.UploadedSoundDetails;
+import com.sonoport.freesound.response.mapping.UploadedSoundDetailsMapper;
 
 /**
  * Query used to provide additional details relating to a previously uploaded sound. Sounds requiring these queries are
@@ -29,7 +31,7 @@ import com.sonoport.freesound.License;
  * call will fail (with a 500 response). A bug has been raised with Freesound at:
  * https://github.com/MTG/freesound/issues/648
  */
-public class DescribeSound extends AbstractSoundUploadQuery<DescribeSound> {
+public class DescribeSound extends AbstractSoundUploadQuery<UploadedSoundDetails, DescribeSound> {
 
 	/** Name of the parameter to pass the filename through as. */
 	protected static final String UPLOAD_FILENAME_PARAMETER_NAME = "upload_filename";
@@ -53,7 +55,7 @@ public class DescribeSound extends AbstractSoundUploadQuery<DescribeSound> {
 			final License license,
 			final Set<String> tags,
 			final String oauthToken) {
-		super(PATH, oauthToken);
+		super(PATH, oauthToken, new UploadedSoundDetailsMapper());
 
 		this.uploadFilename = uploadFilename;
 		this.setDescription(description);

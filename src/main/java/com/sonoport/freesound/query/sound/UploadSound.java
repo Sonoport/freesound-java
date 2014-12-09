@@ -21,13 +21,15 @@ import java.util.Map;
 import java.util.Set;
 
 import com.sonoport.freesound.License;
+import com.sonoport.freesound.response.UploadedSoundDetails;
+import com.sonoport.freesound.response.mapping.UploadedSoundDetailsMapper;
 
 /**
  * Query used to upload a sound file to Freesound.
  *
  * API documentation: http://www.freesound.org/docs/api/resources_apiv2.html#upload-sound-oauth2-required
  */
-public class UploadSound extends AbstractSoundUploadQuery<UploadSound> {
+public class UploadSound extends AbstractSoundUploadQuery<UploadedSoundDetails, UploadSound> {
 
 	/** Parameter to pass the sound file through as. */
 	protected static final String SOUND_FILE_PARAMETER_NAME = "audiofile";
@@ -65,7 +67,7 @@ public class UploadSound extends AbstractSoundUploadQuery<UploadSound> {
 			final License license,
 			final Set<String> tags,
 			final String oauthToken) {
-		super(PATH, oauthToken);
+		super(PATH, oauthToken, new UploadedSoundDetailsMapper());
 
 		this.soundFile = soundFile;
 
