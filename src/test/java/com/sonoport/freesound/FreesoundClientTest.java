@@ -214,7 +214,7 @@ public class FreesoundClientTest {
 
 				mockGetRequest.header("Authorization", "Token " + CLIENT_SECRET);
 				mockGetRequest.routeParam(ROUTE_ELEMENT, ROUTE_ELEMENT_VALUE);
-				mockGetRequest.fields(with(new Delegate<HashMap<String, Object>>() {
+				mockGetRequest.queryString(with(new Delegate<HashMap<String, Object>>() {
 					@SuppressWarnings("unused")
 					void checkRequestParameters(final Map<String, Object> queryParameters) {
 						assertNotNull(queryParameters);
@@ -224,7 +224,7 @@ public class FreesoundClientTest {
 				}));
 
 				mockGetRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockResultsMapper.map(mockHttpResponse.getBody().getObject()); result = sound;
 			}
 		};
@@ -270,7 +270,7 @@ public class FreesoundClientTest {
 				}));
 
 				mockPostRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockResultsMapper.map(mockHttpResponse.getBody().getObject()); result = sound;
 			}
 		};
@@ -305,7 +305,7 @@ public class FreesoundClientTest {
 
 				mockGetRequest.header("Authorization", "Token " + CLIENT_SECRET);
 				mockGetRequest.routeParam(ROUTE_ELEMENT, ROUTE_ELEMENT_VALUE);
-				mockGetRequest.fields(with(new Delegate<HashMap<String, Object>>() {
+				mockGetRequest.queryString(with(new Delegate<HashMap<String, Object>>() {
 					@SuppressWarnings("unused")
 					void checkRequestParameters(final Map<String, Object> queryParameters) {
 						assertNotNull(queryParameters);
@@ -315,7 +315,7 @@ public class FreesoundClientTest {
 				}));
 
 				mockGetRequest.asBinary(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockHttpResponse.getBody(); result = mockInputStream;
 			}
 		};
@@ -398,7 +398,7 @@ public class FreesoundClientTest {
 				}));
 
 				mockTokenRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockHttpResponse.getBody().getObject(); result = OAUTH_TOKEN_DETAILS_JSON;
 			}
 		};
@@ -448,7 +448,7 @@ public class FreesoundClientTest {
 				}));
 
 				mockTokenRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockHttpResponse.getBody().getObject(); result = OAUTH_TOKEN_DETAILS_JSON;
 			}
 		};

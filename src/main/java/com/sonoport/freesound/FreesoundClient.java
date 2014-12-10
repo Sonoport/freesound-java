@@ -128,7 +128,7 @@ public class FreesoundClient {
 			final HttpRequest request, final JSONResponseQuery<?> jsonResponseQuery) throws FreesoundClientException {
 		try {
 			final HttpResponse<JsonNode> jsonResponse = request.asJson();
-			jsonResponseQuery.setResponse(jsonResponse.getCode(), jsonResponse.getBody().getObject());
+			jsonResponseQuery.setResponse(jsonResponse.getStatus(), jsonResponse.getBody().getObject());
 		} catch (final UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
 		}
@@ -147,7 +147,7 @@ public class FreesoundClient {
 					throws FreesoundClientException {
 		try {
 			final HttpResponse<InputStream> binaryResponse = request.asBinary();
-			binaryResponseQuery.setResponse(binaryResponse.getCode(), binaryResponse.getBody());
+			binaryResponseQuery.setResponse(binaryResponse.getStatus(), binaryResponse.getBody());
 		} catch (final UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
 		}
@@ -168,7 +168,7 @@ public class FreesoundClient {
 				request = Unirest.get(url);
 
 				if ((query.getQueryParameters() != null) && !query.getQueryParameters().isEmpty()) {
-					((GetRequest) request).fields(query.getQueryParameters());
+					((GetRequest) request).queryString(query.getQueryParameters());
 				}
 
 				break;
