@@ -19,9 +19,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.json.JSONObject;
-import org.junit.Test;
-
 import com.sonoport.freesound.response.Sound;
 
 /**
@@ -30,7 +27,7 @@ import com.sonoport.freesound.response.Sound;
  *
  * The test data used is defined in <code>/src/test/resources/sound-list.json</code>.
  */
-public class SoundListMappingTest extends MapperTest {
+public class SoundListMappingTest extends PagingResponseMapperTest<Sound> {
 
 	/** The value for the number of results. */
 	private static final Integer COUNT = Integer.valueOf(4557);
@@ -43,20 +40,15 @@ public class SoundListMappingTest extends MapperTest {
 	private static final String PREVIOUS_PAGE =
 			"http://www.freesound.org/apiv2/search/text/?&query=cars&page=1&page_size=3";
 
-	/** Instance of {@link SoundResultsListMapper} to use in tests. */
-	private final PagingResponseMapper<Sound> mapper = new PagingResponseMapper<>(new SoundMapper());
-
 	/**
-	 * Ensure that mapper correctly parses the JSON structure of the search results.
-	 *
-	 * @throws Exception Any exceptions thrown in test
+	 * No-arg constructor.
 	 */
-	@Test
-	public void parseSoundResults() throws Exception {
-		final JSONObject jsonSearchResults = readJSONFile("/sound-list.json");
+	public SoundListMappingTest() {
+		super(new PagingResponseMapper<>(new SoundMapper()), "/sound-list.json", COUNT, NEXT_PAGE, PREVIOUS_PAGE);
+	}
 
-		final List<Sound> soundList = mapper.map(jsonSearchResults);
-
-		assertTrue(soundList.size() == 3);
+	@Override
+	protected void checkMappedResults(final List<Sound> results) {
+		assertTrue(results.size() == 3);
 	}
 }
