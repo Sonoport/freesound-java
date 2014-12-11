@@ -35,6 +35,8 @@ import com.sonoport.freesound.query.oauth2.AccessTokenQuery;
 import com.sonoport.freesound.query.oauth2.OAuth2AccessTokenRequest;
 import com.sonoport.freesound.query.oauth2.RefreshOAuth2AccessTokenRequest;
 import com.sonoport.freesound.response.AccessTokenDetails;
+import com.sonoport.freesound.response.PagingResponse;
+import com.sonoport.freesound.response.Response;
 
 /**
  * Client used to make calls to the freesound.org API (v2).
@@ -95,11 +97,16 @@ public class FreesoundClient {
 	/**
 	 * Execute a given query (synchronously) against the freesound API.
 	 *
-	 * @param query The query to execute
+	 * @param <S> The expected response type from the query
+	 * @param <R> The response type to return
 	 *
+	 * @param query The query to execute
+	 * @return The result of the query
 	 * @throws FreesoundClientException Any errors encountered when performing API call
 	 */
-	public void executeQuery(final Query<?, ?> query) throws FreesoundClientException {
+	@SuppressWarnings("unchecked")
+	public <S extends Object, R extends Object> Response<R> executeQuery(final Query<S, R> query)
+			throws FreesoundClientException {
 		final HttpRequest request = buildHTTPRequest(query);
 		final String credential = buildAuthorisationCredential(query);
 
@@ -107,47 +114,18 @@ public class FreesoundClient {
 			request.header("Authorization", credential);
 		}
 
-		if (query instanceof JSONResponseQuery) {
-			executeQuery(request, (JSONResponseQuery<?>) query);
-		} else if (query instanceof BinaryResponseQuery) {
-			executeQuery(request, (BinaryResponseQuery) query);
-		} else {
-			throw new FreesoundClientException(String.format("Unknown request type: %s", query.getClass()));
-		}
-	}
-
-	/**
-	 * Execute a query that we expect to return a JSON object as a response.
-	 *
-	 * @param request The HTTP request to send
-	 * @param jsonResponseQuery The query the request has been constructed from
-	 *
-	 * @throws FreesoundClientException Any errors encountered
-	 */
-	private void executeQuery(
-			final HttpRequest request, final JSONResponseQuery<?> jsonResponseQuery) throws FreesoundClientException {
 		try {
-			final HttpResponse<JsonNode> jsonResponse = request.asJson();
-			jsonResponseQuery.setResponse(jsonResponse.getStatus(), jsonResponse.getBody().getObject());
-		} catch (final UnirestException e) {
-			throw new FreesoundClientException("Error when attempting to make API call", e);
-		}
-	}
-
-	/**
-	 * Execute a query that we expect to return a binary payload.
-	 *
-	 * @param request The HTTP request to send
-	 * @param binaryResponseQuery The query the request has been constructed from
-	 *
-	 * @throws FreesoundClientException Any errors encountered
-	 */
-	private void executeQuery(
-			final HttpRequest request, final BinaryResponseQuery binaryResponseQuery)
-					throws FreesoundClientException {
-		try {
-			final HttpResponse<InputStream> binaryResponse = request.asBinary();
-			binaryResponseQuery.setResponse(binaryResponse.getStatus(), binaryResponse.getBody());
+			if (query instanceof JSONResponseQuery) {
+				final HttpResponse<JsonNode> httpResponse = request.asJson();
+				final S responseBody = (S) httpResponse.getBody().getObject();
+				return query.processResponse(httpResponse.getStatus(), httpResponse.getStatusText(), responseBody);
+			} else if (query instanceof BinaryResponseQuery) {
+				final HttpResponse<InputStream> httpResponse = request.asBinary();
+				final S responseBody = (S) httpResponse.getBody();
+				return query.processResponse(httpResponse.getStatus(), httpResponse.getStatusText(), responseBody);
+			} else {
+				throw new FreesoundClientException(String.format("Unknown request type: %s", query.getClass()));
+			}
 		} catch (final UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
 		}
@@ -223,35 +201,37 @@ public class FreesoundClient {
 	/**
 	 * Retrieve the next page of results for a {@link PagingQuery}.
 	 *
+	 * @param <I> The data type of items returned by the query
+	 *
 	 * @param query The {@link PagingQuery} being run
+	 * @return The results of the query
+	 *
 	 * @throws FreesoundClientException If it is not possible to retrieve the next page
 	 */
-	public void nextPage(final PagingQuery<?, ?> query) throws FreesoundClientException {
-		if (query.hasNextPage()) {
-			final int currentPage = query.getPage();
-			query.setPage(currentPage + 1);
+	public <I extends Object> PagingResponse<I> nextPage(final PagingQuery<?, I> query)
+			throws FreesoundClientException {
+		final int currentPage = query.getPage();
+		query.setPage(currentPage + 1);
 
-			executeQuery(query);
-		} else {
-			throw new FreesoundClientException("No more pages of results");
-		}
+		return (PagingResponse<I>) executeQuery(query);
 	}
 
 	/**
 	 * Retrieve the previous page of results for a {@link PagingQuery}.
 	 *
+	 * @param <I> The data type of items returned by the query
+	 *
 	 * @param query The {@link PagingQuery} being run
+	 * @return The results of the query
+	 *
 	 * @throws FreesoundClientException If it is not possible to retrieve the previous page
 	 */
-	public void previousPage(final PagingQuery<?, ?> query) throws FreesoundClientException {
-		if (query.hasPreviousPage()) {
-			final int currentPage = query.getPage();
-			query.setPage(currentPage - 1);
+	public <I extends Object> PagingResponse<I> previousPage(final PagingQuery<?, I> query)
+			throws FreesoundClientException {
+		final int currentPage = query.getPage();
+		query.setPage(currentPage - 1);
 
-			executeQuery(query);
-		} else {
-			throw new FreesoundClientException("At first page of results");
-		}
+		return (PagingResponse<I>) executeQuery(query);
 	}
 
 	/**
@@ -263,14 +243,12 @@ public class FreesoundClient {
 	 *
 	 * @throws FreesoundClientException Any exception thrown during call
 	 */
-	public AccessTokenDetails redeemAuthorisationCodeForAccessToken(final String authorisationCode)
+	public Response<AccessTokenDetails> redeemAuthorisationCodeForAccessToken(final String authorisationCode)
 			throws FreesoundClientException {
 		final OAuth2AccessTokenRequest tokenRequest =
 				new OAuth2AccessTokenRequest(clientId, clientSecret, authorisationCode);
 
-		executeQuery(tokenRequest);
-
-		return tokenRequest.getResults();
+		return executeQuery(tokenRequest);
 	}
 
 	/**
@@ -280,13 +258,11 @@ public class FreesoundClient {
 	 * @return Details of the access token returned
 	 * @throws FreesoundClientException Any exception thrown during call
 	 */
-	public AccessTokenDetails refreshAccessToken(final String refreshToken) throws FreesoundClientException {
+	public Response<AccessTokenDetails> refreshAccessToken(final String refreshToken) throws FreesoundClientException {
 		final RefreshOAuth2AccessTokenRequest tokenRequest =
 				new RefreshOAuth2AccessTokenRequest(clientId, clientSecret, refreshToken);
 
-		executeQuery(tokenRequest);
-
-		return tokenRequest.getResults();
+		return executeQuery(tokenRequest);
 	}
 
 	/**

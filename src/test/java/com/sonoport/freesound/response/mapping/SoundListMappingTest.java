@@ -15,13 +15,13 @@
  */
 package com.sonoport.freesound.response.mapping;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.json.JSONObject;
 import org.junit.Test;
 
-import com.sonoport.freesound.response.PagingResponse;
 import com.sonoport.freesound.response.Sound;
 
 /**
@@ -55,12 +55,8 @@ public class SoundListMappingTest extends MapperTest {
 	public void parseSoundResults() throws Exception {
 		final JSONObject jsonSearchResults = readJSONFile("/sound-list.json");
 
-		final PagingResponse<Sound> soundResultsList = mapper.map(jsonSearchResults);
+		final List<Sound> soundList = mapper.map(jsonSearchResults);
 
-		assertEquals(COUNT, Integer.valueOf(soundResultsList.getCount()));
-		assertEquals(NEXT_PAGE, soundResultsList.getNextPageURI());
-		assertEquals(PREVIOUS_PAGE, soundResultsList.getPreviousPageURI());
-
-		assertTrue(soundResultsList.getItems().size() == 3);
+		assertTrue(soundList.size() == 3);
 	}
 }

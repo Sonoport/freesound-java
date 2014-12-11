@@ -19,6 +19,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.junit.Test;
@@ -82,14 +83,11 @@ public class PackListMappingTest extends MapperTest {
 	public void parsePackList() throws Exception {
 		final JSONObject packListJSON = readJSONFile("/pack-list.json");
 
-		final PagingResponse<Pack> response = mapper.map(packListJSON);
+		final List<Pack> packList = mapper.map(packListJSON);
 
-		assertEquals(COUNT, Integer.valueOf(response.getCount()));
-		assertEquals(NEXT_PAGE_URI, response.getNextPageURI());
-		assertEquals(PREVIOUS_PAGE_URI, response.getPreviousPageURI());
+		assertTrue(packList.size() == 1);
 
-		assertTrue(response.getItems().size() == 1);
-		final Pack pack = response.getItems().get(0);
+		final Pack pack = packList.get(0);
 		assertEquals(PACK_ID, pack.getId());
 		assertEquals(PACK_URL, pack.getUrl());
 		assertEquals(PACK_DESCRIPTION, pack.getDescription());
