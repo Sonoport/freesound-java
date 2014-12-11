@@ -30,20 +30,22 @@ The freesound.org API requires two types of authentication depending on the type
 
 ## Query Types
 
-All alls to the API to retrieve resources are modelled by subclasses of the `Query` class. The objects created represent a single query and its results once executed. The basic flow that all queries take is as follows:
+All alls to the API to retrieve resources are modelled by subclasses of the `Query` class. `FreesoundClient` is then used to execute the query, and returns a `Response` object encapsulating the results. The basic flow that all queries take is as follows:
 
 ```java
 Query query = new Query();
 
-freesoundClient.executeQuery(query);
+Response response = freesoundClient.executeQuery(query);
 
-Results request = query.getResults();
+int httpStatusCode = response.getResponseStatus();
+Results results = response.getResults();
 ```
 
 In addition, the following members are provided to determine whether a particular call was successful:
 
 * `.isErrorResponse()` - Whether the response received was an error (i.e Response Code >= 400)
-* `.getHttpResponseCode()` - The actual HTTP response code received
+* `.getResponseStatus()` - The actual HTTP response code received
+* `.getResponseStatusString()` - The message associated with the HTTP status code (e.g. for a 200 response, this value would be 'OK')
 * `.getErrorDetails()` - The error message recieved from freesound.org, if any. This is the contents of the `details` field in the JSON error response.
 
 ### Text Search
@@ -96,9 +98,8 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 int soundIdentifier = 123;
 SoundInstanceQuery soundInstanceQuery = new SoundInstanceQuery(soundIdentifier);
 
-freesoundClient.executeQuery(soundInstanceQuery);
+Response<Sound> response = freesoundClient.executeQuery(soundInstanceQuery);
 
-Sound sound = soundInstanceQuery.getResults();
 ```
 
 ### Sound Analysis
@@ -117,9 +118,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 int soundIdentifier = 123;
 SimilarSoundsQuery similarSoundsQuery = new SimilarSoundsQuery(soundIdentifier);
 
-freesoundClient.executeQuery(similarSoundsQuery);
-
-PagingResponse<Sound> sounds = similarSoundsQuery.getResults();
+PagingResponse<Sound> response = freesoundClient.executeQuery(similarSoundsQuery);
 ```
 
 ### Sound Comments
@@ -132,9 +131,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 int soundId = 123;
 SoundCommentsQuery soundCommentsQuery = new SoundCommentsQuery(soundId);
 
-freesoundClient.executeQuery(soundCommentsQuery);
-
-PagingResponse<Comment> comments = query.getResults();
+PagingResponse<Comment> response = freesoundClient.executeQuery(soundCommentsQuery);
 ```
 
 ### Download Sound (OAuth2 required)
@@ -151,9 +148,9 @@ String oauthToken = "...";
 
 DownloadSound downloadSoundQuery = new DownloadSound(soundId, oauthToken);
 
-freesoundClient.executeQuery(downloadSoundQuery);
+Response<InputStream> response = freesoundClient.executeQuery(downloadSoundQuery);
 
-InputStream is = downloadSoundQuery.getResults();
+InputStream is = response.getResults();
 
 // Do something with the InputStream
 
@@ -221,9 +218,7 @@ String oauthToken = "...";
 
 PendingUploadsQuery pendingUploadsQuery = new PendingUploadsQuery(oauthToken);
 
-freesoundClient.executeQuery(pendingUploadsQuery);
-
-PendingUploads pendingUploads = pendingUploadsQuery.getResults();
+Response<PendingUploads> response = freesoundClient.executeQuery(pendingUploadsQuery);
 ```
 
 ### Edit Sound Description (OAuth2 required)
@@ -282,9 +277,7 @@ String oauthToken = "...";
 
 RateSound rateSoundQuery = new RateSound(soundId, rating, oauthToken);
 
-freesoundClient.executeQuery(rateSoundQuery);
-
-String response = rateSoundQuery.getResults();
+Response<String> response = freesoundClient.executeQuery(rateSoundQuery);
 ```
 
 Note that ratings must be between 0 and 5 (inclusive), otherwise an `IllegalArgumentException` will be thrown.
@@ -302,9 +295,7 @@ String oauthToken = "...";
 
 CommentSound commentSoundQuery = new CommentSound(soundId, comment, oauthToken);
 
-freesoundClient.executeQuery(commentSoundQuery);
-
-String response = commentSoundQuery.getResults();
+Response<String> response = freesoundClient.executeQuery(commentSoundQuery);
 ```
 
 ### User Instance
@@ -317,9 +308,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 String username = "testuser";
 UserInstanceQuery userInstanceQuery = new UserInstanceQuery(username);
 
-freesoundClient.executeQuery(userInstanceQuery);
-
-User user = userInstanceQuery.getResults();
+Response<User> response = freesoundClient.executeQuery(userInstanceQuery);
 ```
 
 ### User Sounds
@@ -336,9 +325,7 @@ Set<String> fieldsToInclude = new HashSet<>(Arrays.asList("id", "name", ...etc..
 
 UserSoundsQuery userSoundsQuery = new UserSoundsQuery(username).includeFields(fieldsToInclude);
 
-freesoundClient.executeQuery(userSoundsQuery);
-
-PagingResponse<Sound> results = userSoundsQuery.getResults();
+PagingResponse<Sound> response = freesoundClient.executeQuery(userSoundsQuery);
 ```
 
 ### User Packs
@@ -351,9 +338,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 String username = "testuser";
 UserPacksQuery userPacksQuery = new UserPacksQuery(username);
 
-freesoundClient.executeQuery(userPacksQuery);
-
-PagingResponse<Pack> packs = userPacksQuery.getResults();
+PagingResponse<Sound> response = freesoundClient.executeQuery(userPacksQuery);
 ```
 
 ### User Bookmark Categories
@@ -366,9 +351,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 String username = "testuser";
 UserBookmarkCategoriesQuery query = new UserBookmarkCategoriesQuery(username);
 
-executeQuery(query);
-
-PagingResponse<BookmarkCategory> results = query.getResults();
+PagingResponse<BookmarkCategory> response = executeQuery(query);
 ```
 
 ### User Bookmark Category Sounds
@@ -382,9 +365,7 @@ String username = "testuser";
 int categoryId = 123;
 UserBookmarkCategorySoundsQuery query = new UserBookmarkCategorySoundsQuery(username, categoryId);
 
-executeQuery(query);
-
-PagingResponse<Sound> results = query.getResults();
+PagingResponse<Sound> response = executeQuery(query);
 ```
 
 Or, if you want to retrieve bookmarked sounds that have not yet been categorised by the user:
@@ -395,9 +376,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 String username = "testuser";
 UserUncategorisedBookmarkedSoundsQuery query = new UserUncategorisedBookmarkedSoundsQuery(username);
 
-executeQuery(query);
-
-PagingResponse<Sound> results = query.getResults();
+PagingResponse<Sound> response = executeQuery(query);
 ```
 
 ### Pack Instance
@@ -410,9 +389,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 int packId = 1234;
 PackInstanceQuery packInstanceQuery = new PackInstanceQuery(packId);
 
-freesoundClient.executeQuery(packInstanceQuery);
-
-Pack pack = packInstanceQuery.getResults();
+Response<Pack> response = freesoundClient.executeQuery(packInstanceQuery);
 ```
 
 ### Pack Sounds
@@ -429,9 +406,7 @@ Set<String> fieldsToInclude = new HashSet<>(Arrays.asList("id", "name", ...etc..
 
 PackSoundsQuery packSoundsQuery = new PackSoundsQuery(packId).includeFields(fieldsToInclude);
 
-freesoundClient.executeQuery(packSoundsQuery);
-
-PagingResponse<Sound> results = packSoundsQuery.getResults();
+PagingResponse<Sound> response = freesoundClient.executeQuery(packSoundsQuery);
 ```
 
 ### Download Pack (OAuth2 required)
@@ -448,9 +423,9 @@ String oauthToken = "...";
 
 DownloadPack downloadPackQuery = new DownloadPack(packId, oauthToken);
 
-freesoundClient.executeQuery(downloadPackQuery);
+Response<InputStream> response = freesoundClient.executeQuery(downloadPackQuery);
 
-InputStream is = downloadPackQuery.getResults();
+InputStream is = response.getResults();
 
 // Do something with the InputStream
 
@@ -467,9 +442,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 String oauthToken = "..."; // May be retrieved from freesoundClient.redeemAuthorisationCodeForAccessToken() or freesoundClient.refreshAccessToken()
 MeQuery meQuery = new MeQuery(oauthToken);
 
-freesoundClient.executeQuery(meQuery);
-
-CurrentUser currentUser = meQuery.getResults();
+Response<CurrentUser> response = freesoundClient.executeQuery(meQuery);
 ```
 
 ### Available Audio Descriptors
@@ -481,9 +454,7 @@ FreesoundClient freesoundClient = new FreesoundClient(clientId, clientSecret);
 
 AvailableAudioDescriptorsQuery query = new AvailableAudioDescriptorsQuery();
 
-freesoundClient.executeQuery(query);
-
-AudioDescriptors audioDescriptors = query.getResults();
+Response<AudioDescriptors> response = freesoundClient.executeQuery(query);
 ```
 
 
