@@ -22,13 +22,10 @@ import java.util.List;
  *
  * @param <I> The type of the items in the results
  */
-public class PagingResponse<I extends Object> {
+public class PagingResponse<I extends Object> extends Response<List<I>> {
 
 	/** The number of sounds matching the search terms. */
 	private int count;
-
-	/** The current page of search results. */
-	private List<I> items;
 
 	/** The URI to the next page of results (if any). */
 	private String nextPageURI;
@@ -37,31 +34,32 @@ public class PagingResponse<I extends Object> {
 	private String previousPageURI;
 
 	/**
+	 * @param responseStatus HTTP response status
+	 * @param responseStatusString HTTP response status string
+	 */
+	public PagingResponse(final int responseStatus, final String responseStatusString) {
+		super(responseStatus, responseStatusString);
+	}
+
+	/**
+	 * @return Whether there are further pages of results for the associated query
+	 */
+	public boolean hasNextPage() {
+		return nextPageURI != null;
+	}
+
+	/**
+	 * @return Whether there are previous pages of results for the associated query
+	 */
+	public boolean hasPreviousPage() {
+		return previousPageURI != null;
+	}
+
+	/**
 	 * @return the count
 	 */
 	public int getCount() {
 		return count;
-	}
-
-	/**
-	 * @param count the count to set
-	 */
-	public void setCount(final int count) {
-		this.count = count;
-	}
-
-	/**
-	 * @return the items
-	 */
-	public List<I> getItems() {
-		return items;
-	}
-
-	/**
-	 * @param items the items to set
-	 */
-	public void setItems(final List<I> items) {
-		this.items = items;
 	}
 
 	/**
@@ -72,17 +70,24 @@ public class PagingResponse<I extends Object> {
 	}
 
 	/**
-	 * @param nextPageURI the nextPageURI to set
-	 */
-	public void setNextPageURI(final String nextPageURI) {
-		this.nextPageURI = nextPageURI;
-	}
-
-	/**
 	 * @return the previousPageURI
 	 */
 	public String getPreviousPageURI() {
 		return previousPageURI;
+	}
+
+	/**
+	 * @param count the count to set
+	 */
+	public void setCount(final int count) {
+		this.count = count;
+	}
+
+	/**
+	 * @param nextPageURI the nextPageURI to set
+	 */
+	public void setNextPageURI(final String nextPageURI) {
+		this.nextPageURI = nextPageURI;
 	}
 
 	/**
@@ -91,4 +96,5 @@ public class PagingResponse<I extends Object> {
 	public void setPreviousPageURI(final String previousPageURI) {
 		this.previousPageURI = previousPageURI;
 	}
+
 }

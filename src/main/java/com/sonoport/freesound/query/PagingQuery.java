@@ -16,7 +16,10 @@
 package com.sonoport.freesound.query;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import org.json.JSONObject;
 
 import com.sonoport.freesound.response.PagingResponse;
 import com.sonoport.freesound.response.mapping.PagingResponseMapper;
@@ -31,7 +34,7 @@ import com.sonoport.freesound.response.mapping.PagingResponseMapper;
  * @param <I> The DTO type of the items in the list
  */
 public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
-			extends JSONResponseQuery<PagingResponse<I>> {
+			extends JSONResponseQuery<List<I>> {
 
 	/** The default page size if none is specified. */
 	public static final int DEFAULT_PAGE_SIZE = 15;
@@ -87,6 +90,26 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
 		setPage(startPage);
 	}
 
+	@Override
+	public PagingResponse<I> processResponse(
+			final int httpResponseCode, final String httpResponseStatusString, final JSONObject freesoundResponse) {
+		final PagingResponse<I> response = new PagingResponse<>(httpResponseCode, httpResponseStatusString);
+
+		if (response.isErrorResponse()) {
+			response.setErrorDetails(extractErrorMessage(freesoundResponse));
+		} else {
+			final PagingResponseMapper<I> resultsMapper = (PagingResponseMapper<I>) getResultsMapper();
+
+			response.setCount(resultsMapper.extractCount(freesoundResponse));
+			response.setNextPageURI(resultsMapper.extractNextPageURI(freesoundResponse));
+			response.setPreviousPageURI(resultsMapper.extractPreviousPageURI(freesoundResponse));
+
+			response.setResults(resultsMapper.map(freesoundResponse));
+		}
+
+		return response;
+	}
+
 	/**
 	 * Set the page of results to retrieve in the query, using a Fluent API style.
 	 *
@@ -118,22 +141,6 @@ public abstract class PagingQuery<Q extends PagingQuery<Q, I>, I extends Object>
 		queryParams.put("page_size", Integer.valueOf(pageSize));
 
 		return queryParams;
-	}
-
-	/**
-	 * @return Whether there is another page of results after the current one
-	 */
-	public boolean hasNextPage() {
-		final PagingResponse<I> results = getResults();
-		return results.getNextPageURI() != null;
-	}
-
-	/**
-	 * @return Whether there is page of results before the current one
-	 */
-	public boolean hasPreviousPage() {
-		final PagingResponse<I> results = getResults();
-		return results.getPreviousPageURI() != null;
 	}
 
 	/**

@@ -42,11 +42,11 @@ import com.mashape.unirest.request.HttpRequestWithBody;
 import com.sonoport.freesound.query.BinaryResponseQuery;
 import com.sonoport.freesound.query.HTTPRequestMethod;
 import com.sonoport.freesound.query.JSONResponseQuery;
-import com.sonoport.freesound.query.PagingQuery;
 import com.sonoport.freesound.query.oauth2.AccessTokenQuery;
 import com.sonoport.freesound.query.oauth2.OAuth2AccessTokenRequest;
 import com.sonoport.freesound.query.oauth2.RefreshOAuth2AccessTokenRequest;
 import com.sonoport.freesound.response.AccessTokenDetails;
+import com.sonoport.freesound.response.Response;
 import com.sonoport.freesound.response.Sound;
 import com.sonoport.freesound.response.mapping.SoundMapper;
 
@@ -214,7 +214,7 @@ public class FreesoundClientTest {
 
 				mockGetRequest.header("Authorization", "Token " + CLIENT_SECRET);
 				mockGetRequest.routeParam(ROUTE_ELEMENT, ROUTE_ELEMENT_VALUE);
-				mockGetRequest.fields(with(new Delegate<HashMap<String, Object>>() {
+				mockGetRequest.queryString(with(new Delegate<HashMap<String, Object>>() {
 					@SuppressWarnings("unused")
 					void checkRequestParameters(final Map<String, Object> queryParameters) {
 						assertNotNull(queryParameters);
@@ -224,15 +224,15 @@ public class FreesoundClientTest {
 				}));
 
 				mockGetRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockResultsMapper.map(mockHttpResponse.getBody().getObject()); result = sound;
 			}
 		};
 
 		final JSONResponseQuery<Sound> query = new TestJSONResponseQuery(HTTPRequestMethod.GET, mockResultsMapper);
-		freesoundClient.executeQuery(query);
+		final Response<Sound> response = freesoundClient.executeQuery(query);
 
-		assertSame(sound, query.getResults());
+		assertSame(sound, response.getResults());
 	}
 
 	/**
@@ -270,15 +270,15 @@ public class FreesoundClientTest {
 				}));
 
 				mockPostRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockResultsMapper.map(mockHttpResponse.getBody().getObject()); result = sound;
 			}
 		};
 
 		final JSONResponseQuery<Sound> query = new TestJSONResponseQuery(HTTPRequestMethod.POST, mockResultsMapper);
-		freesoundClient.executeQuery(query);
+		final Response<Sound> response = freesoundClient.executeQuery(query);
 
-		assertSame(sound, query.getResults());
+		assertSame(sound, response.getResults());
 	}
 
 	/**
@@ -305,7 +305,7 @@ public class FreesoundClientTest {
 
 				mockGetRequest.header("Authorization", "Token " + CLIENT_SECRET);
 				mockGetRequest.routeParam(ROUTE_ELEMENT, ROUTE_ELEMENT_VALUE);
-				mockGetRequest.fields(with(new Delegate<HashMap<String, Object>>() {
+				mockGetRequest.queryString(with(new Delegate<HashMap<String, Object>>() {
 					@SuppressWarnings("unused")
 					void checkRequestParameters(final Map<String, Object> queryParameters) {
 						assertNotNull(queryParameters);
@@ -315,51 +315,15 @@ public class FreesoundClientTest {
 				}));
 
 				mockGetRequest.asBinary(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockHttpResponse.getBody(); result = mockInputStream;
 			}
 		};
 
 		final TestBinaryResponseQuery query = new TestBinaryResponseQuery();
-		freesoundClient.executeQuery(query);
+		final Response<InputStream> response = freesoundClient.executeQuery(query);
 
-		assertSame(mockInputStream, query.getResults());
-	}
-
-	/**
-	 * Ensure the correct exception is thrown when attempting to use {@link FreesoundClient#nextPage(PagingQuery)} on a
-	 * query that has no more pages to return.
-	 *
-	 * @param pagingQuery The {@link PagingQuery} to attempt to retrieve the next page for
-	 * @throws Exception Any exceptions thrown in test
-	 */
-	@Test (expected = FreesoundClientException.class)
-	public void noNextPageInPagingQuery(@Mocked final PagingQuery<?, ?> pagingQuery) throws Exception {
-		new Expectations() {
-			{
-				pagingQuery.hasNextPage(); result = false;
-			}
-		};
-
-		freesoundClient.nextPage(pagingQuery);
-	}
-
-	/**
-	 * Ensure the correct exception is thrown when attempting to use {@link FreesoundClient#previousPage(PagingQuery)}
-	 * when there is no previous page to return.
-	 *
-	 * @param pagingQuery The {@link PagingQuery} to attempt to retrieve the previous page for
-	 * @throws Exception Any exceptions thrown in test
-	 */
-	@Test (expected = FreesoundClientException.class)
-	public void noPreviousPageInPagingQuery(@Mocked final PagingQuery<?, ?> pagingQuery) throws Exception {
-		new Expectations() {
-			{
-				pagingQuery.hasPreviousPage(); result = false;
-			}
-		};
-
-		freesoundClient.previousPage(pagingQuery);
+		assertSame(mockInputStream, response.getResults());
 	}
 
 	/**
@@ -398,14 +362,15 @@ public class FreesoundClientTest {
 				}));
 
 				mockTokenRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockHttpResponse.getBody().getObject(); result = OAUTH_TOKEN_DETAILS_JSON;
 			}
 		};
 
-		final AccessTokenDetails accessTokenDetails =
+		final Response<AccessTokenDetails> response =
 				freesoundClient.redeemAuthorisationCodeForAccessToken(OAUTH_AUTHORISATION_CODE);
 
+		final AccessTokenDetails accessTokenDetails = response.getResults();
 		assertEquals(OAUTH_ACCESS_TOKEN, accessTokenDetails.getAccessToken());
 		assertEquals(OAUTH_REFRESH_TOKEN, accessTokenDetails.getRefreshToken());
 		assertEquals(OAUTH_SCOPE, accessTokenDetails.getScope());
@@ -448,17 +413,59 @@ public class FreesoundClientTest {
 				}));
 
 				mockTokenRequest.asJson(); result = mockHttpResponse;
-				mockHttpResponse.getCode(); result = 200;
+				mockHttpResponse.getStatus(); result = 200;
 				mockHttpResponse.getBody().getObject(); result = OAUTH_TOKEN_DETAILS_JSON;
 			}
 		};
 
-		final AccessTokenDetails accessTokenDetails = freesoundClient.refreshAccessToken(OAUTH_REFRESH_TOKEN);
+		final Response<AccessTokenDetails> response = freesoundClient.refreshAccessToken(OAUTH_REFRESH_TOKEN);
 
+		final AccessTokenDetails accessTokenDetails = response.getResults();
 		assertEquals(OAUTH_ACCESS_TOKEN, accessTokenDetails.getAccessToken());
 		assertEquals(OAUTH_REFRESH_TOKEN, accessTokenDetails.getRefreshToken());
 		assertEquals(OAUTH_SCOPE, accessTokenDetails.getScope());
 		assertEquals(OAUTH_TOKEN_EXPIRES_IN, accessTokenDetails.getExpiresIn());
+	}
+
+	/**
+	 * Test situations where an unexpected error has been returned by the freesound API.
+	 *
+	 * @param mockUnirest Mock version of the {@link Unirest} library
+	 * @param mockGetRequest Mock {@link GetRequest}
+	 * @param mockHttpResponse Mock {@link HttpResponse}
+	 * @param mockResultsMapper Mock {@link SoundMapper}
+	 *
+	 * @throws Exception Any exceptions thrown in test
+	 */
+	@SuppressWarnings("static-access")
+	@Test (expected = FreesoundClientException.class)
+	public void unexpected500Response(
+			@Mocked final Unirest mockUnirest,
+			@Mocked final GetRequest mockGetRequest,
+			@Mocked final HttpResponse<JsonNode> mockHttpResponse,
+			@Mocked final SoundMapper mockResultsMapper) throws Exception {
+		new Expectations() {
+			{
+				mockUnirest.get(FreesoundClient.API_ENDPOINT + TEST_PATH); result = mockGetRequest;
+
+				mockGetRequest.header("Authorization", "Token " + CLIENT_SECRET);
+				mockGetRequest.routeParam(ROUTE_ELEMENT, ROUTE_ELEMENT_VALUE);
+				mockGetRequest.queryString(with(new Delegate<HashMap<String, Object>>() {
+					@SuppressWarnings("unused")
+					void checkRequestParameters(final Map<String, Object> queryParameters) {
+						assertNotNull(queryParameters);
+						assertTrue(queryParameters.size() == 1);
+						assertEquals(QUERY_PARAMETER_VALUE, queryParameters.get(QUERY_PARAMETER));
+					}
+				}));
+
+				mockGetRequest.asJson(); result = mockHttpResponse;
+				mockHttpResponse.getBody(); result = "<html><body><h1>500 Error</h1></body></html>";
+			}
+		};
+
+		final JSONResponseQuery<Sound> query = new TestJSONResponseQuery(HTTPRequestMethod.GET, mockResultsMapper);
+		freesoundClient.executeQuery(query);
 	}
 
 	/**
