@@ -21,11 +21,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 import java.util.List;
 
-import org.json.JSONObject;
-import org.junit.Test;
-
 import com.sonoport.freesound.response.Pack;
-import com.sonoport.freesound.response.PagingResponse;
 
 /**
  * Unit tests to ensure that lists of {@link Pack}s returned by the API (for example, from the 'User Packs' query) are
@@ -33,7 +29,7 @@ import com.sonoport.freesound.response.PagingResponse;
  *
  * Source data file can be found at <code>/src/test/resources/pack-list.json</code>.
  */
-public class PackListMappingTest extends MapperTest {
+public class PackListMappingTest extends PagingResponseMapperTest<Pack> {
 
 	/** Total number of results. */
 	private static final Integer COUNT = Integer.valueOf(33);
@@ -71,23 +67,18 @@ public class PackListMappingTest extends MapperTest {
 	/** Number of times pack has been downloaded. */
 	private static final int PACK_DOWNLOADS = 403;
 
-	/** Mapper used to process the JSON representation into DTOs. */
-	private final PagingResponseMapper<Pack> mapper = new PagingResponseMapper<>(new PackMapper());
-
 	/**
-	 * Test that a properly formatted response is correctly processed into a {@link PagingResponse} object.
-	 *
-	 * @throws Exception Any exceptions thrown in test
+	 * No-arg constructor.
 	 */
-	@Test
-	public void parsePackList() throws Exception {
-		final JSONObject packListJSON = readJSONFile("/pack-list.json");
+	public PackListMappingTest() {
+		super(new PagingResponseMapper<>(new PackMapper()), "/pack-list.json", COUNT, NEXT_PAGE_URI, PREVIOUS_PAGE_URI);
+	}
 
-		final List<Pack> packList = mapper.map(packListJSON);
+	@Override
+	protected void checkMappedResults(final List<Pack> results) {
+		assertTrue(results.size() == 1);
 
-		assertTrue(packList.size() == 1);
-
-		final Pack pack = packList.get(0);
+		final Pack pack = results.get(0);
 		assertEquals(PACK_ID, pack.getId());
 		assertEquals(PACK_URL, pack.getUrl());
 		assertEquals(PACK_DESCRIPTION, pack.getDescription());
