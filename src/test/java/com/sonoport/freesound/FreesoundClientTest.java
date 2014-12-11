@@ -327,42 +327,6 @@ public class FreesoundClientTest {
 	}
 
 	/**
-	 * Ensure the correct exception is thrown when attempting to use {@link FreesoundClient#nextPage(PagingQuery)} on a
-	 * query that has no more pages to return.
-	 *
-	 * @param pagingQuery The {@link PagingQuery} to attempt to retrieve the next page for
-	 * @throws Exception Any exceptions thrown in test
-	 */
-//	@Test (expected = FreesoundClientException.class)
-//	public void noNextPageInPagingQuery(@Mocked final PagingQuery<?, ?> pagingQuery) throws Exception {
-//		new Expectations() {
-//			{
-//				pagingQuery.hasNextPage(); result = false;
-//			}
-//		};
-//
-//		freesoundClient.nextPage(pagingQuery);
-//	}
-
-	/**
-	 * Ensure the correct exception is thrown when attempting to use {@link FreesoundClient#previousPage(PagingQuery)}
-	 * when there is no previous page to return.
-	 *
-	 * @param pagingQuery The {@link PagingQuery} to attempt to retrieve the previous page for
-	 * @throws Exception Any exceptions thrown in test
-	 */
-//	@Test (expected = FreesoundClientException.class)
-//	public void noPreviousPageInPagingQuery(@Mocked final PagingQuery<?, ?> pagingQuery) throws Exception {
-//		new Expectations() {
-//			{
-//				pagingQuery.hasPreviousPage(); result = false;
-//			}
-//		};
-//
-//		freesoundClient.previousPage(pagingQuery);
-//	}
-
-	/**
 	 * Test that requests to redeem an authorisation code for an OAuth2 bearer token are correctly constructed and
 	 * passed to the appropriate endpoint.
 	 *
@@ -461,6 +425,47 @@ public class FreesoundClientTest {
 		assertEquals(OAUTH_REFRESH_TOKEN, accessTokenDetails.getRefreshToken());
 		assertEquals(OAUTH_SCOPE, accessTokenDetails.getScope());
 		assertEquals(OAUTH_TOKEN_EXPIRES_IN, accessTokenDetails.getExpiresIn());
+	}
+
+	/**
+	 * Test situations where an unexpected error has been returned by the freesound API.
+	 *
+	 * @param mockUnirest Mock version of the {@link Unirest} library
+	 * @param mockGetRequest Mock {@link GetRequest}
+	 * @param mockHttpResponse Mock {@link HttpResponse}
+	 * @param mockResultsMapper Mock {@link SoundMapper}
+	 *
+	 * @throws Exception Any exceptions thrown in test
+	 */
+	@SuppressWarnings("static-access")
+	@Test (expected = FreesoundClientException.class)
+	public void unexpected500Response(
+			@Mocked final Unirest mockUnirest,
+			@Mocked final GetRequest mockGetRequest,
+			@Mocked final HttpResponse<JsonNode> mockHttpResponse,
+			@Mocked final SoundMapper mockResultsMapper) throws Exception {
+		new Expectations() {
+			{
+				mockUnirest.get(FreesoundClient.API_ENDPOINT + TEST_PATH); result = mockGetRequest;
+
+				mockGetRequest.header("Authorization", "Token " + CLIENT_SECRET);
+				mockGetRequest.routeParam(ROUTE_ELEMENT, ROUTE_ELEMENT_VALUE);
+				mockGetRequest.queryString(with(new Delegate<HashMap<String, Object>>() {
+					@SuppressWarnings("unused")
+					void checkRequestParameters(final Map<String, Object> queryParameters) {
+						assertNotNull(queryParameters);
+						assertTrue(queryParameters.size() == 1);
+						assertEquals(QUERY_PARAMETER_VALUE, queryParameters.get(QUERY_PARAMETER));
+					}
+				}));
+
+				mockGetRequest.asJson(); result = mockHttpResponse;
+				mockHttpResponse.getBody(); result = "<html><body><h1>500 Error</h1></body></html>";
+			}
+		};
+
+		final JSONResponseQuery<Sound> query = new TestJSONResponseQuery(HTTPRequestMethod.GET, mockResultsMapper);
+		freesoundClient.executeQuery(query);
 	}
 
 	/**

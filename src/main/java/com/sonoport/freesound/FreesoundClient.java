@@ -118,15 +118,17 @@ public class FreesoundClient {
 			if (query instanceof JSONResponseQuery) {
 				final HttpResponse<JsonNode> httpResponse = request.asJson();
 				final S responseBody = (S) httpResponse.getBody().getObject();
+
 				return query.processResponse(httpResponse.getStatus(), httpResponse.getStatusText(), responseBody);
 			} else if (query instanceof BinaryResponseQuery) {
 				final HttpResponse<InputStream> httpResponse = request.asBinary();
 				final S responseBody = (S) httpResponse.getBody();
+
 				return query.processResponse(httpResponse.getStatus(), httpResponse.getStatusText(), responseBody);
 			} else {
 				throw new FreesoundClientException(String.format("Unknown request type: %s", query.getClass()));
 			}
-		} catch (final UnirestException e) {
+		} catch (final ClassCastException | UnirestException e) {
 			throw new FreesoundClientException("Error when attempting to make API call", e);
 		}
 	}
