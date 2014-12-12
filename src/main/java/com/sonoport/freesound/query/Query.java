@@ -17,6 +17,7 @@ package com.sonoport.freesound.query;
 
 import java.util.Map;
 
+import com.sonoport.freesound.response.Response;
 import com.sonoport.freesound.response.mapping.Mapper;
 
 /**
@@ -37,23 +38,15 @@ public abstract class Query<S extends Object, R extends Object> {
 	/** {@link Mapper} used to convert results received from freesound into appropriate DTO type. */
 	private final Mapper<S, R> resultsMapper;
 
-	/** The HTTP response code received after making the call. */
-	private int httpResponseCode;
-
-	/** The details of any errors received from the HTTP call. This should generally only be populated if
-	 * {@link Query#isErrorResponse()} returns true. */
-	private String errorDetails;
-
-	/** The results of the call, transformed into an appropriate DTO object. */
-	private R results;
-
 	/**
 	 * @param httpRequestMethod HTTP method to use for query
 	 * @param path Endpoint to submit the query to
 	 * @param resultsMapper {@link Mapper} to convert results
 	 */
 	protected Query(
-			final HTTPRequestMethod httpRequestMethod, final String path, final Mapper<S, R> resultsMapper) {
+			final HTTPRequestMethod httpRequestMethod,
+			final String path,
+			final Mapper<S, R> resultsMapper) {
 		this.httpRequestMethod = httpRequestMethod;
 		this.path = path;
 		this.resultsMapper = resultsMapper;
@@ -73,16 +66,22 @@ public abstract class Query<S extends Object, R extends Object> {
 	 * Set the raw response received from the HTTP call. Contents are passed on to sub-classes for mapping to DTOs.
 	 *
 	 * @param httpResponseCode The HTTP response code received
+	 * @param httpResponseStatusString The text associated with the HTTP response code
 	 * @param freesoundResponse The response received from the HTTP call
+	 *
+	 * @return Results of the query
 	 */
-	public final void setResponse(final int httpResponseCode, final S freesoundResponse) {
-		this.httpResponseCode = httpResponseCode;
+	public Response<R> processResponse(
+			final int httpResponseCode, final String httpResponseStatusString, final S freesoundResponse) {
+		final Response<R> response = new Response<>(httpResponseCode, httpResponseStatusString);
 
-		if (this.isErrorResponse()) {
-			errorDetails = extractErrorMessage(freesoundResponse);
+		if (response.isErrorResponse()) {
+			response.setErrorDetails(extractErrorMessage(freesoundResponse));
 		} else {
-			results = resultsMapper.map(freesoundResponse);
+			response.setResults(resultsMapper.map(freesoundResponse));
 		}
+
+		return response;
 	}
 
 	/**
@@ -94,13 +93,6 @@ public abstract class Query<S extends Object, R extends Object> {
 	protected abstract String extractErrorMessage(S freesoundResponse);
 
 	/**
-	 * @return Whether the HTTP call made resulted in an error response
-	 */
-	public boolean isErrorResponse() {
-		return httpResponseCode >= 400;
-	}
-
-	/**
 	 * @return the path
 	 */
 	public String getPath() {
@@ -108,38 +100,17 @@ public abstract class Query<S extends Object, R extends Object> {
 	}
 
 	/**
-	 * @return the results
-	 */
-	public R getResults() {
-		return results;
-	}
-
-	/**
-	 * @param results the results to set
-	 */
-	public void setResults(final R results) {
-		this.results = results;
-	}
-
-	/**
-	 * @return the httpResponseCode
-	 */
-	public int getHttpResponseCode() {
-		return httpResponseCode;
-	}
-
-	/**
-	 * @return the errorDetails
-	 */
-	public String getErrorDetails() {
-		return errorDetails;
-	}
-
-	/**
 	 * @return the httpRequestMethod
 	 */
 	public HTTPRequestMethod getHttpRequestMethod() {
 		return httpRequestMethod;
+	}
+
+	/**
+	 * @return the resultsMapper
+	 */
+	protected Mapper<S, R> getResultsMapper() {
+		return resultsMapper;
 	}
 
 }

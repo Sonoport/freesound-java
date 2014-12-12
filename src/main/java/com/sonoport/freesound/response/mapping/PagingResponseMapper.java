@@ -21,15 +21,13 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.sonoport.freesound.response.PagingResponse;
-
 /**
  * {@link Mapper} implementation used to parse JSON representation of a list of items that may spread over multiple
  * pages.
  *
- * @param <I> The data type of teh individual items in the list
+ * @param <I> The data type of the individual items in the list
  */
-public class PagingResponseMapper<I extends Object> extends Mapper<JSONObject, PagingResponse<I>> {
+public class PagingResponseMapper<I extends Object> extends Mapper<JSONObject, List<I>> {
 
 	/** {@link Mapper} used to process the individual items in the list. */
 	private final Mapper<JSONObject, I> itemMapper;
@@ -42,13 +40,7 @@ public class PagingResponseMapper<I extends Object> extends Mapper<JSONObject, P
 	}
 
 	@Override
-	public PagingResponse<I> map(final JSONObject source) {
-		final PagingResponse<I> response = new PagingResponse<>();
-
-		response.setCount(extractFieldValue(source, "count", Integer.class));
-		response.setNextPageURI(extractFieldValue(source, "next", String.class));
-		response.setPreviousPageURI(extractFieldValue(source, "previous", String.class));
-
+	public List<I> map(final JSONObject source) {
 		final List<I> items = new LinkedList<>();
 		final JSONArray resultsArray = extractFieldValue(source, "results", JSONArray.class);
 
@@ -63,9 +55,37 @@ public class PagingResponseMapper<I extends Object> extends Mapper<JSONObject, P
 				}
 			}
 		}
-		response.setItems(items);
 
-		return response;
+		return items;
 	}
 
+	/**
+	 * Retrieve the total number of results for the query from the JSON message.
+	 *
+	 * @param source JSON response from freesound
+	 * @return Total number of results
+	 */
+	public Integer extractCount(final JSONObject source) {
+		return extractFieldValue(source, "count", Integer.class);
+	}
+
+	/**
+	 * Retrieve the URI of the next page of results (if any) for the query from the JSON message.
+	 *
+	 * @param source JSON response from freesound
+	 * @return Next page URI
+	 */
+	public String extractNextPageURI(final JSONObject source) {
+		return extractFieldValue(source, "next", String.class);
+	}
+
+	/**
+	 * Retrieve the URI of the previous page of results (if any) for the query from the JSON message.
+	 *
+	 * @param source JSON response from freesound
+	 * @return Previous page URI
+	 */
+	public String extractPreviousPageURI(final JSONObject source) {
+		return extractFieldValue(source, "previous", String.class);
+	}
 }
