@@ -54,7 +54,7 @@ public class FreesoundClient {
 
 	/** The default User-Agent string to pass with requests, if user does not specify their own. */
 	protected static final String DEFAULT_USER_AGENT_STRING =
-			"Sonoport-freesound-java/0.5.0 (https://github.com/Sonoport/freesound-java)";
+			"Sonoport-freesound-java/0.6.0 (https://github.com/Sonoport/freesound-java)";
 
 	/** Name of the HTTP Header specifying the content types to be accepted. */
 	protected static final String HTTP_ACCEPT_HEADER = "Accept";
