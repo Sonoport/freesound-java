@@ -267,7 +267,7 @@ public class FreesoundClient {
 	 */
 	public Response<AccessTokenDetails> redeemAuthorisationCodeForAccessToken(final String authorisationCode)
 			throws FreesoundClientException {
-		LOG.info("Acquiring OAuth2 Access Token from Authroisation Code...");
+		LOG.info("Acquiring OAuth2 Access Token from Authorisation Code...");
 		final OAuth2AccessTokenRequest tokenRequest =
 				new OAuth2AccessTokenRequest(clientId, clientSecret, authorisationCode);
 
