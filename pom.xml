@@ -51,6 +51,7 @@
     
     <!-- Dependency versions -->
     <unirest.version>1.3.27</unirest.version>
+    <slf4j.version>1.7.7</slf4j.version>
     
     <!-- Test dependency versions -->
     <jmockit.version>1.13</jmockit.version>
@@ -72,6 +73,11 @@
   		<artifactId>unirest-java</artifactId>
   		<version>${unirest.version}</version>
   	</dependency>
+  	<dependency>
+		<groupId>org.slf4j</groupId>
+		<artifactId>slf4j-api</artifactId>
+		<version>${slf4j.version}</version>
+	</dependency>
   	
   	<!-- Test dependencies -->
   	<!-- JMockit dependency must appear before the JUnit entry -->
