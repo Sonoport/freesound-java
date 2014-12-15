@@ -96,4 +96,19 @@ public abstract class AccessTokenQuery extends JSONResponseQuery<AccessTokenDeta
 		return Collections.emptyMap();
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+
+		sb.append(getClass().getSimpleName()).append(": ");
+
+		// Need to hide sensitive values...
+		final Map<String, Object> queryParamsToOutput = new HashMap<>(getQueryParameters());
+		queryParamsToOutput.put(CLIENT_SECRET_PARAMETER_NAME, "*****");
+		queryParamsToOutput.put(codeParameterName, "*****");
+
+		sb.append(String.format("Query Parameters: %s", queryParamsToOutput));
+
+		return sb.toString();
+	}
 }

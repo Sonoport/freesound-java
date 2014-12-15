@@ -113,4 +113,15 @@ public abstract class Query<S extends Object, R extends Object> {
 		return resultsMapper;
 	}
 
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+
+		sb.append(getClass().getSimpleName()).append(": ");
+		sb.append(String.format("Route Parameters: %s, ", getRouteParameters()));
+		sb.append(String.format("Query Parameters: %s", getQueryParameters()));
+
+		return sb.toString();
+	}
+
 }
