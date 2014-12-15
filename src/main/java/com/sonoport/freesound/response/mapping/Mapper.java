@@ -27,6 +27,8 @@ import java.util.TimeZone;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Abstract class defining common functionality required when converting objects of different types. In general, this
@@ -36,6 +38,9 @@ import org.json.JSONObject;
  * @param <R> The type we are converting to
  */
 public abstract class Mapper<S extends Object, R extends Object> {
+
+	/** Logger instance for use in class. */
+	private static final Logger LOG = LoggerFactory.getLogger(Mapper.class);
 
 	/** The date/time format used by freesound. */
 	private static final String FREESOUND_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
@@ -81,9 +86,11 @@ public abstract class Mapper<S extends Object, R extends Object> {
 					fieldValue = (T) jsonObject.get(field);
 				}
 			} catch (final JSONException | ClassCastException e) {
-				// TODO Log a warning
+				LOG.warn("Error extracting value: {}", e.getMessage());
 			}
 		}
+
+		LOG.debug("Extracting field [{}] as {} ==> {}", field, fieldType.getName(), fieldValue);
 
 		return fieldValue;
 	}
@@ -101,6 +108,8 @@ public abstract class Mapper<S extends Object, R extends Object> {
 				dictionaryAsMap.put(key, extractFieldValue(jsonDictionaryObject, key, String.class));
 			}
 		}
+
+		LOG.debug("Parsed dictionary values: {}", dictionaryAsMap);
 
 		return dictionaryAsMap;
 	}
@@ -122,6 +131,8 @@ public abstract class Mapper<S extends Object, R extends Object> {
 				}
 			}
 		}
+
+		LOG.debug("Parsed array values: {}", arrayContents);
 
 		return arrayContents;
 	}
@@ -167,7 +178,7 @@ public abstract class Mapper<S extends Object, R extends Object> {
 
 				date = dateFormat.parse(dateString);
 			} catch (final ParseException e) {
-				// TODO Log a warning
+				LOG.warn("Unable to parse date: {}", e.getMessage());
 			}
 		}
 

@@ -19,6 +19,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map.Entry;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -45,6 +48,9 @@ import com.sonoport.freesound.response.Response;
  * The credentials generated (Client ID & Client Secret/API Key) are then used to construct an instance of this class.
  */
 public class FreesoundClient {
+
+	/** Logger instance for use in class. */
+	private static final Logger LOG = LoggerFactory.getLogger(FreesoundClient.class);
 
 	/** Base address for all calls to the freesound.org APIv2. */
 	protected static final String API_ENDPOINT = "https://www.freesound.org/apiv2";
@@ -82,12 +88,15 @@ public class FreesoundClient {
 	 * @param userAgentString The User-Agent string to send with all requests
 	 */
 	public FreesoundClient(final String clientId, final String clientSecret, final String userAgentString) {
+		LOG.info("Configuring FreesoundClient...");
+
 		this.clientId = clientId;
 		this.clientSecret = clientSecret;
 
 		Unirest.setDefaultHeader(HTTP_ACCEPT_HEADER, CONTENT_TYPES_TO_ACCEPT);
 
 		if (userAgentString != null) {
+			LOG.info("Setting custom User-Agent: {}", userAgentString);
 			Unirest.setDefaultHeader(HTTP_USER_AGENT_HEADER, userAgentString);
 		} else {
 			Unirest.setDefaultHeader(HTTP_USER_AGENT_HEADER, DEFAULT_USER_AGENT_STRING);
@@ -107,6 +116,12 @@ public class FreesoundClient {
 	@SuppressWarnings("unchecked")
 	public <S extends Object, R extends Object> Response<R> executeQuery(final Query<S, R> query)
 			throws FreesoundClientException {
+		if (LOG.isDebugEnabled()) {
+			LOG.debug("Executing Query: {}", query.toString());
+		} else {
+			LOG.info("Executing Query: {}", query.getClass().getSimpleName());
+		}
+
 		final HttpRequest request = buildHTTPRequest(query);
 		final String credential = buildAuthorisationCredential(query);
 
@@ -189,11 +204,14 @@ public class FreesoundClient {
 	private String buildAuthorisationCredential(final Query<?, ?> query) {
 		String credential = null;
 		if (query instanceof OAuthQuery) {
+			LOG.debug("Setting OAuth2 Authorizaton header...");
 			final String oauthToken = ((OAuthQuery) query).getOauthToken();
 			credential = String.format("Bearer %s", oauthToken);
 		} else if (query instanceof AccessTokenQuery) {
 			// Don't set the Authorization header
+			LOG.debug("Authorization Header not required...");
 		} else {
+			LOG.debug("Setting Client Secret Token Authorizaton header...");
 			credential = String.format("Token %s", clientSecret);
 		}
 
@@ -215,6 +233,7 @@ public class FreesoundClient {
 		final int currentPage = query.getPage();
 		query.setPage(currentPage + 1);
 
+		LOG.info("Retrieving next page ({}) of results...", currentPage + 1);
 		return (PagingResponse<I>) executeQuery(query);
 	}
 
@@ -233,6 +252,7 @@ public class FreesoundClient {
 		final int currentPage = query.getPage();
 		query.setPage(currentPage - 1);
 
+		LOG.info("Retrieving previous page ({}) of results...", currentPage - 1);
 		return (PagingResponse<I>) executeQuery(query);
 	}
 
@@ -247,6 +267,7 @@ public class FreesoundClient {
 	 */
 	public Response<AccessTokenDetails> redeemAuthorisationCodeForAccessToken(final String authorisationCode)
 			throws FreesoundClientException {
+		LOG.info("Acquiring OAuth2 Access Token from Authorisation Code...");
 		final OAuth2AccessTokenRequest tokenRequest =
 				new OAuth2AccessTokenRequest(clientId, clientSecret, authorisationCode);
 
@@ -261,6 +282,7 @@ public class FreesoundClient {
 	 * @throws FreesoundClientException Any exception thrown during call
 	 */
 	public Response<AccessTokenDetails> refreshAccessToken(final String refreshToken) throws FreesoundClientException {
+		LOG.info("Refreshing OAuth2 Access Token...");
 		final RefreshOAuth2AccessTokenRequest tokenRequest =
 				new RefreshOAuth2AccessTokenRequest(clientId, clientSecret, refreshToken);
 
@@ -275,6 +297,7 @@ public class FreesoundClient {
 	 */
 	public void shutdown() throws FreesoundClientException {
 		try {
+			LOG.info("Shutting down FreesoundClient...");
 			Unirest.shutdown();
 		} catch (final IOException e) {
 			throw new FreesoundClientException("Error shutting down background Unirest service", e);

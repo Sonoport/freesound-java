@@ -17,6 +17,9 @@ package com.sonoport.freesound.query;
 
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sonoport.freesound.response.Response;
 import com.sonoport.freesound.response.mapping.Mapper;
 
@@ -28,6 +31,9 @@ import com.sonoport.freesound.response.mapping.Mapper;
  * @param <R> The data type of the results we'll return
  */
 public abstract class Query<S extends Object, R extends Object> {
+
+	/** Logger instance for use in class. */
+	private static final Logger LOG = LoggerFactory.getLogger(Query.class);
 
 	/** The HTTP method to use in making the call to the API. */
 	private final HTTPRequestMethod httpRequestMethod;
@@ -73,10 +79,14 @@ public abstract class Query<S extends Object, R extends Object> {
 	 */
 	public Response<R> processResponse(
 			final int httpResponseCode, final String httpResponseStatusString, final S freesoundResponse) {
+		LOG.info("Received Response {} {}", httpResponseCode, httpResponseStatusString);
 		final Response<R> response = new Response<>(httpResponseCode, httpResponseStatusString);
 
 		if (response.isErrorResponse()) {
-			response.setErrorDetails(extractErrorMessage(freesoundResponse));
+			final String errorMessage = extractErrorMessage(freesoundResponse);
+
+			LOG.warn("Error received from Freesound: {}", errorMessage);
+			response.setErrorDetails(errorMessage);
 		} else {
 			response.setResults(resultsMapper.map(freesoundResponse));
 		}
@@ -111,6 +121,17 @@ public abstract class Query<S extends Object, R extends Object> {
 	 */
 	protected Mapper<S, R> getResultsMapper() {
 		return resultsMapper;
+	}
+
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder();
+
+		sb.append(getClass().getSimpleName()).append(": ");
+		sb.append(String.format("Route Parameters: %s, ", getRouteParameters()));
+		sb.append(String.format("Query Parameters: %s", getQueryParameters()));
+
+		return sb.toString();
 	}
 
 }
